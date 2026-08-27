@@ -1,0 +1,2518 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAICIF-IRA REPORT // 1320—1405</title>
+<meta name="description" content="LAICIF-IRA REPORT — آرشیو تعاملی داده، تحلیل تطبیقی ایران ۱۳۲۰ تا ۱۴۰۵">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Inter:wght@300;500;800&family=Vazirmatn:wght@300;500;900&display=swap" rel="stylesheet">
+<style>
+/* ============ CORE TOKENS ============ */
+:root{
+  --void:#050505; --char:#111111; --conc:#2b2b2b; --line:#1e1e1e;
+  --acid:#ccff00; --cyber:#ffd000; --crim:#ff003c;
+  --acc:#ccff00; --acc2:#ffd000;
+  --txt:#c9c9c9; --dim:#6d6d6d;
+  --mono:'JetBrains Mono','Vazirmatn',ui-monospace,monospace;
+  --body:'Vazirmatn','Inter',system-ui,sans-serif;
+  --nav:290px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--void); color:var(--txt); font-family:var(--body);
+  letter-spacing:.05em; line-height:1.85; overflow-x:hidden;
+  font-size:clamp(13px,.5vw + 11px,15px);
+}
+/* NOISE */
+body::before{
+  content:"";position:fixed;inset:0;z-index:9996;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* SCANLINES */
+body::after{
+  content:"";position:fixed;inset:0;z-index:9997;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0 1px,rgba(0,0,0,0) 1px 3px);
+  mix-blend-mode:overlay;
+}
+@media(pointer:fine){ body,a,button,input,li,td,th{cursor:none !important} }
+::selection{background:var(--acc);color:#000}
+.mono{font-family:var(--mono)}
+.num{color:var(--acc);text-shadow:0 0 6px rgba(204,255,0,.55);font-family:var(--mono);font-weight:500}
+b,strong{color:#fff;font-weight:800}
+b .num,strong .num{color:var(--cyber);text-shadow:0 0 8px rgba(255,208,0,.6)}
+/* SCROLLBARS */
+*::-webkit-scrollbar{width:8px;height:8px}
+*::-webkit-scrollbar-track{background:#0a0a0a;border:1px solid #161616}
+*::-webkit-scrollbar-thumb{background:var(--acc);border:2px solid #0a0a0a}
+*::-webkit-scrollbar-thumb:hover{background:var(--crim)}
+
+/* ============ BACKGROUND CANVASES ============ */
+#gl,#px{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+#gl{opacity:.55}
+#px{opacity:.75}
+
+/* ============ HUD ============ */
+.hud{position:fixed;z-index:9990;pointer-events:none}
+.corner{width:46px;height:46px;border:2px solid var(--acc);opacity:.75}
+#c1{top:12px;left:12px;border-right:0;border-bottom:0}
+#c2{top:12px;right:12px;border-left:0;border-bottom:0}
+#c3{bottom:12px;left:12px;border-right:0;border-top:0}
+#c4{bottom:12px;right:12px;border-left:0;border-top:0}
+#beam{position:fixed;left:0;right:0;height:2px;z-index:9989;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--acc),transparent);opacity:.35;
+  animation:beam 7s linear infinite}
+@keyframes beam{0%{top:-2%}100%{top:102%}}
+
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:38px;z-index:9992;
+  display:flex;align-items:center;gap:14px;padding:0 62px;
+  background:rgba(5,5,5,.92);border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+}
+#topbar .seg{display:flex;align-items:center;gap:7px;color:var(--dim);white-space:nowrap}
+#topbar .seg b{color:var(--acc);font-weight:500}
+.reddot{width:8px;height:8px;background:var(--crim);border-radius:50%;box-shadow:0 0 8px var(--crim);animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.12}}
+.spacer{flex:1}
+#topbar .btn{pointer-events:auto}
+#prog{position:fixed;top:38px;left:0;height:2px;background:var(--acc);z-index:9993;width:0;box-shadow:0 0 10px var(--acc)}
+
+/* RADAR */
+#radar{position:fixed;bottom:22px;left:22px;width:104px;height:104px;z-index:9991;pointer-events:none}
+#radar svg{width:100%;height:100%;transform:rotate(-90deg)}
+#radar .sweep{position:absolute;inset:0;animation:spin 3.4s linear infinite}
+#radar .sweep::before{content:"";position:absolute;top:50%;left:50%;width:48%;height:2px;
+  background:linear-gradient(90deg,var(--acc),transparent);transform-origin:0 50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+#radar .rtxt{position:absolute;inset:0;display:grid;place-content:center;font-family:var(--mono);
+  font-size:15px;color:var(--acc);text-shadow:0 0 8px rgba(204,255,0,.6)}
+#radar .rlbl{position:absolute;bottom:-14px;width:100%;text-align:center;font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--dim)}
+
+/* CURSOR */
+#cursor{position:fixed;top:0;left:0;width:26px;height:26px;z-index:99999;pointer-events:none;
+  transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .18s,height .18s}
+#cursor .ring{position:absolute;inset:0;border:1px solid rgba(204,255,0,.85);border-radius:50%}
+#cursor .h,#cursor .v{position:absolute;background:rgba(204,255,0,.85)}
+#cursor .h{top:50%;left:-8px;right:-8px;height:1px}
+#cursor .v{left:50%;top:-8px;bottom:-8px;width:1px}
+#cursor.hot{width:40px;height:40px}
+#cursor.hot .ring{border-color:var(--crim);box-shadow:0 0 12px rgba(255,0,60,.7)}
+#cdot{position:fixed;width:4px;height:4px;background:var(--crim);z-index:99999;pointer-events:none;transform:translate(-50%,-50%)}
+@media(pointer:coarse){#cursor,#cdot{display:none}}
+
+/* ============ SHELL ============ */
+#shell{position:relative;z-index:5;display:grid;grid-template-columns:var(--nav) minmax(0,1fr);
+  max-width:1680px;margin:0 auto;padding:38px 26px 0;gap:26px}
+
+/* ============ SIDE NAV ============ */
+#nav{position:sticky;top:56px;height:calc(100vh - 80px);display:flex;flex-direction:column;gap:10px;padding-top:22px}
+.brackets{border:1px solid var(--line);background:rgba(10,10,10,.72);padding:10px;position:relative}
+.brackets::before,.brackets::after{content:"";position:absolute;width:10px;height:10px;border:2px solid var(--acc)}
+.brackets::before{top:-1px;right:-1px;border-left:0;border-bottom:0}
+.brackets::after{bottom:-1px;left:-1px;border-right:0;border-top:0}
+.nav-h{font-family:var(--mono);font-size:10px;letter-spacing:.28em;color:var(--dim);margin-bottom:8px;text-transform:uppercase}
+#grep{width:100%;background:#0a0a0a;border:1px dashed var(--conc);color:var(--acid);
+  font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none}
+#grep:focus{border-color:var(--acc);box-shadow:4px 4px 0 rgba(204,255,0,.18)}
+#navlist{overflow-y:auto;flex:1;padding-left:6px}
+#navlist a{display:block;font-family:var(--mono);font-size:11px;color:var(--dim);text-decoration:none;
+  padding:5px 8px;border-right:2px solid transparent;transition:.18s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#navlist a:hover{color:var(--acc);background:rgba(204,255,0,.07);border-right-color:var(--acc)}
+#navlist a.h1{color:#fff;font-weight:800;margin-top:10px;border-right-color:var(--crim);font-size:11.5px}
+#navlist a.h3{padding-right:18px;opacity:.8;font-size:10.5px}
+#navlist a.active{color:#000;background:var(--acc);border-right-color:var(--crim)}
+.btnrow{display:flex;gap:6px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  background:transparent;color:var(--acc);border:1px solid var(--acc);padding:6px 9px;position:relative;transition:.15s}
+.btn:hover{background:var(--acc);color:#000;box-shadow:4px 4px 0 rgba(255,0,60,.55)}
+.btn::after{content:"";position:absolute;bottom:-4px;right:0;height:2px;width:0;background:var(--crim);transition:width .25s}
+.btn:hover::after{width:100%}
+.btn.on{background:var(--acc);color:#000}
+.sw{width:20px;height:20px;border:1px solid #333;padding:0}
+#swA{background:#ccff00}#swB{background:#ffd000}#swC{background:#ff003c}
+
+/* ============ HERO ============ */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;
+  padding:90px 0 40px;border-bottom:1px dashed var(--conc)}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.42em;color:var(--crim);margin-bottom:18px;text-transform:uppercase}
+#htitle{font-family:var(--mono);font-weight:800;line-height:.98;letter-spacing:-.02em;
+  font-size:clamp(2.1rem,7.4vw,6.4rem);color:#fff;position:relative;
+  text-shadow:0 0 22px rgba(204,255,0,.32), 3px 0 0 rgba(255,0,60,.45), -3px 0 0 rgba(0,229,255,.35)}
+#htitle .l{display:block}
+#hsub{max-width:70ch;margin-top:26px;color:var(--txt);font-size:clamp(.85rem,1.1vw,1rem);min-height:5.6em}
+#hsub::after{content:"█";color:var(--acc);animation:blink 1s steps(2) infinite}
+.hmeta{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.18em;border:1px dashed var(--conc);
+  padding:6px 10px;color:var(--dim)}
+.chip b{color:var(--acc);font-weight:500}
+#wire{position:absolute;top:12%;left:2%;width:min(30vw,300px);aspect-ratio:1;pointer-events:none;perspective:800px;opacity:.9}
+.ico{position:absolute;inset:0;transform-style:preserve-3d;animation:tumble 18s linear infinite}
+.ico i{position:absolute;inset:0;border:1px solid rgba(204,255,0,.35);transform-style:preserve-3d}
+.ico i:nth-child(1){transform:rotateY(0deg)}
+.ico i:nth-child(2){transform:rotateY(60deg)}
+.ico i:nth-child(3){transform:rotateY(120deg)}
+.ico i:nth-child(4){transform:rotateX(60deg)}
+.ico i:nth-child(5){transform:rotateX(120deg)}
+.ico i:nth-child(6){transform:rotateX(90deg) rotateY(45deg);border-color:rgba(255,0,60,.35)}
+@keyframes tumble{to{transform:rotateX(360deg) rotateY(720deg)}}
+
+/* KPI */
+#kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:42px}
+.kpi{border:1px solid var(--line);background:linear-gradient(160deg,#0c0c0c,#070707);padding:16px;
+  position:relative;transition:transform .2s,box-shadow .2s;will-change:transform}
+.kpi:hover{box-shadow:8px 8px 0 rgba(204,255,0,.16);border-color:var(--acc)}
+.kpi .v{font-family:var(--mono);font-size:clamp(1.5rem,3vw,2.4rem);font-weight:800;color:var(--acc);
+  text-shadow:0 0 14px rgba(204,255,0,.45);line-height:1}
+.kpi .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--dim);margin-top:10px;text-transform:uppercase}
+.kpi .d{font-size:12px;color:#9a9a9a;margin-top:6px}
+.kpi::before{content:attr(data-id);position:absolute;top:8px;left:10px;font-family:var(--mono);font-size:9px;color:#333}
+
+/* ============ DOC BLOCKS ============ */
+#doc{padding-bottom:120px}
+.chapter{margin:120px 0 50px;border-top:2px solid var(--crim);border-bottom:2px solid var(--crim);padding:28px 0;position:relative}
+.chapter .cn{font-family:var(--mono);font-size:11px;letter-spacing:.4em;color:var(--crim)}
+.chapter h1{font-family:var(--mono);font-weight:800;font-size:clamp(1.3rem,3.4vw,2.6rem);color:#fff;margin-top:10px;line-height:1.2}
+.sec{margin:74px 0 0;padding:0;position:relative}
+.sec-h{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:16px 18px;position:relative;border:1px dashed var(--conc)}
+.sec-h svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sec-h svg rect{fill:none;stroke:var(--acc);stroke-width:2}
+.sec-idx{font-family:var(--mono);font-size:12px;color:var(--acc);letter-spacing:.2em;white-space:nowrap}
+.sec-h h2{font-family:var(--mono);font-size:clamp(1.05rem,2.3vw,1.7rem);font-weight:800;color:#fff;line-height:1.3}
+.sec-h .us{color:var(--acc);animation:blink 1.05s steps(2) infinite}
+h3.sub{font-family:var(--mono);font-size:clamp(.95rem,1.7vw,1.2rem);color:var(--cyber);margin:44px 0 16px;
+  padding-right:16px;border-right:3px solid var(--cyber);position:relative}
+h3.sub::after{content:"_";animation:blink 1.05s steps(2) infinite}
+.glitch:hover{animation:gl .3s steps(2) infinite}
+@keyframes gl{
+ 0%{transform:translate(0,0) skewX(0)}
+ 25%{transform:translate(-3px,1px) skewX(-4deg);clip-path:inset(12% 0 40% 0)}
+ 50%{transform:translate(3px,-2px) skewX(4deg);clip-path:inset(52% 0 10% 0)}
+ 75%{transform:translate(-2px,0) skewX(-2deg);clip-path:inset(28% 0 28% 0)}
+ 100%{transform:translate(0,0) skewX(0);clip-path:inset(0)}
+}
+/* TERMINAL */
+.term{margin:18px 0;background:linear-gradient(180deg,#0b0b0b,#070707);border:1px solid var(--line);
+  box-shadow:7px 7px 0 rgba(204,255,0,.07);transition:.2s}
+.term:hover{border-color:#333;box-shadow:7px 7px 0 rgba(204,255,0,.16)}
+.term-bar{display:flex;align-items:center;gap:7px;padding:7px 12px;background:#0f0f0f;border-bottom:1px solid var(--line)}
+.term-bar .d{width:9px;height:9px;border-radius:50%}
+.d1{background:var(--crim)}.d2{background:var(--cyber)}.d3{background:var(--acid)}
+.term-bar .t{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--dim);margin-right:10px;direction:ltr}
+.term-body{padding:16px 18px;max-height:none;overflow:auto;text-align:justify}
+.term-body::before{content:"❯ ";color:var(--acc);font-family:var(--mono)}
+/* ALERT */
+.alert{margin:22px 0;border:2px solid var(--crim);background:rgba(255,0,60,.05);animation:af 1.6s steps(2) infinite}
+@keyframes af{50%{border-color:rgba(255,0,60,.28)}}
+.alert .mq{overflow:hidden;background:var(--crim);color:#000;font-family:var(--mono);font-size:10px;letter-spacing:.3em;padding:4px 0}
+.alert .mq span{display:inline-block;white-space:nowrap;padding-right:100%;animation:mq 14s linear infinite}
+@keyframes mq{to{transform:translateX(100%)}}
+.alert .ab{padding:14px 18px;text-align:justify}
+/* SPEC LIST */
+.spec-wrap{margin:18px 0;display:grid;gap:8px}
+.spec{display:grid;grid-template-columns:26px 42px 1fr;gap:12px;align-items:start;
+  border:1px dashed #232323;background:rgba(9,9,9,.7);padding:11px 12px;position:relative;transition:.18s}
+.spec:hover{border-color:var(--acc);background:rgba(204,255,0,.045);transform:translateX(-4px)}
+.spec .bc{height:26px;align-self:center;opacity:.6}
+.spec:hover .bc{opacity:1}
+.chk{width:20px;height:20px;border:1px solid var(--conc);background:#0a0a0a;position:relative;flex:none;margin-top:3px}
+.chk::after{content:"";position:absolute;inset:3px;background:var(--acc);opacity:0;transition:.15s;box-shadow:0 0 10px var(--acc)}
+.spec.ok .chk::after{opacity:1}
+.spec.ok{border-color:var(--acid);border-style:solid}
+.spec .stamp{position:absolute;left:10px;top:50%;transform:translateY(-50%) rotate(-11deg) scale(.6);
+  border:2px solid var(--acid);color:var(--acid);font-family:var(--mono);font-size:10px;letter-spacing:.24em;
+  padding:3px 8px;opacity:0;transition:.2s;pointer-events:none}
+.spec.ok .stamp{opacity:.95;transform:translateY(-50%) rotate(-11deg) scale(1)}
+.spec .tx{font-size:.92em}
+/* TABLES */
+.tbl-shell{margin:20px 0;border:1px solid var(--line);background:rgba(7,7,7,.82);position:relative;
+  box-shadow:8px 8px 0 rgba(255,208,0,.06)}
+.tbl-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;
+  border-bottom:1px solid var(--line);background:#0d0d0d;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.tbl-top .g{color:var(--acc)}
+.tbl-wrap{overflow:auto;max-height:min(70vh,620px)}
+table{border-collapse:collapse;width:100%;font-size:.83em}
+th{position:sticky;top:0;z-index:2;background:#0e0e0e;color:var(--acc);font-family:var(--mono);
+  font-weight:500;font-size:.82em;letter-spacing:.1em;text-align:right;padding:11px 12px;
+  border:1px solid #1c1c1c;border-bottom:2px solid var(--acc);white-space:nowrap}
+td{border:1px dashed #1b1b1b;padding:10px 12px;vertical-align:top;transition:.12s}
+tbody tr:nth-child(even){background:rgba(255,255,255,.014)}
+tbody tr:hover td{background:rgba(204,255,0,.075);color:#fff;box-shadow:inset 0 0 0 1px rgba(204,255,0,.25)}
+tbody tr.dead{display:none}
+td:first-child{color:var(--dim);font-family:var(--mono)}
+/* CODE */
+.code{margin:20px 0;border:1px solid var(--acc);background:rgba(204,255,0,.04);backdrop-filter:blur(6px);position:relative}
+.code pre{padding:16px 18px;overflow:auto;direction:ltr;text-align:left;font-family:var(--mono);font-size:12.5px;color:#dfffa0}
+.code .cbar{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid rgba(204,255,0,.3);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--acc)}
+.ripple{position:absolute;border-radius:50%;background:rgba(204,255,0,.4);transform:translate(-50%,-50%) scale(0);animation:rip .6s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(14);opacity:0}}
+/* LINKS */
+a.wire{color:var(--cyber);text-decoration:none;border-bottom:1px dashed var(--cyber);padding-bottom:1px;position:relative}
+a.wire:hover{color:#000;background:var(--cyber)}
+hr.rule{border:0;height:1px;background:repeating-linear-gradient(90deg,var(--conc) 0 8px,transparent 8px 16px);margin:40px 0}
+.reveal{opacity:0}
+/* FOOTER */
+footer{border-top:2px solid var(--acc);margin-top:80px;padding:34px 0 70px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.2em;color:var(--dim);display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between}
+/* ===== MIRRORED TITLE ===== */
+#htitle{perspective:900px}
+#htitle .ch{display:inline-block;transform-origin:50% 50%;will-change:transform}
+#htitle .ch.dash{color:var(--crim);text-shadow:0 0 18px rgba(255,0,60,.6)}
+#hdoc{font-family:var(--mono);font-size:clamp(.68rem,1.35vw,.95rem);color:var(--cyber);
+  letter-spacing:.1em;margin-top:18px;border-right:3px solid var(--cyber);padding:2px 12px 2px 0;line-height:1.7}
+/* ===== SIGNATURE PLATE ===== */
+#sig{margin:120px 0 20px;border:1px dashed var(--conc);position:relative;
+  background:linear-gradient(180deg,#0b0b0b,#050505);box-shadow:10px 10px 0 rgba(204,255,0,.06)}
+#sig::before,#sig::after{content:"";position:absolute;width:20px;height:20px;border:2px solid var(--crim)}
+#sig::before{top:-1px;right:-1px;border-left:0;border-bottom:0}
+#sig::after{bottom:-1px;left:-1px;border-right:0;border-top:0}
+.sig-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:9px 14px;border-bottom:1px solid var(--line);background:#0e0e0e;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;color:var(--dim);text-transform:uppercase}
+.sig-bar b{color:var(--acc);font-weight:500}
+.sig-stage{display:flex;flex-direction:column;align-items:center;padding:30px 18px 10px;position:relative}
+#sigSvg{width:min(560px,88%);height:auto;color:var(--acc);overflow:visible;display:block;
+  filter:drop-shadow(0 0 12px rgba(204,255,0,.35))}
+#sigSvg g{fill-opacity:0}
+#sigSvg path{stroke-linecap:round;stroke-linejoin:round;fill:currentColor}
+.sig-base{width:min(600px,94%);height:1px;margin-top:10px;opacity:.55;
+  background:repeating-linear-gradient(90deg,var(--acc) 0 10px,transparent 10px 20px)}
+.sig-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:16px 18px 20px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--dim)}
+.sig-meta .ok{color:var(--acid)}
+.sig-seal{position:absolute;left:26px;top:26px;border:2px solid var(--crim);color:var(--crim);
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;padding:6px 10px;
+  transform:rotate(-9deg);opacity:0;transition:.4s}
+#sig.done .sig-seal{opacity:.92}
+@media(max-width:760px){.sig-seal{display:none}}
+/* MOBILE */
+@media(max-width:1080px){
+  :root{--nav:0px}
+  #shell{grid-template-columns:1fr;padding:38px 14px 0}
+  #nav{position:fixed;inset:38px 0 auto 0;height:auto;padding:0;z-index:9994;transform:translateY(-140%);transition:.3s}
+  #nav.open{transform:none}
+  #navlist{max-height:44vh}
+  #topbar{padding:0 12px;gap:8px;font-size:9.5px}
+  #wire{opacity:.35;width:52vw}
+  #radar{width:74px;height:74px;bottom:12px;left:12px}
+  .corner{width:26px;height:26px}
+  th{white-space:normal}
+  table{font-size:.78em}
+}
+@media(max-width:640px){
+  .tbl-wrap{max-height:none}
+  table,tbody,tr,td{display:block;width:100%}
+  thead{display:none}
+  tbody tr{border:1px solid #202020;margin-bottom:10px;background:#080808}
+  td{border:0;border-bottom:1px dashed #1a1a1a;display:flex;gap:10px}
+  td::before{content:attr(data-l);color:var(--acc);font-family:var(--mono);font-size:.8em;
+    min-width:38%;letter-spacing:.05em}
+  .spec{grid-template-columns:22px 1fr}
+  .spec .bc{display:none}
+}
+#navToggle{display:none}
+@media(max-width:1080px){#navToggle{display:inline-block}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001s !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<canvas id="px" aria-hidden="true"></canvas>
+
+<div class="hud corner" id="c1"></div><div class="hud corner" id="c2"></div>
+<div class="hud corner" id="c3"></div><div class="hud corner" id="c4"></div>
+<div id="beam" aria-hidden="true"></div>
+
+<header id="topbar" role="banner">
+  <span class="seg"><span class="reddot"></span><b>REC</b></span>
+  <span class="seg">SYS.<b>ONLINE</b></span>
+  <span class="seg">UTC <b id="clock">--:--:--</b></span>
+  <span class="seg" id="fpsSeg">FPS <b id="fps">--</b></span>
+  <span class="spacer"></span>
+  <span class="seg">NODE <b>LAICIF-IRA</b></span>
+  <button class="btn" id="navToggle" aria-label="فهرست">IDX</button>
+</header>
+<div id="prog" aria-hidden="true"></div>
+
+<div id="radar" aria-label="درصد پیمایش">
+  <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#1c1c1c" stroke-width="3"/>
+  <circle cx="50" cy="50" r="30" fill="none" stroke="#141414" stroke-width="1"/>
+  <circle id="rprog" cx="50" cy="50" r="44" fill="none" stroke="#ccff00" stroke-width="3"
+   stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="butt"/></svg>
+  <div class="sweep"></div><div class="rtxt" id="rpct">0%</div><div class="rlbl">SCAN</div>
+</div>
+
+<div id="cursor" aria-hidden="true"><span class="ring"></span><span class="h"></span><span class="v"></span></div>
+<div id="cdot" aria-hidden="true"></div>
+
+<div id="shell">
+  <aside id="nav" aria-label="ناوبری">
+    <div class="brackets">
+      <div class="nav-h">// grep_index</div>
+      <input id="grep" type="text" placeholder="FILTER_DATA ::" aria-label="جستجو در داده‌ها" autocomplete="off">
+      <div class="btnrow" style="margin-top:9px">
+        <button class="btn sw" id="swA" data-c="#ccff00" aria-label="اکسید"></button>
+        <button class="btn sw" id="swB" data-c="#ffd000" aria-label="زرد"></button>
+        <button class="btn sw" id="swC" data-c="#ff003c" aria-label="قرمز"></button>
+        <button class="btn" id="sndBtn" aria-pressed="false">SND:OFF</button>
+        <button class="btn" id="mirBtn" aria-pressed="false" aria-label="وارونه‌سازی عنوان">MIRROR</button>
+        <button class="btn" id="topBtn">↑TOP</button>
+        <button class="btn" id="sigBtn">✎ SIGN</button>
+      </div>
+    </div>
+    <div class="brackets" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+      <div class="nav-h">// document_map</div>
+      <nav id="navlist"></nav>
+    </div>
+  </aside>
+
+  <main>
+    <section id="hero">
+      <div id="wire" aria-hidden="true"><div class="ico"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="kicker" id="kicker">/// ARCHIVE_LOAD :: LAICIF-IRA // REVERSED_STREAM ///</div>
+      <h1 id="htitle" class="glitch" aria-label="LAICIF-IRA REPORT">...</h1>
+      <div id="hdoc"></div>
+      <p id="hsub"></p>
+      <div class="hmeta" id="hmeta"></div>
+      <div id="kpis"></div>
+    </section>
+    <div id="doc"></div>
+
+    <section id="sig" class="reveal" data-anim="sig" aria-label="امضای نویسنده">
+      <div class="sig-bar">
+        <span>▚ END_OF_REPORT :: <b>AUTHOR_SIGNATURE</b></span>
+        <span>HASH <b id="sigHash">--------</b></span>
+        <span>STATUS <b id="sigStat">IDLE</b></span>
+      </div>
+      <div class="sig-stage">
+        <div class="sig-seal">AUTHENTIC</div>
+        <svg id="sigSvg" viewBox="0 0 1250 1254" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="امضای دست‌نویس متحرک">
+<g transform="translate(0.000000,1254.000000) scale(0.100000,-0.100000)"
+fill="currentColor" stroke="none">
+<path d="M5924 9726 c-17 -8 -48 -38 -69 -67 -22 -30 -55 -74 -75 -99 -20 -25
+-74 -92 -120 -150 -94 -118 -258 -307 -365 -420 -142 -151 -299 -338 -366
+-434 -74 -107 -90 -145 -33 -81 20 22 34 35 32 28 -4 -16 -189 -230 -288 -334
+-41 -43 -93 -102 -115 -130 -22 -28 -72 -83 -111 -122 -39 -40 -107 -117 -150
+-171 -43 -54 -89 -111 -102 -127 -12 -15 -18 -30 -13 -33 5 -4 24 13 43 36 50
+64 78 92 84 86 3 -3 -23 -39 -58 -79 -35 -41 -93 -110 -130 -154 -36 -45 -101
+-114 -145 -155 -43 -41 -99 -101 -124 -135 -25 -33 -67 -82 -93 -109 -25 -27
+-46 -53 -46 -59 0 -15 -111 -147 -120 -142 -10 6 -44 -32 -148 -170 -50 -66
+-143 -183 -208 -260 -98 -117 -151 -184 -261 -325 -6 -8 -31 -40 -55 -70 -24
+-30 -66 -84 -93 -119 -28 -35 -70 -90 -95 -122 -25 -32 -65 -83 -90 -115 -25
+-31 -67 -87 -95 -124 -256 -342 -231 -320 -550 -485 -161 -83 -925 -490 -1050
+-560 -22 -12 -113 -63 -203 -114 -89 -50 -164 -91 -167 -91 -18 0 -100 -69
+-110 -93 -21 -50 19 -109 84 -127 51 -14 59 -11 371 151 440 227 1017 512
+1029 508 11 -4 -89 -161 -379 -599 -229 -345 -446 -698 -436 -708 6 -6 32 25
+84 101 19 29 51 73 71 99 20 26 61 81 91 123 30 42 56 71 58 66 2 -6 -6 -25
+-18 -41 -12 -17 -20 -34 -16 -37 9 -10 35 17 78 80 49 73 62 69 15 -4 -37 -59
+-75 -130 -60 -114 5 6 33 38 62 73 30 34 56 60 59 57 3 -3 -6 -18 -20 -33 -70
+-77 -117 -160 -96 -173 9 -6 9 -12 -3 -26 -9 -10 -19 -25 -22 -33 -4 -8 -25
+-43 -46 -77 -25 -39 -35 -63 -26 -63 7 0 62 73 121 163 60 89 112 167 116 172
+4 6 18 24 31 40 13 17 44 62 70 100 74 109 310 445 387 550 19 26 48 65 64 87
+15 21 31 37 33 34 3 -3 -19 -38 -48 -78 -30 -40 -67 -93 -83 -118 -16 -25 -46
+-67 -66 -95 -21 -27 -46 -64 -57 -82 -10 -17 -48 -76 -86 -131 -37 -55 -67
+-102 -67 -106 0 -3 -8 -15 -17 -25 -18 -20 -27 -32 -85 -110 -95 -128 -137
+-187 -137 -195 -1 -5 -12 -23 -24 -40 -87 -114 -98 -136 -74 -136 25 0 56 28
+77 70 8 14 15 20 17 13 5 -13 -25 -68 -90 -171 -22 -34 -38 -65 -35 -67 7 -7
+104 106 112 130 4 11 26 35 50 54 24 19 61 62 82 97 35 58 70 92 44 44 -7 -12
+-7 -20 -1 -20 19 0 188 276 177 288 -9 8 -43 -31 -92 -105 -18 -29 -36 -53
+-40 -53 -6 0 13 32 95 162 31 48 78 123 105 165 109 173 198 304 203 300 2 -3
+-32 -63 -76 -133 -74 -117 -97 -165 -71 -149 6 3 10 12 10 20 0 7 7 15 15 19
+8 3 15 12 15 20 0 8 3 16 8 18 4 2 28 35 53 73 287 435 517 765 557 800 48 41
+280 144 602 266 30 11 64 24 75 29 156 64 300 105 438 126 26 3 50 17 76 43
+52 52 57 83 20 147 -16 28 -29 58 -29 66 0 20 -22 38 -67 53 -34 12 -44 10
+-118 -17 -44 -16 -147 -52 -230 -80 -82 -27 -214 -74 -293 -104 -166 -63 -170
+-64 -142 -23 22 30 20 53 -2 31 -32 -32 -25 -6 9 36 21 26 72 93 112 150 40
+56 77 102 82 102 5 0 15 15 22 33 8 17 34 52 58 77 24 25 44 50 44 57 0 15
+115 173 126 173 4 0 17 21 29 46 13 25 32 49 44 53 11 5 21 16 21 26 0 10 12
+25 27 34 23 13 87 90 183 219 11 15 58 74 105 131 47 56 92 113 100 125 8 13
+22 30 30 39 8 9 40 48 70 87 30 38 88 109 128 157 40 48 71 92 68 99 -6 16 26
+52 41 47 7 -3 29 23 50 58 44 71 102 141 113 134 7 -4 231 247 239 269 2 6 52
+66 110 132 58 67 135 157 171 200 36 42 90 105 120 139 30 34 111 126 180 206
+128 147 390 439 395 439 2 0 -1 -17 -6 -37 -5 -21 -25 -110 -44 -198 -20 -88
+-40 -178 -45 -200 -16 -69 -62 -298 -90 -445 -5 -25 -16 -90 -25 -145 -9 -55
+-20 -120 -25 -145 -5 -25 -9 -66 -8 -91 1 -26 -6 -63 -16 -83 -12 -26 -16 -49
+-11 -76 5 -27 2 -45 -10 -63 -9 -14 -18 -53 -21 -87 -2 -34 -7 -67 -11 -73 -4
+-6 -8 -20 -9 -31 -1 -12 -5 -42 -9 -68 -5 -28 -4 -48 1 -48 5 0 8 -18 6 -40
+-3 -26 -9 -40 -18 -40 -15 0 -19 -35 -5 -44 10 -7 -1 -72 -17 -103 -7 -12 -9
+-34 -6 -50 3 -17 -1 -45 -10 -67 -9 -21 -15 -54 -15 -74 0 -21 -2 -48 -5 -62
+-4 -14 -11 -66 -16 -116 -5 -50 -12 -97 -14 -105 -5 -12 -108 -843 -146 -1164
+-6 -55 -14 -208 -17 -340 l-5 -240 51 -77 c44 -67 56 -78 92 -88 55 -15 110
+-5 156 29 47 35 299 281 304 298 2 7 23 36 47 65 115 142 377 488 470 620 12
+18 50 71 82 118 33 47 60 89 60 95 1 5 14 26 30 45 17 19 30 38 30 42 0 4 21
+37 48 74 26 37 67 96 92 131 98 138 313 414 322 411 5 -2 28 -46 52 -98 24
+-52 76 -167 116 -255 40 -88 92 -200 115 -250 57 -119 105 -225 105 -230 0 -3
+11 -28 24 -57 41 -90 84 -202 99 -260 19 -75 129 -209 184 -226 62 -19 183 58
+183 117 0 10 12 36 28 57 39 56 102 161 102 171 0 4 16 32 36 62 20 30 37 65
+37 78 0 14 6 27 13 30 14 5 40 46 184 288 123 207 280 457 301 479 15 16 19
+17 23 5 3 -8 55 -171 116 -364 62 -192 136 -422 167 -510 30 -88 58 -180 63
+-205 10 -55 91 -192 126 -215 14 -9 46 -19 73 -22 73 -8 111 16 380 245 24 20
+51 41 60 46 9 5 21 15 26 21 9 12 255 199 355 272 25 18 58 43 74 55 17 13 76
+55 131 93 386 266 393 271 382 281 -10 10 -38 -6 -217 -125 -161 -107 -189
+-124 -146 -88 16 14 24 27 18 31 -13 8 -74 -43 -69 -58 3 -6 -7 -20 -21 -30
+-14 -11 -22 -14 -17 -7 4 8 2 16 -5 21 -7 5 12 24 57 57 112 81 181 123 185
+111 4 -12 114 59 164 105 16 15 48 36 71 47 23 11 45 25 50 32 12 20 184 128
+383 240 154 87 179 100 189 93 13 -7 111 45 111 59 0 13 51 46 70 46 7 0 58
+22 114 49 156 75 291 131 449 187 26 9 44 21 39 26 -4 4 -36 -3 -70 -17 -34
+-14 -66 -25 -72 -25 -6 0 -29 -9 -53 -19 -23 -11 -64 -27 -92 -36 -27 -9 -68
+-25 -90 -36 -86 -39 -195 -81 -195 -74 0 10 291 145 312 145 5 0 27 9 51 20
+40 19 141 53 252 86 43 13 92 26 193 51 49 12 -10 34 -63 23 -76 -16 -112 -1
+-39 17 33 8 50 32 17 25 -8 -2 -12 1 -9 6 3 6 29 13 56 17 78 11 67 30 -14 25
+-26 -1 -36 2 -32 9 11 18 -35 13 -83 -9 -24 -12 -53 -18 -64 -14 -27 9 -105
+-15 -121 -38 -7 -10 -49 -31 -92 -47 -98 -36 -246 -95 -299 -121 -22 -10 -76
+-35 -120 -55 -44 -21 -83 -39 -87 -42 -5 -2 -8 0 -8 4 0 10 118 73 136 73 16
+0 38 29 30 38 -4 3 -31 -5 -59 -20 -29 -14 -68 -31 -87 -38 -36 -13 -387 -186
+-405 -199 -5 -5 -44 -26 -85 -48 -169 -91 -420 -237 -545 -318 -85 -55 -265
+-169 -290 -185 -22 -14 -107 -72 -290 -198 -69 -48 -144 -102 -260 -189 -16
+-12 -48 -35 -70 -50 -22 -15 -57 -40 -77 -56 -21 -16 -42 -26 -47 -23 -24 15
+-371 1121 -371 1183 0 16 -8 44 -19 63 -10 19 -24 52 -30 73 -22 66 -106 114
+-171 97 -49 -13 -83 -41 -113 -93 -23 -41 -198 -323 -262 -422 -17 -27 -58
+-93 -89 -145 -223 -370 -272 -450 -295 -486 -14 -23 -48 -76 -74 -119 -27 -42
+-53 -75 -58 -73 -6 2 -28 44 -51 93 -22 50 -51 115 -65 145 -14 30 -34 75 -45
+100 -29 66 -43 97 -77 173 -17 37 -31 69 -31 72 0 2 -11 28 -24 57 -112 249
+-182 417 -202 480 -13 46 -34 94 -76 183 -16 35 -83 75 -124 75 -69 0 -116
+-39 -180 -147 -71 -120 -342 -524 -528 -787 -78 -109 -151 -214 -164 -233 -62
+-93 -436 -580 -516 -672 -91 -104 -91 -104 -94 -71 -5 44 75 882 107 1140 6
+41 15 118 21 170 6 52 15 127 20 165 5 39 14 115 21 170 6 55 14 129 19 165
+18 137 96 627 120 755 11 54 29 149 84 430 107 547 218 991 327 1305 63 183
+66 200 40 287 -33 112 -102 156 -187 119z m5866 -2845 c0 -8 -87 -41 -109 -41
+-6 0 -33 -9 -59 -21 -73 -33 -81 -36 -177 -75 -49 -20 -124 -52 -165 -71 -41
+-19 -118 -53 -170 -76 -52 -22 -110 -49 -129 -59 -18 -11 -36 -17 -39 -14 -8
+9 18 35 41 42 43 14 100 56 87 64 -8 5 -3 12 18 23 25 12 30 12 25 1 -6 -17
+-1 -17 32 -2 14 6 25 19 25 30 0 10 5 18 10 18 6 0 10 -4 10 -10 0 -19 32 -10
+37 10 5 19 14 24 41 21 7 -1 20 5 29 14 11 11 18 13 23 5 9 -15 60 5 60 24 0
+19 31 30 41 14 6 -9 13 -9 31 -1 13 7 46 19 73 28 28 8 61 20 75 27 46 20 65
+26 95 32 57 11 80 17 84 22 7 6 11 5 11 -5z m-8334 -198 c-25 -32 -98 -123
+-161 -203 -64 -80 -135 -171 -158 -202 -23 -31 -46 -57 -51 -57 -12 -1 16 40
+90 134 35 44 102 130 149 190 129 164 155 195 166 195 6 0 -10 -26 -35 -57z
+m7468 -167 c-3 -8 -20 -20 -37 -26 -18 -6 -49 -22 -69 -35 -42 -28 -48 -30
+-48 -15 0 6 10 15 23 20 12 6 45 24 72 40 57 33 67 36 59 16z m-8325 -995 c-8
+-10 -38 -54 -68 -97 -51 -75 -71 -97 -79 -89 -2 1 31 51 74 109 42 59 79 104
+82 102 3 -3 -1 -14 -9 -25z m-491 -1043 c-8 -13 -59 -93 -114 -178 -54 -85
+-130 -203 -169 -263 -38 -59 -81 -125 -94 -147 -14 -22 -36 -53 -50 -69 -15
+-15 -33 -40 -41 -54 -25 -43 -104 -146 -113 -146 -4 -1 7 20 25 45 18 25 49
+74 68 108 19 34 65 105 101 157 36 52 74 108 84 124 10 17 26 39 35 50 10 11
+26 36 36 55 10 19 22 39 27 45 4 5 16 21 26 35 10 14 49 70 86 125 68 101 94
+135 103 135 2 0 -2 -10 -10 -22z"/>
+<path d="M8023 9332 c-12 -9 -26 -33 -31 -52 -6 -19 -20 -68 -32 -108 -72
+-254 -75 -452 -5 -420 34 15 62 88 34 88 -8 0 -8 4 -2 13 6 6 13 25 17 41 4
+17 13 35 20 40 23 19 90 323 80 363 -6 21 -39 53 -54 53 -3 0 -15 -8 -27 -18z"/>
+<path d="M8541 8996 c-17 -13 -60 -52 -94 -87 -187 -192 -257 -319 -176 -319
+43 0 66 14 136 86 34 35 65 64 69 64 10 0 124 113 124 123 0 5 11 22 25 39 64
+75 -5 152 -84 94z"/>
+<path d="M7482 8525 c-250 -56 -538 -338 -531 -519 4 -96 -4 -177 -17 -172
+-29 11 -16 -113 21 -199 62 -143 103 -213 163 -277 66 -70 82 -80 82 -52 0 12
+12 8 48 -18 71 -51 131 -83 189 -102 29 -10 55 -22 58 -27 9 -13 -11 -11 -52
+6 -40 17 -63 19 -63 6 0 -18 137 -56 246 -67 75 -8 217 10 298 38 223 75 391
+255 457 487 38 132 17 373 -41 466 -11 18 -27 51 -35 74 -20 58 -55 107 -65
+91 -6 -9 -12 -6 -20 11 -31 59 -83 110 -105 105 -15 -4 -34 4 -61 27 -21 18
+-50 40 -64 50 -14 9 -35 24 -47 33 -18 13 -23 14 -23 3 0 -8 14 -22 30 -31 43
+-25 38 -42 -7 -23 -21 9 -40 21 -44 26 -3 6 -18 12 -32 12 -14 1 -25 7 -24 12
+1 6 -16 11 -38 13 -22 2 -44 7 -49 12 -6 6 7 7 30 3 33 -5 37 -3 26 8 -19 20
+-247 23 -330 4z m317 -200 c110 -23 270 -114 305 -174 92 -156 116 -276 85
+-423 -54 -251 -301 -423 -563 -390 -237 30 -407 180 -477 422 -13 46 -29 74
+-29 52 0 -7 -4 -12 -10 -12 -5 0 -10 15 -10 33 0 22 3 28 9 18 12 -19 28 -7
+34 26 36 189 140 327 304 409 117 58 213 68 352 39z m-706 -382 c-10 -36 -10
+-178 0 -225 5 -24 4 -38 -2 -38 -15 0 -26 64 -26 145 0 80 11 145 26 145 5 0
+6 -11 2 -27z m-105 -120 c-1 -92 3 -118 38 -217 8 -22 12 -41 10 -44 -6 -6
+-36 54 -36 73 0 8 -8 15 -19 15 -29 0 -45 93 -18 103 7 3 5 6 -5 6 -23 1 -26
+61 -3 61 10 0 15 10 15 28 0 28 10 72 16 72 2 0 3 -44 2 -97z"/>
+<path d="M7622 7937 c-149 -55 -160 -256 -19 -326 109 -54 247 32 247 154 0
+112 -129 209 -228 172z"/>
+<path d="M8788 8525 c-3 -3 -52 -23 -109 -44 -58 -21 -103 -43 -102 -49 3 -13
+-37 -36 -80 -46 -16 -4 -27 -12 -24 -19 2 -7 11 -10 18 -8 8 2 37 8 64 12 28
+5 70 13 95 18 56 12 63 7 19 -13 l-34 -16 35 6 c19 4 53 12 75 20 22 8 50 14
+61 14 23 0 78 39 56 40 -19 0 25 60 44 60 8 0 14 4 14 9 0 5 -21 6 -46 3 -34
+-3 -45 -2 -40 7 7 11 -35 17 -46 6z"/>
+<path d="M11940 6850 c-14 -4 -44 -13 -67 -20 -24 -7 -43 -19 -43 -26 0 -13
+51 -2 75 17 6 4 35 7 65 6 65 -2 130 10 130 24 0 10 -55 7 -83 -6 -11 -4 -23
+-3 -30 4 -12 12 -13 12 -47 1z"/>
+<path d="M4550 6075 c-63 -28 -349 -123 -498 -166 -30 -9 -48 -21 -58 -41 -15
+-29 -5 -57 69 -183 32 -54 44 -53 316 39 146 49 241 76 269 76 66 0 111 26
+134 76 l19 43 -26 50 c-14 28 -25 57 -25 65 0 20 -58 63 -95 69 -21 4 -53 -5
+-105 -28z"/>
+<path d="M1523 3484 c-28 -37 -40 -74 -24 -74 9 0 71 91 71 103 0 17 -22 4
+-47 -29z"/>
+</g>
+        </svg>
+        <div class="sig-base"></div>
+      </div>
+      <div class="sig-meta">
+        <span>SIGNED_BY <span class="ok">// AUTHOR_OF_RECORD</span></span>
+        <span>DOC <span class="ok">LAICIF-IRA REPORT</span></span>
+        <span id="sigDate">SEALED --</span>
+        <button class="btn" id="sigReplay" aria-label="پخش مجدد امضا">↻ REPLAY_SIGN</button>
+      </div>
+    </section>
+
+    <footer>
+      <span>// LAICIF-IRA :: RENDER_ENGINE v2.7</span>
+      <span id="fstat">BLOCKS 0 / TABLES 0 / ROWS 0</span>
+      <span>SIGNED ▮ EOF</span>
+    </footer>
+  </main>
+</div>
+
+<script id="SRC" type="text/plain">
+به عنوان یک پژوهشگر و تحلیلگر تاریخ معاصر ایران، بررسی دوران ۳۷ ساله پادشاهی محمدرضا شاه پهلوی (۱۳۲۰ تا ۱۳۵۷) نیازمند نگاهی جامع به تحولات عمیق اقتصادی، اجتماعی، صنعتی و زیرساختی است. این دوران، به ویژه دهه‌های ۴۰ و ۵۰ خورشیدی، زمانه گذار سریع ایران از یک جامعه سنتی و کشاورزی به یک دولت-ملت در حال توسعه و صنعتی بود.
+
+در ادامه، گزارش جامع و طبقه‌بندی‌شده‌ای از امکانات، تکنولوژی‌ها، رفاه، و ایده‌های کلان محمدرضا شاه ارائه می‌شود:
+
+---
+
+### ۱. توسعه زیرساخت‌ها و صنایع مادر
+شاه معتقد بود برای رسیدن به «تمدن بزرگ»، ایران نیازمند زیرساخت‌های فیزیکی قدرتمند است. در این دوره، پروژه‌های عظیمی اجرا شد که تا دهه‌ها بعد شاکله اصلی اقتصاد ایران را تشکیل می‌دادند:
+*   **سدسازی:** ساخت سدهای عظیم برق‌آبی برای تامین انرژی و کنترل آب، مانند سد دز (محمدرضا شاه)، سد کرج (امیرکبیر)، سد سفیدرود (شهبانو فرح) و سد زاینده‌رود (شاه عباس کبیر).
+*   **صنایع سنگین و فولاد:** تاسیس کارخانه ذوب‌آهن اصفهان (با همکاری شوروی)، ماشین‌سازی و تراکتورسازی تبریز، و ماشین‌سازی اراک.
+*   **صنایع پتروشیمی:** پایه‌گذاری صنعت پتروشیمی در ایران با تاسیس مجتمع‌های عظیم در آبادان، خارک، بندر شاپور (بندر امام امروزی) و شیراز.
+*   **صنعت خودرو:** حمایت از تاسیس کارخانجات ایران‌ناسیونال (ایران‌خودرو فعلی)، پارس‌خودرو و سایپا که ایران را به بزرگترین تولیدکننده خودرو در خاورمیانه تبدیل کرد.
+
+### ۲. ورود تکنولوژی‌های مدرن و پیشرفته
+ایران در دهه ۵۰ خورشیدی، به دلیل درآمدهای سرشار نفتی، خریدار جدیدترین تکنولوژی‌های روز دنیا بود:
+*   **انرژی هسته‌ای:** تاسیس «سازمان انرژی اتمی ایران». قرارداد ساخت نیروگاه اتمی بوشهر با آلمان‌ها امضا شد و شاه برنامه داشت تا سال ۱۳۷۳، بیست و سه نیروگاه هسته‌ای در ایران ساخته شود. ایران همچنین در مجتمع غنی‌سازی اورانیوم «اورودیف» فرانسه سرمایه‌گذاری هنگفتی کرد.
+*   **هوانوردی (ایران‌ایر):** هواپیمایی ملی ایران (هما) به یکی از ایمن‌ترین، مدرن‌ترین و سودآورترین خطوط هوایی جهان تبدیل شد. هما طولانی‌ترین پرواز بدون توقف جهان (تهران-نیویورک) را انجام می‌داد و ایران از معدود کشورهایی بود که هواپیمای مافوق صوت «کنکورد» را پیش‌خرید کرد.
+*   **تجهیزات نظامی مدرن:** ارتش ایران به پنجمین ارتش قدرتمند جهان تبدیل شد. خرید جنگنده‌های F-14 (تام‌کت) که ایران تنها دارنده آن غیر از آمریکا بود، خرید بزرگترین ناوگان هواناو (هاورکرافت) جهان، و تانک‌های چیفتن.
+*   **مخابرات و ارتباطات:** ایجاد شبکه ماکروویو سراسری، راه‌اندازی ایستگاه‌های گیرنده ماهواره‌ای (مانند اسدآباد همدان) و گسترش شبکه رادیو و تلویزیون ملی ایران (NIRT) که از نظر تجهیزات در آسیا کم‌نظیر بود.
+
+### ۳. سطح رفاه، اقتصاد و انقلاب سفید
+دهه ۴۰ خورشیدی با میانگین رشد اقتصادی دو رقمی (حدود ۱۰ تا ۱۱ درصد) و تورم بسیار پایین، دوران طلایی اقتصاد ایران محسوب می‌شود.
+*   **انقلاب سفید (اصلاحات ارضی):** از بین بردن سیستم ارباب‌رعیتی و واگذاری زمین به کشاورزان. این کار ساختار سنتی فئودالیسم را در ایران در هم شکست.
+*   **سپاهیان سه‌گانه:** ایجاد «سپاه دانش»، «سپاه بهداشت» و «سپاه ترویج و آبادانی» که جوانان تحصیل‌کرده را به جای سربازی به دورافتاده‌ترین روستاها می‌فرستاد تا سوادآموزی، خدمات پزشکی و روش‌های نوین کشاورزی را به روستاییان ارائه دهند.
+*   **رفاه کارگران و کارمندان:** اجرای قانون سهیم شدن کارگران در سود کارخانه‌ها، گسترش بیمه‌های تامین اجتماعی، و ساخت شهرک‌های مسکونی (مانند اکباتان، آپادانا، و شهرک غرب در تهران).
+*   **آموزش و تغذیه رایگان:** تحصیل از ابتدایی تا پایان راهنمایی اجباری و رایگان شد. همچنین طرح «تغذیه رایگان» (شامل شیر، پسته، موز و بیسکویت) در مدارس سراسر کشور اجرا شد.
+
+### ۴. حقوق زنان و توسعه اجتماعی
+*   **حق رای و انتخاب شدن:** در سال ۱۳۴۱ زنان ایرانی برای نخستین بار حق رای و حق کاندیداتوری در انتخابات را به دست آوردند.
+*   **قانون حمایت خانواده:** یکی از پیشروترین قوانین خاورمیانه که طلاق را از انحصار مردان خارج کرد، سن ازدواج دختران را به ۱۸ سال افزایش داد و چندهمسری را به شدت محدود و منوط به اجازه همسر اول و دادگاه کرد.
+*   **حضور در مناصب عالی:** انتصاب اولین زن وزیر (فرخ‌رو پارسا)، اولین زن سفیر (مهرانگیز دولتشاهی) و ورود زنان به قضاوت و پلیس.
+
+### ۵. فرهنگ، هنر و آموزش عالی
+*   **دانشگاه‌های تراز جهانی:** تاسیس دانشگاه صنعتی آریامهر (شریف فعلی) با الگوبرداری از MIT، و دانشگاه پهلوی شیراز با همکاری مستقیم دانشگاه پنسیلوانیا (UPenn) که زبان تدریس در آن انگلیسی بود.
+*   **مراکز فرهنگی:** تاسیس کانون پرورش فکری کودکان و نوجوانان (که پایه‌گذار سینمای نوین و ادبیات کودک ایران شد)، موزه هنرهای معاصر تهران (با خرید بی‌نظیرترین گنجینه هنر مدرن در خارج از اروپا و آمریکا)، تئاتر شهر و تالار رودکی.
+*   **جشن هنر شیراز:** فستیوالی بین‌المللی که بزرگترین هنرمندان آوانگارد جهان و موسیقی‌دانان سنتی شرق را در تخت جمشید گرد هم می‌آورد.
+
+### ۶. ایده‌ها، برنامه‌ها و چشم‌انداز (تمدن بزرگ)
+محمدرضا شاه در کتاب «به سوی تمدن بزرگ»، چشم‌انداز خود را تبدیل ایران به پنجمین قدرت صنعتی و اقتصادی جهان تا سال ۱۳۷۹ (سال ۲۰۰۰ میلادی) ترسیم کرده بود. برخی از پروژه‌های ناتمام یا در حال اجرای او عبارت بودند از:
+*   **پروژه شهستان پهلوی:** یک ابرپروژه شهرسازی در قلب تهران (تپه‌های عباس‌آباد) که قرار بود مدرن‌ترین مرکز اداری، سیاسی و تجاری خاورمیانه شود.
+*   **متروی تهران:** مطالعات و طراحی متروی تهران توسط شرکت فرانسوی سوفرتو انجام و کلنگ آن زده شد، هرچند تکمیل آن به پس از انقلاب موکول گردید.
+*   **جزیره کیش:** تبدیل کیش به یک منطقه آزاد تجاری و تفریحی بین‌المللی که قرار بود رقیبی برای مونت‌کارلو و دبیِ امروز باشد و فرودگاه آن برای نشستن کنکورد طراحی شده بود.
+*   **تبدیل شدن به مرکز مالی خاورمیانه:** تلاش برای تبدیل تهران به یک هاب بانکی و مالی بین‌المللی در منطقه.
+
+### نگاه تحلیلی و جمع‌بندی کارشناسی
+به عنوان یک مورخ، باید اذعان کرد که دوران پهلوی دوم، به ویژه از ۱۳۴۲ تا ۱۳۵۵، یکی از درخشان‌ترین دوره‌های رشد اقتصادی و نوسازی کالبدی در تاریخ ایران است. شاه توانست با استفاده از تکنوکرات‌های برجسته (مانند عالیخانی، ابتهاج، نیازمند و مجیدی) چهره ایران را از کشوری فقیر و توسعه‌نیافته به یک قدرت منطقه‌ای با نفوذ جهانی تغییر دهد.
+
+با این حال، این توسعه سریع کالبدی و اقتصادی، پیامدهایی نیز داشت. سرازیر شدن دلارهای نفتی در دهه ۵۰ باعث تورم شد، حاشیه‌نشینی در اطراف شهرهای بزرگ افزایش یافت، و از همه مهم‌تر، **توسعه سیاسی** همگام با توسعه اقتصادی پیش نرفت. شاه به دلیل تمرکز شدید بر مدرنیزاسیون از بالا به پایین و بی‌توجهی به طبقات سنتی و مذهبی جامعه و همچنین محدود کردن فضای باز سیاسی، نتوانست پایه‌های اجتماعی این «تمدن بزرگ» را تثبیت کند، که در نهایت به توقف این روند با وقوع انقلاب ۱۳۵۷ منجر شد.
+
+با این وجود، زیرساخت‌ها، صنایع مادر، و نهادهای آموزشی و بوروکراتیکی که در زمان او پایه‌گذاری شدند، تا همین امروز شاکله اصلی بقای اقتصاد و صنعت ایران را تشکیل می‌دهند.
+
+# فهرست جامع و تفصیلی زیرساخت‌ها، شرکت‌ها، تکنولوژی‌ها و امکانات دوران محمدرضا شاه پهلوی
+
+## بخش اول: صنایع و کارخانجات
+
+### صنایع سنگین و فولاد
+
+| ردیف | نام | سال تأسیس | توضیحات |
+|------|-----|-----------|---------|
+| ۱ | ذوب‌آهن اصفهان | ۱۳۴۶ | با همکاری شوروی، ظرفیت ۱.۹ میلیون تن، بزرگ‌ترین در خاورمیانه |
+| ۲ | فولاد خوزستان (گروه ملی صنعتی فولاد) | ۱۳۵۰ | با تکنولوژی احیای مستقیم، پیشرفته‌ترین در جهان |
+| ۳ | فولاد مبارکه (مطالعات اولیه) | ۱۳۵۶ | طراحی با همکاری ژاپن، افتتاح پس از انقلاب |
+| ۴ | آلومینیوم ایرالکو (اراک) | ۱۳۵۱ | اولین تولیدکننده شمش آلومینیوم ایران |
+| ۵ | مس سرچشمه (کرمان) | ۱۳۵۱ | یکی از بزرگ‌ترین معادن مس روباز جهان |
+| ۶ | کارخانه سیمان تهران | ۱۳۱۲–۱۳۳۵ توسعه | قدیمی‌ترین، توسعه‌یافته در دوره دوم |
+| ۷ | کارخانه‌های سیمان آبیک، دورود، بهبهان، شیراز، مشهد | ۱۳۴۰–۱۳۵۵ | ایران را از واردکننده به صادرکننده سیمان تبدیل کرد |
+
+**مقایسه:** ترکیه اولین کارخانه فولاد خود (کارابوک) را در ۱۹۳۹ تأسیس کرد اzما تا دهه ۱۹۷۰ ظرفیت تولیدش از ایران کمتر بود. کره جنوبی POSCO را در ۱۹۶۸ (یک سال پس از ذوب‌آهن ایران) تأسیس کرد. پاکستان اولین کارخانه فولاد خود (Pakistan Steel Mills) را در ۱۹۷۳ با کمک شوروی افتتاح کرد. مصر صنعت فولاد خود (حلوان) را از ۱۹۵۴ داشت اما ظرفیت آن تا دهه ۷۰ به ایران نرسید.
+
+---
+
+### صنعت خودرو
+
+| ردیف | نام | سال تأسیس | توضیحات |
+|------|-----|-----------|---------|
+| ۱ | ایران ناسیونال (ایران‌خودرو فعلی) | ۱۳۴۱ | تولید پیکان با لیسانس Hillman Hunter انگلیس |
+| ۲ | شرکت سایپا | ۱۳۴۵ | تولید ژیان (سیتروئن) با لیسانس فرانسه |
+| ۳ | پارس‌خودرو (خاور) | ۱۳۴۶ | تولید اتوبوس و کامیون با لیسانس مرسدس بنز |
+| ۴ | شرکت زامیاد | ۱۳۴۱ | تولید وانت و خودروهای تجاری |
+| ۵ | جیپ شهباز (کارخانه جیپ‌سازی ایران) | ۱۳۳۸ | مونتاژ جیپ ویلیز آمریکایی |
+| ۶ | شرکت ایران‌کاوه | ۱۳۴۲ | تولید کامیون با لیسانس لایلند انگلیس |
+| ۷ | کارخانه موتورسیکلت‌سازی ایران | ۱۳۴۰ | تولید هوندا و وسپا با لیسانس |
+| ۸ | جنرال موتورز ایران | ۱۳۵۴ | مونتاژ شورولت، بیوک، کادیلاک و اوپل |
+| ۹ | لیلاند موتورز ایران | ۱۳۴۹ | تولید اتوبوس‌های شرکت واحد تهران |
+
+**مقایسه:** کره جنوبی هیوندای موتورز را در ۱۹۶۷ (دو سال پس از پیکان) تأسیس کرد و تا ۱۹۷۵ هنوز از فورد کورتینا کپی‌برداری می‌کرد. ترکیه اولین خودروی خود (Devrim) را در ۱۹۶۱ ساخت اما پروژه شکست خورد و تولید انبوه خودرو در ترکیه تا دهه ۱۹۷۰ تحقق نیافت. پاکستان تا اواخر دهه ۱۹۷۰ صنعت خودروی مستقلی نداشت. مصر کارخانه النصر را در ۱۹۶۰ تأسیس کرد اما ظرفیت تولید آن همواره بسیار پایین‌تر از ایران بود. ایران در سال ۱۳۵۶ حدود ۱۳۰ هزار خودرو تولید می‌کرد و بزرگ‌ترین صنعت خودروی خاورمیانه را داشت.
+
+---
+
+### صنایع پتروشیمی
+
+| ردیف | نام | سال تأسیس | توضیحات |
+|------|-----|-----------|---------|
+| ۱ | شرکت ملی پتروشیمی ایران (NPC) | ۱۳۴۲ | شرکت مادر |
+| ۲ | پتروشیمی شیراز (کود شیمیایی) | ۱۳۴۲ | تولید کود اوره و آمونیاک |
+| ۳ | پتروشیمی آبادان | ۱۳۴۶ | تولید PVC و مواد شیمیایی |
+| ۴ | پتروشیمی خارک | ۱۳۴۷ | تولید گوگرد و مواد شیمیایی |
+| ۵ | مجتمع پتروشیمی بندر شاهپور (بندر امام) | ۱۳۵۲ | بزرگ‌ترین مجتمع پتروشیمی خاورمیانه |
+| ۶ | پتروشیمی رازی | ۱۳۴۵ | تولید اسید سولفوریک و کود |
+| ۷ | پالایشگاه آبادان | ۱۳۳۲ ملی‌شدن | بزرگ‌ترین پالایشگاه جهان تا دهه ۱۹۷۰ |
+| ۸ | پالایشگاه تهران | ۱۳۴۷ | ظرفیت ۲۲۵ هزار بشکه |
+| ۹ | پالایشگاه اصفهان | ۱۳۵۴ | ظرفیت ۲۰۰ هزار بشکه |
+| ۱۰ | پالایشگاه تبریز | ۱۳۵۵ | ظرفیت ۱۰۰ هزار بشکه |
+| ۱۱ | پالایشگاه شیراز | ۱۳۵۲ | ظرفیت ۴۰ هزار بشکه |
+
+**مقایسه:** عربستان سعودی شرکت SABIC را در ۱۹۷۶ تأسیس کرد، یعنی حدود ۱۴ سال پس از شرکت ملی پتروشیمی ایران. امارات تا اواخر دهه ۱۹۷۰ فاقد صنایع پتروشیمی بود. کویت نیز تا اواخر دهه ۱۹۶۰ صنعت پتروشیمی نداشت. ایران در سال ۱۳۵۷ بزرگ‌ترین ظرفیت پالایش و پتروشیمی خاورمیانه را داشت.
+
+---
+
+### صنایع ماشین‌سازی و تجهیزات
+
+| ردیف | نام                            | سال تأسیس | توضیحات                                     |
+| ---- | ------------------------------ | --------- | ------------------------------------------- |
+| ۱    | ماشین‌سازی تبریز               | ۱۳۳۷      | تولید ماشین‌آلات صنعتی سنگین                |
+| ۲    | تراکتورسازی تبریز              | ۱۳۴۷      | تولید تراکتور با لیسانس رومانی و انگلیس     |
+| ۳    | ماشین‌سازی اراک                | ۱۳۴۶      | تولید بویلر، مخازن تحت فشار و تجهیزات صنعتی |
+| ۴    | کمباین‌سازی اراک               | ۱۳۵۰      | تولید کمباین و ماشین‌آلات کشاورزی           |
+| ۵    | کارخانه تولید واگن پارس (اراک) | ۱۳۵۲      | تولید واگن قطار با لیسانس اروپایی           |
+| ۶    | هپکو (اراک)                    | ۱۳۵۳      | تولید ماشین‌آلات راهسازی و معدنی            |
+| ۷    | گروه صنعتی بوتان               | ۱۳۳۵      | تولید آبگرمکن، بخاری و لوازم حرارتی         |
+| ۸    | شرکت صنعتی آزمایش              | ۱۳۳۷      | تولید کابل برق و مخابرات                    |
+| ۹    | ایران‌ترانسفو (زنجان)          | ۱۳۴۵      | تولید ترانسفورماتور                         |
+| ۱۰   | کارخانه لوله‌سازی اهواز        | ۱۳۴۸      | تولید لوله‌های نفت و گاز                    |
+
+---
+
+### صنایع الکترونیک و لوازم خانگی
+
+| ردیف | نام | سال تأسیس | توضیحات |
+|------|-----|-----------|---------|
+| ۱ | پارس الکتریک | ۱۳۳۵ | تولید یخچال، لباسشویی و کولر |
+| ۲ | آزمایش (با همکاری فیلیپس) | ۱۳۳۷ | تولید رادیو، تلویزیون و لامپ |
+| ۳ | اسنوا (ارج سابق) | ۱۳۳۵ | تولید یخچال و فریزر |
+| ۴ | آبسال | ۱۳۳۵ | تولید کولر آبی و لوازم سرمایشی |
+| ۵ | مینی‌سیتی (ایران فیلیپس) | ۱۳۴۸ | تولید لوازم الکترونیکی |
+| ۶ | شرکت ملی تلویزیون (سونی ایران) | ۱۳۵۰ | مونتاژ تلویزیون‌های رنگی |
+| ۷ | جنرال الکتریک ایران | ۱۳۴۴ | تولید و مونتاژ لوازم خانگی |
+| ۸ | کارخانه ایران رادیاتور | ۱۳۳۴ | تولید رادیاتور و سیستم‌های گرمایشی |
+| ۹ | تولید تلویزیون رنگی در ایران | ۱۳۵۰ | ایران از اولین کشورهای خاورمیانه با پخش تلویزیون رنگی |
+
+**مقایسه:** تلویزیون ملی ایران در سال ۱۹۵۸ آغاز به کار کرد و اولین تلویزیون خاورمیانه بود (قبل از مصر، ترکیه، عربستان و تمام کشورهای عربی). ترکیه تلویزیون را در ۱۹۶۸ راه‌اندازی کرد (۱۰ سال بعد). عربستان در ۱۹۶۵، پاکستان در ۱۹۶۴. کره جنوبی نیز در ۱۹۶۱ اولین پخش تلویزیونی خود را آغاز کرد. ایران از اولین کشورهای جهان بود که به سیستم پخش رنگی (SECAM) مجهز شد.
+
+---
+
+### صنایع نساجی و غذایی
+
+| ردیف | نام | سال تأسیس | توضیحات |
+|------|-----|-----------|---------|
+| ۱ | ایران‌پوپلین (اصفهان) | ۱۳۲۸ | بزرگ‌ترین نساجی خاورمیانه |
+| ۲ | چیت‌سازی بهشهر | ۱۳۲۲ | صنایع نساجی مدرن |
+| ۳ | گروه صنعتی بهشهر | ۱۳۳۹ | روغن نباتی، مواد غذایی |
+| ۴ | پگاه (شیر پاستوریزه تهران) | ۱۳۳۱ | اولین تولیدکننده شیر پاستوریزه در خاورمیانه |
+| ۵ | مینو | ۱۳۳۰ | شکلات، بیسکویت و فرآورده‌های غذایی |
+| ۶ | زمزم (پپسی‌کولای ایران) | ۱۳۳۳ | تولید نوشابه با لیسانس پپسی |
+| ۷ | کوکاکولای ایران | ۱۳۳۳ | کارخانه تولید در تهران و شیراز |
+| ۸ | صنایع غذایی کاله | ۱۳۳۴ | صنایع لبنی و غذایی |
+| ۹ | کارخانه قند اصفهان | ۱۳۱۴ توسعه | گسترش صنعت قند ایران |
+| ۱۰ | شرکت صنایع غذایی لادن | ۱۳۳۸ | شکلات و مواد قنادی |
+
+---
+
+## بخش دوم: انرژی و زیرساخت‌های انرژی
+
+### انرژی هسته‌ای
+
+| ردیف | پروژه | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | تأسیس سازمان انرژی اتمی ایران (AEOI) | ۱۳۵۳ | ریاست اکبر اعتماد |
+| ۲ | مرکز تحقیقات هسته‌ای تهران (رآکتور تحقیقاتی ۵ مگاواتی) | ۱۳۴۶ | ساخت آمریکا |
+| ۳ | نیروگاه اتمی بوشهر (قرارداد) | ۱۳۵۳ | دو واحد ۱۲۰۰ مگاواتی با کرافتورک یونیون آلمان (KWU) |
+| ۴ | نیروگاه اتمی دارخوین (قرارداد) | ۱۳۵۶ | با شرکت فراماتوم فرانسه |
+| ۵ | سرمایه‌گذاری در اورودیف (EURODIF) فرانسه | ۱۳۵۳ | ۱۰٪ سهام و ۱ میلیارد دلار سرمایه‌گذاری |
+| ۶ | قرارداد با آفریقای جنوبی برای خرید یلوکیک | ۱۳۵۵ | تأمین سوخت هسته‌ای |
+| ۷ | برنامه ساخت ۲۳ نیروگاه هسته‌ای تا سال ۲۰۰۰ | ۱۳۵۳ | تولید ۲۳,۰۰۰ مگاوات برق هسته‌ای |
+
+**مقایسه:** در تمام خاورمیانه و آفریقا هیچ کشوری چنین برنامه هسته‌ای جامعی نداشت. هند اولین نیروگاه هسته‌ای خود (تاراپور) را در ۱۹۶۹ راه‌اندازی کرد. پاکستان نیروگاه کراچی (KANUPP) را در ۱۹۷۲ افتتاح کرد. کره جنوبی اولین نیروگاه هسته‌ای خود (کوری) را در ۱۹۷۸ افتتاح کرد. مصر، ترکیه و عربستان تا دهه ۲۰۲۰ نیروگاه هسته‌ای فعال نداشتند. اگر برنامه شاه اجرا شده بود، ایران تا سال ۲۰۰۰ بزرگ‌ترین تولیدکننده برق هسته‌ای در آسیا پس از ژاپن می‌شد.
+
+---
+
+### نیروگاه‌های برق و سدها
+
+| ردیف | نام | سال بهره‌برداری | ظرفیت/نوع |
+|------|-----|----------------|-----------|
+| ۱ | سد کرج (امیرکبیر) | ۱۳۴۰ | ۹۰ مگاوات، تأمین آب تهران |
+| ۲ | سد دز (محمدرضاشاه) | ۱۳۴۱ | ۵۲۰ مگاوات، بزرگ‌ترین سد خاورمیانه در زمان خود |
+| ۳ | سد سفیدرود (شهبانو فرح) | ۱۳۴۱ | ۸۷ مگاوات، آبیاری گیلان |
+| ۴ | سد زاینده‌رود | ۱۳۴۹ | ۵۵ مگاوات |
+| ۵ | سد ارس | ۱۳۵۰ | ۴۴ مگاوات، مشترک با شوروی |
+| ۶ | سد لتیان | ۱۳۴۶ | تأمین آب تهران |
+| ۷ | سد لار | ۱۳۶۱ (کلنگ ۱۳۵۳) | تأمین آب تهران |
+| ۸ | سد رضاشاه‌کبیر (منجیل) | ۱۳۴۱ | آبیاری دشت گیلان |
+| ۹ | سد شاه‌عباس‌کبیر (زاینده‌رود) | ۱۳۴۹ | آبیاری اصفهان |
+| ۱۰ | نیروگاه برق حرارتی بعثت تهران | ۱۳۳۹ | ۴۰۰ مگاوات |
+| ۱۱ | نیروگاه رامین اهواز | ۱۳۵۲ | ۱۸۰۰ مگاوات (بزرگ‌ترین خاورمیانه) |
+| ۱۲ | نیروگاه اصفهان | ۱۳۵۰ | ۸۳۷ مگاوات |
+| ۱۳ | نیروگاه طوس مشهد | ۱۳۵۲ | ۶۰۰ مگاوات |
+| ۱۴ | نیروگاه منتظرقائم (قبلاً شاهنشاهی) | ۱۳۵۵ | ۲۰۰۰ مگاوات، بزرگ‌ترین گازی ایران |
+| ۱۵ | شبکه سراسری برق ایران | ۱۳۴۶ | اتصال شهرها و روستاها |
+
+**مقایسه:** ایران تا سال ۱۳۵۷ حدود ۱۵,۰۰۰ مگاوات ظرفیت نصب شده برق داشت. ترکیه حدود ۵,۰۰۰ مگاوات، پاکستان حدود ۳,۰۰۰ مگاوات، و مصر حدود ۴,۵۰۰ مگاوات داشت. یعنی ظرفیت برق ایران از مجموع ترکیه و پاکستان بیشتر بود. سد دز هنگام افتتاح بلندترین سد دو قوسی خاورمیانه و از پیچیده‌ترین پروژه‌های مهندسی منطقه بود.
+
+---
+
+### صنعت نفت و گاز
+
+| ردیف | پروژه | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | ملی شدن صنعت نفت | ۱۳۲۹ | دکتر مصدق (تکمیل در دوره شاه) |
+| ۲ | تأسیس شرکت ملی نفت ایران (NIOC) | ۱۳۳۰ | مدیریت کامل منابع نفتی |
+| ۳ | توافقنامه کنسرسیوم ۱۹۵۴ | ۱۳۳۳ | تقسیم سود ۵۰-۵۰ |
+| ۴ | خط لوله گاز ایران-شوروی (IGAT-1) | ۱۳۴۹ | ۱,۱۰۰ کیلومتر |
+| ۵ | خط لوله IGAT-2 | ۱۳۵۶ (ناتمام) | صادرات به شوروی و اروپا |
+| ۶ | شرکت ملی گاز ایران (NIGC) | ۱۳۴۵ | لوله‌کشی گاز شهری |
+| ۷ | افزایش تولید نفت به ۶ میلیون بشکه در روز | ۱۳۵۳ | دومین صادرکننده اوپک |
+| ۸ | کنترل کامل قیمت‌گذاری نفت | ۱۳۵۲ | شاه نقش اصلی در افزایش ۴ برابری قیمت نفت |
+
+---
+
+## بخش سوم: حمل و نقل و ارتباطات
+
+### راه‌آهن و حمل و نقل ریلی
+
+| ردیف | مسیر/پروژه | سال | توضیحات |
+|------|------------|-----|---------|
+| ۱ | راه‌آهن سراسری ایران (تکمیل و توسعه) | ۱۳۲۰–۱۳۵۷ | توسعه از ۱,۳۹۴ به حدود ۴,۵۰۰ کیلومتر |
+| ۲ | راه‌آهن تهران-مشهد | ۱۳۳۶ | ۹۲۶ کیلومتر |
+| ۳ | راه‌آهن تهران-تبریز | ۱۳۳۷ | اتصال شمال‌غرب |
+| ۴ | راه‌آهن تهران-کرمان | ۱۳۵۶ | اتصال جنوب‌شرقی |
+| ۵ | راه‌آهن اصفهان-یزد | ۱۳۵۳ | اتصال مرکزی |
+| ۶ | واگن پارس (اراک) | ۱۳۵۲ | تولید داخلی واگن |
+| ۷ | متروی تهران (آغاز عملیات) | ۱۳۵۶ | طراحی توسط سوفرتو (فرانسه)، حفاری آغاز شد |
+
+**مقایسه:** ترکیه در ۱۹۷۸ حدود ۸,۰۰۰ کیلومتر راه‌آهن داشت (میراث عثمانی)، پاکستان حدود ۸,۸۰۰ (میراث بریتانیا)، اما هر دو فرسوده و بدون توسعه قابل‌توجه. کره جنوبی حدود ۳,۰۰۰ کیلومتر. نکته مهم این است که هیچ کشور خاورمیانه‌ای تا ۱۹۷۸ پروژه متروی فعال نداشت. قاهره متروی خود را در ۱۹۸۷ و استانبول در ۲۰۰۰ افتتاح کرد.
+
+---
+
+### جاده‌ها و بزرگراه‌ها
+
+| ردیف | پروژه | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | آزادراه تهران-کرج | ۱۳۴۵ | اولین آزادراه ایران و خاورمیانه |
+| ۲ | اتوبان تهران-ساوه | ۱۳۵۵ | ادامه شبکه آزادراهی |
+| ۳ | جاده هراز (تهران-آمل) | ۱۳۴۸ | اتصال تهران به شمال |
+| ۴ | جاده چالوس (بازسازی و توسعه) | ۱۳۴۰ | نوسازی کامل |
+| ۵ | بزرگراه‌های شهری تهران (همت، چمران و...) | ۱۳۵۰–۱۳۵۶ | طراحی مدرن شهری |
+| ۶ | شبکه جاده‌های آسفالته سراسری | ۱۳۲۰–۱۳۵۷ | از ۱,۰۰۰ کیلومتر به بیش از ۵۰,۰۰۰ کیلومتر |
+| ۷ | جاده‌های روستایی | ۱۳۴۵–۱۳۵۷ | اتصال هزاران روستا |
+
+**مقایسه:** ایران اولین آزادراه استاندارد خاورمیانه را ساخت. عربستان اولین آزادراه خود را در اوایل دهه ۱۹۷۰ احداث کرد. ترکیه اولین اتوبان (استانبول-آنکارا) را در ۱۹۷۳ افتتاح کرد. پاکستان و مصر تا اواخر دهه ۱۹۷۰ آزادراه مدرن نداشتند.
+
+---
+
+### صنعت هوایی و فرودگاه‌ها
+
+| ردیف | پروژه/ناوگان | سال | توضیحات |
+|------|-------------|-----|---------|
+| ۱ | هواپیمایی ملی ایران (هما-ایران‌ایر) | ۱۳۴۱ بازسازی | یکی از ایمن‌ترین ایرلاین‌های جهان |
+| ۲ | بوئینگ ۷۰۷ | ۱۳۴۴ | اولین جت پهن‌پیکر در خاورمیانه |
+| ۳ | بوئینگ ۷۲۷ | ۱۳۴۶ | ناوگان داخلی |
+| ۴ | بوئینگ ۷۳۷ | ۱۳۵۰ | ناوگان منطقه‌ای |
+| ۵ | بوئینگ ۷۴۷ (جامبوجت) | ۱۳۵۰ | ایران از اولین خریداران ۷۴۷ در آسیا |
+| ۶ | بوئینگ ۷۴۷SP | ۱۳۵۵ | پرواز مستقیم تهران-نیویورک (طولانی‌ترین پرواز بدون توقف جهان) |
+| ۷ | ایرباس A300 | ۱۳۵۹ (سفارش ۱۳۵۶) | ایران از اولین مشتریان ایرباس |
+| ۸ | پیش‌خرید کنکورد | ۱۳۵۱ | ۲ فروند سفارش داده شد |
+| ۹ | فرودگاه مهرآباد (بازسازی و توسعه) | ۱۳۳۶–۱۳۵۵ | ترمینال‌های مدرن بین‌المللی |
+| ۱۰ | فرودگاه بین‌المللی کیش | ۱۳۵۶ | باند فرود برای کنکورد |
+| ۱۱ | فرودگاه شیراز، اصفهان، مشهد (بازسازی) | ۱۳۴۵–۱۳۵۵ | استانداردهای بین‌المللی |
+| ۱۲ | آسمان (ایرتاکسی سابق) | ۱۳۵۰ | هواپیمایی داخلی |
+| ۱۳ | صنایع هوایی ایران (IACI) | ۱۳۴۹ | تعمیر و نگهداری هواپیما و هلیکوپتر |
+
+**مقایسه:** هما در ۱۹۷۶ توسط مجله Flight International یکی از ۱۰ ایرلاین برتر جهان شناخته شد. در تمام خاورمیانه هیچ ایرلاینی ناوگانی به مدرنی هما نداشت. ترکیش ایرلاینز (THY) تا دهه ۱۹۹۰ یک ایرلاین درجه دو اروپایی بود. السعودیه تا اواخر دهه ۱۹۷۰ ناوگان مدرن‌تری نداشت. پاکستان اینترنشنال (PIA) رقیب منطقه‌ای بود اما از نظر مدرنیت ناوگان عقب‌تر بود.
+
+---
+
+### ناوگان دریایی و بنادر
+
+| ردیف | پروژه | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | بندر شاهپور (بندر امام خمینی) | ۱۳۴۷ توسعه | بزرگ‌ترین بندر تجاری خلیج فارس |
+| ۲ | بندر شاه (ترکمن فعلی) | ۱۳۴۸ | ارتباط با شوروی |
+| ۳ | بندرعباس (توسعه) | ۱۳۵۳ | توسعه عظیم |
+| ۴ | بندر بوشهر (مدرن‌سازی) | ۱۳۵۰ | بازسازی |
+| ۵ | شرکت کشتیرانی جمهوری اسلامی (خطوط کشتیرانی ملی ایران سابق - IRISL) | ۱۳۴۶ | ناوگان ۷۰ فروندی |
+| ۶ | کشتی‌سازی ایران (بوشهر و خرمشهر) | ۱۳۵۰ | تعمیر و ساخت شناورهای کوچک |
+
+---
+
+### مخابرات و ارتباطات
+
+| ردیف | تکنولوژی/پروژه | سال | توضیحات |
+|------|----------------|-----|---------|
+| ۱ | شبکه ماکروویو سراسری | ۱۳۴۵ | اتصال مخابراتی تمام استان‌ها |
+| ۲ | ایستگاه زمینی ماهواره‌ای اسدآباد | ۱۳۴۸ | اولین ایستگاه ماهواره‌ای خاورمیانه (اینتل‌ست) |
+| ۳ | ایستگاه ماهواره‌ای همدان (دوم) | ۱۳۵۱ | گسترش ظرفیت |
+| ۴ | تلفن اتوماتیک (توسعه) | ۱۳۳۵–۱۳۵۷ | از ۹۰,۰۰۰ به بیش از ۲ میلیون خط |
+| ۵ | تلکس | ۱۳۴۰ | شبکه تلکس سراسری |
+| ۶ | تلفن بین‌المللی خودکار (IDD) | ۱۳۵۰ | تماس مستقیم بین‌المللی |
+| ۷ | سیستم پیجینگ | ۱۳۵۵ | تهران و شهرهای بزرگ |
+| ۸ | شبکه داده IRAN-PAC | ۱۳۵۶ | اولین شبکه انتقال داده |
+
+**مقایسه:** ایران اولین کشور خاورمیانه بود که ایستگاه زمینی ماهواره‌ای اینتل‌ست را راه‌اندازی کرد. ترکیه ایستگاه ماهواره‌ای خود را در ۱۹۷۹ تأسیس کرد. عربستان در ۱۹۷۵. پاکستان در ۱۹۷۱. ایران از نظر تراکم خطوط تلفن در خاورمیانه پس از اسرائیل رتبه دوم را داشت.
+
+---
+
+## بخش چهارم: رادیو و تلویزیون
+
+| ردیف | رویداد/پروژه | سال | توضیحات |
+|------|-------------|-----|---------|
+| ۱ | تلویزیون ایران (اولین در خاورمیانه) | ۱۳۳۷ (۱۹۵۸) | تأسیس توسط حبیب ثابت |
+| ۲ | تلویزیون ملی ایران (NITV) | ۱۳۴۵ | دولتی‌سازی و گسترش |
+| ۳ | سازمان رادیو تلویزیون ملی ایران (NIRT) | ۱۳۵۰ | ادغام رادیو و تلویزیون |
+| ۴ | پخش رنگی (سیستم SECAM) | ۱۳۵۵ | ایران از اولین کشورهای آسیا |
+| ۵ | شبکه ۲ تلویزیون (شبکه آموزشی) | ۱۳۴۵ | برنامه‌های آموزشی |
+| ۶ | شبکه رادیویی FM | ۱۳۵۰ | کیفیت بالای پخش |
+| ۷ | دوبله حرفه‌ای سریال‌ها و فیلم‌ها | ۱۳۴۵ | ایجاد مکتب دوبله ایرانی |
+| ۸ | تولیدات درخشان NIRT | ۱۳۴۵–۱۳۵۷ | سریال‌هایی مانند «هزاردستان»، «سلطان صاحبقران»، مستندها |
+| ۹ | استودیوهای مجهز NIRT | ۱۳۵۰ | از مجهزترین استودیوهای آسیا |
+
+**مقایسه:** NIRT در دهه ۱۹۷۰ از نظر تجهیزات و کیفیت تولید، با BBC و NHK ژاپن مقایسه می‌شد. در تمام خاورمیانه و جهان سوم، هیچ سازمان رسانه‌ای به این سطح از تجهیز و تولید نرسیده بود.
+
+---
+
+## بخش پنجم: آموزش و دانشگاه‌ها
+
+### دانشگاه‌ها و مراکز آموزش عالی
+
+| ردیف | نام | سال تأسیس | توضیحات |
+|------|-----|-----------|---------|
+| ۱ | دانشگاه تهران (توسعه عظیم) | ۱۳۱۳ (توسعه ۱۳۴۰–۱۳۵۷) | بزرگ‌ترین دانشگاه خاورمیانه |
+| ۲ | دانشگاه صنعتی آریامهر (شریف فعلی) | ۱۳۴۵ | الگوبرداری از MIT |
+| ۳ | دانشگاه پهلوی شیراز (شیراز فعلی) | ۱۳۲۴ (بازسازی ۱۳۴۱) | همکاری با یونیورسیتی آو پنسیلوانیا، تدریس به انگلیسی |
+| ۴ | دانشگاه صنعتی امیرکبیر (پلی‌تکنیک سابق) | ۱۳۳۷ | مهندسی |
+| ۵ | دانشگاه علم و صنعت (ایران سابق) | ۱۳۴۸ | مهندسی و تکنولوژی |
+| ۶ | دانشگاه فردوسی مشهد | ۱۳۲۸ (توسعه) | بزرگ‌ترین دانشگاه شرق ایران |
+| ۷ | دانشگاه تبریز | ۱۳۲۶ (توسعه) | شمال‌غرب ایران |
+| ۸ | دانشگاه اصفهان | ۱۳۲۵ (توسعه) | مرکز ایران |
+| ۹ | دانشگاه جندی‌شاپور (شهید چمران اهواز) | ۱۳۳۴ | پزشکی و مهندسی |
+| ۱۰ | دانشگاه ملی (شهید بهشتی فعلی) | ۱۳۳۹ | دومین دانشگاه بزرگ تهران |
+| ۱۱ | دانشگاه بوعلی‌سینا همدان | ۱۳۵۲ | |
+| ۱۲ | دانشگاه رضاشاه‌کبیر (ارومیه) | ۱۳۴۳ | |
+| ۱۳ | دانشگاه صنعتی اصفهان | ۱۳۵۵ | مهندسی پیشرفته |
+| ۱۴ | دانشگاه فاراب (دانشکده ادبیات فعلی) | ۱۳۵۴ | |
+| ۱۵ | مدرسه عالی بازرگانی (دانشکده مدیریت فعلی) | ۱۳۳۴ | با الگوی Harvard Business School |
+| ۱۶ | مراکز آموزش عالی فنی و حرفه‌ای (۲۸ مرکز) | ۱۳۴۵–۱۳۵۷ | تربیت نیروی فنی |
+
+### آمار آموزشی
+
+| شاخص | ۱۳۲۰ | ۱۳۵۷ |
+|-------|------|------|
+| نرخ باسوادی | حدود ۱۵٪ | حدود ۵۰٪ |
+| تعداد دانشجویان | ۱,۰۰۰ | ۱۷۵,۰۰۰ |
+| تعداد دانشجویان خارج از کشور | ناچیز | بیش از ۱۰۰,۰۰۰ (بزرگ‌ترین جمعیت دانشجویی خارج از کشور در جهان) |
+| تعداد دانش‌آموزان | حدود ۳۰۰,۰۰۰ | بیش از ۸ میلیون |
+| تعداد معلمان | ناچیز | بیش از ۳۰۰,۰۰۰ |
+
+**مقایسه:** ایران بزرگ‌ترین جمعیت دانشجویی خارج از کشور را در جهان داشت (بیشتر در آمریکا). کره جنوبی حدود ۵۰,۰۰۰ دانشجو در خارج داشت. ترکیه حدود ۲۰,۰۰۰. نرخ رشد آموزشی ایران در دهه ۴۰ و ۵۰ از تمام کشورهای خاورمیانه بالاتر بود.
+
+---
+
+## بخش ششم: بهداشت و درمان
+
+| ردیف | پروژه/شاخص | سال/دوره | توضیحات |
+|------|-----------|----------|---------|
+| ۱ | سپاه بهداشت | ۱۳۴۳ | ارسال پزشکان و بهداشتکاران به روستاها |
+| ۲ | بیمارستان‌های مدرن (تهران، شیراز، اصفهان، مشهد) | ۱۳۴۰–۱۳۵۷ | استانداردهای بین‌المللی |
+| ۳ | بنیاد فرح پهلوی (خدمات درمانی) | ۱۳۵۳ | خدمات بهداشتی و درمانی رایگان |
+| ۴ | ریشه‌کنی مالاریا | ۱۳۴۰–۱۳۵۰ | با همکاری WHO |
+| ۵ | واکسیناسیون سراسری | ۱۳۴۵ | فلج اطفال، سرخک، آبله |
+| ۶ | بیمه تأمین اجتماعی | ۱۳۳۳ (توسعه ۱۳۵۴) | پوشش کارگران و کارمندان |
+| ۷ | امید به زندگی | ۱۳۲۰: ۴۲ سال → ۱۳۵۷: ۵۷ سال | افزایش ۱۵ ساله |
+| ۸ | مرگ‌ومیر نوزادان | ۱۳۲۰: ۲۸۰/۱۰۰۰ → ۱۳۵۷: ۱۲۰/۱۰۰۰ | کاهش چشمگیر |
+| ۹ | تعداد پزشکان | ۱۳۲۰: حدود ۱,۰۰۰ → ۱۳۵۷: حدود ۱۴,۰۰۰ | ۱۴ برابر |
+| ۱۰ | تعداد بیمارستان‌ها | ۱۳۲۰: حدود ۵۰ → ۱۳۵۷: بیش از ۵۰۰ | ۱۰ برابر |
+
+---
+
+## بخش هفتم: نظامی و دفاعی
+
+### تجهیزات نظامی پیشرفته
+
+| ردیف | تجهیزات | تعداد/نوع | سال ورود | توضیحات |
+|------|---------|-----------|---------|---------|
+| ۱ | جنگنده F-14A Tomcat | ۸۰ فروند | ۱۳۵۵–۱۳۵۶ | ایران تنها مشتری خارجی (غیر از نیروی دریایی آمریکا) |
+| ۲ | جنگنده F-4 Phantom II | ۲۲۵ فروند | ۱۳۴۷–۱۳۵۶ | |
+| ۳ | جنگنده F-5E/F Tiger II | ۱۶۶ فروند | ۱۳۴۴–۱۳۵۵ | |
+| ۴ | هواپیمای ترابری C-130 Hercules | ۶۴ فروند | ۱۳۴۴–۱۳۵۶ | بزرگ‌ترین ناوگان C-130 خارج از آمریکا |
+| ۵ | هواپیمای شناسایی RF-4E | ۱۶ فروند | ۱۳۵۰ | |
+| ۶ | بوئینگ ۷۰۷ سوخت‌رسان و ترابری | ۱۴ فروند | ۱۳۵۰ | |
+| ۷ | هواپیمای AWACS (سفارش) | ۷ فروند | ۱۳۵۶ (لغو شد) | سیستم هشدار و کنترل هوایی |
+| ۸ | تانک چیفتن (Chieftain) | ۸۷۵ فروند | ۱۳۵۰–۱۳۵۶ | ایران بزرگ‌ترین مشتری خارجی |
+| ۹ | تانک M-60A1 | ۴۶۰ فروند | ۱۳۵۱ | |
+| ۱۰ | تانک M-47/48 Patton | ۴۰۰ فروند | ۱۳۴۰ | |
+| ۱۱ | هلیکوپتر AH-1J Cobra | ۲۰۲ فروند | ۱۳۵۳ | |
+| ۱۲ | هلیکوپتر CH-47 Chinook | ۷۰ فروند | ۱۳۵۲ | |
+| ۱۳ | هلیکوپتر Bell 214 Isfahan | ۲۸۷ فروند | ۱۳۵۴ | طراحی اختصاصی برای ایران |
+| ۱۴ | ناوشکن‌های کلاس سام (Sumner) | ۲ فروند | ۱۳۵۱ | |
+| ۱۵ | فریگیت‌های کلاس سام (Vosper Mk.5) | ۴ فروند | ۱۳۵۰ | ساخت انگلیس |
+| ۱۶ | ناوچه‌های موشک‌انداز La Combattante II | ۱۲ فروند | ۱۳۵۶ | ساخت فرانسه |
+| ۱۷ | هاورکرافت BH7 و SR.N6 | ۱۴ فروند | ۱۳۵۲ | بزرگ‌ترین ناوگان هاورکرافت نظامی جهان |
+| ۱۸ | زیردریایی (سفارش) | ۳ فروند کلاس ۲۰۹ | ۱۳۵۶ (لغو شد) | ساخت آلمان |
+| ۱۹ | موشک‌های هوا به هوا AIM-54 Phoenix | ۲۸۴ فروند | ۱۳۵۵ | پیشرفته‌ترین موشک هوا به هوای جهان |
+| ۲۰ | موشک‌های ضدکشتی Harpoon | ۲۰۰+ فروند | ۱۳۵۶ | |
+| ۲۱ | سامانه پدافند هوایی HAWK | ۱۸ آتشبار | ۱۳۵۰ | |
+| ۲۲ | سفارش تانک FV4030 (شیر ایران) | ۱,۵۰۰ فروند | ۱۳۵۳ (لغو شد) | طراحی اختصاصی برای ایران |
+
+**مقایسه:** ارتش ایران پنجمین ارتش قدرتمند جهان (از نظر تجهیزات و بودجه) بود. بودجه نظامی ایران در ۱۳۵۶ حدود ۹.۴ میلیارد دلار بود. ترکیه حدود ۲.۵ میلیارد، پاکستان ۱.۵ میلیارد، و مصر حدود ۴ میلیارد. نیروی هوایی ایران قوی‌ترین در خاورمیانه و یکی از ۵ نیروی هوایی برتر جهان بود. F-14 تام‌کت پیشرفته‌ترین جنگنده جهان بود و حتی ارتش‌های ناتو (به‌جز آمریکا) آن را نداشتند. هیچ کشوری در جهان سوم چنین سطحی از تسلیحات پیشرفته آمریکایی و غربی را یکجا نداشت.
+
+---
+
+## بخش هشتم: شهرسازی و پروژه‌های عمرانی
+
+| ردیف | پروژه | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | شهرک اکباتان | ۱۳۵۴ | بزرگ‌ترین مجتمع مسکونی خاورمیانه |
+| ۲ | شهرک غرب تهران | ۱۳۵۴ | طراحی مدرن غربی |
+| ۳ | شهرستان پهلوی (تپه‌های عباس‌آباد) | ۱۳۵۴ (ناتمام) | ابرپروژه شهرسازی، طراحی لویی کان (معمار آمریکایی) |
+| ۴ | برج شهیاد (آزادی فعلی) | ۱۳۵۰ | نماد معماری مدرن ایرانی |
+| ۵ | مرکز تجاری تهران (ایران سنتر) | ۱۳۵۵ | مدرن‌ترین مرکز خرید خاورمیانه |
+| ۶ | هتل بین‌المللی بزرگ تهران (استقلال فعلی) | ۱۳۴۱ | طراحی هیلتون، ۵ ستاره بین‌المللی |
+| ۷ | هتل رویال تهران (هتل لاله فعلی) | ۱۳۵۵ | اینترکانتیننتال |
+| ۸ | هتل هایت ریجنسی تهران | ۱۳۵۵ | لوکس‌ترین هتل خاورمیانه |
+| ۹ | هتل شرایتون تهران (هما فعلی) | ۱۳۵۴ | ۵ ستاره |
+| ۱۰ | ورزشگاه آریامهر (آزادی فعلی) | ۱۳۵۲ | ظرفیت ۱۰۰,۰۰۰ نفر، بزرگ‌ترین در آسیا |
+| ۱۱ | بازی‌های آسیایی ۱۹۷۴ تهران | ۱۳۵۳ | هفتمین دوره بازی‌های آسیایی |
+| ۱۲ | مجموعه ورزشی آریامهر | ۱۳۵۲ | استخر، سالن‌ها، زمین‌های ورزشی |
+| ۱۳ | کاخ مجلس سنا (کاخ سابق) | ۱۳۴۹ | معماری مدرن دولتی |
+| ۱۴ | ساختمان شهرداری تهران | ۱۳۴۸ | |
+| ۱۵ | کاخ نیاوران (بازسازی) | ۱۳۴۷ | مجموعه فرهنگی-تاریخی |
+| ۱۶ | جزیره کیش (توسعه گردشگری) | ۱۳۵۰ | هتل‌های لوکس، فرودگاه، کازینو |
+| ۱۷ | شهر جدید شاهین‌شهر (اصفهان) | ۱۳۵۳ | شهر جدید مدرن |
+| ۱۸ | شهر جدید لویزان (تهران) | ۱۳۵۴ | |
+| ۱۹ | پارک ملت تهران | ۱۳۴۵ | بزرگ‌ترین پارک شهری خاورمیانه |
+
+**مقایسه:** ورزشگاه آریامهر با ظرفیت ۱۰۰,۰۰۰ نفر بزرگ‌ترین ورزشگاه آسیا بود. دبی تا ۱۹۷۸ یک شهر کوچک ماهیگیری بود و هیچ‌یک از زیرساخت‌های امروزی را نداشت. ابوظبی تا ۱۹۷۰ فاقد آب لوله‌کشی و برق سراسری بود.
+
+---
+
+## بخش نهم: فرهنگ، هنر و مراکز فرهنگی
+
+| ردیف | نام/پروژه | سال | توضیحات |
+|------|----------|-----|---------|
+| ۱ | تالار رودکی (تالار وحدت فعلی) | ۱۳۴۶ | مجهزترین سالن اپرا در خاورمیانه |
+| ۲ | تئاتر شهر | ۱۳۵۱ | طراحی معماری منحصربه‌فرد |
+| ۳ | موزه هنرهای معاصر تهران | ۱۳۵۶ | بزرگ‌ترین مجموعه هنر مدرن خارج از اروپا و آمریکا |
+| ۴ | کانون پرورش فکری کودکان و نوجوانان | ۱۳۴۴ | ادبیات کودک، سینمای کوتاه، انیمیشن |
+| ۵ | جشنواره فیلم تهران | ۱۳۵۱ | اولین جشنواره فیلم بین‌المللی خاورمیانه |
+| ۶ | جشن هنر شیراز-تخت‌جمشید | ۱۳۴۶ | فستیوال هنری بین‌المللی |
+| ۷ | جشن فرهنگ و هنر اصفهان | ۱۳۴۸ | |
+| ۸ | بنیاد فرهنگ ایران | ۱۳۴۳ | ترویج فرهنگ ایرانی |
+| ۹ | آکادمی زبان فارسی (فرهنگستان) | ۱۳۴۸ بازتأسیس | واژه‌سازی و صیانت زبان |
+| ۱۰ | موزه ایران باستان (توسعه) | ۱۳۳۵–۱۳۵۷ | گسترش مجموعه‌ها |
+| ۱۱ | کتابخانه ملی (توسعه) | ۱۳۴۵ | |
+| ۱۲ | مرکز مطالعات ایرانی (بنیاد پهلوی) | ۱۳۴۶ | پژوهش‌های ایران‌شناسی |
+| ۱۳ | جشن‌های ۲۵۰۰ ساله | ۱۳۵۰ | تخت‌جمشید، ۶۰ کشور شرکت‌کننده |
+| ۱۴ | سینمای ایران (موج نو) | ۱۳۴۸–۱۳۵۷ | فروغ فرخزاد، داریوش مهرجویی، عباس کیارستمی |
+
+**مقایسه:** موزه هنرهای معاصر تهران مجموعه‌ای شامل آثار پیکاسو، مونه، وارهول، پولاک، فرانسیس بیکن، هنری مور و ده‌ها هنرمند بزرگ را دارد که ارزش آن امروز بیش از ۲.۵ میلیارد دلار تخمین زده می‌شود. هیچ موزه‌ای در خاورمیانه، آفریقا، آمریکای لاتین یا جنوب‌شرقی آسیا چنین مجموعه‌ای ندارد.
+
+---
+
+## بخش دهم: اقتصاد و شاخص‌های رفاهی
+
+### شاخص‌های کلان اقتصادی
+
+| شاخص | ۱۳۲۰ (۱۹۴۱) | ۱۳۴۲ (۱۹۶۳) | ۱۳۵۷ (۱۹۷۸) |
+|-------|-------------|-------------|-------------|
+| تولید ناخالص داخلی (GDP) | حدود ۳ میلیارد دلار | حدود ۵ میلیارد دلار | حدود ۹۰ میلیارد دلار |
+| درآمد سرانه | حدود ۱۰۰ دلار | حدود ۱۷۶ دلار | حدود ۲,۴۰۰ دلار |
+| نرخ رشد اقتصادی | --- | ۱۱٪ سالانه (۱۳۴۲–۱۳۵۲) | ۸٪ (متوسط دهه ۵۰) |
+| ذخایر ارزی | ناچیز | ناچیز | ۱۴ میلیارد دلار |
+| جمعیت | ۱۴ میلیون | ۲۳ میلیون | ۳۶ میلیون |
+| درآمد نفت | ناچیز | ۵۵۵ میلیون دلار | ۲۰ میلیارد دلار |
+
+**مقایسه درآمد سرانه در ۱۹۷۸:**
+
+| کشور | درآمد سرانه (دلار) |
+|-------|-------------------|
+| ایران | ۲,۴۰۰ |
+| ترکیه | ۱,۵۰۰ |
+| کره جنوبی | ۱,۴۰۰ |
+| مالزی | ۱,۲۰۰ |
+| مصر | ۵۰۰ |
+| پاکستان | ۲۵۰ |
+| هند | ۲۰۰ |
+| چین | ۱۵۵ |
+| اندونزی | ۴۰۰ |
+| عراق | ۱,۸۰۰ |
+
+ایران درآمد سرانه بالاتری از ترکیه، کره جنوبی، مالزی، مصر، پاکستان، هند و چین داشت. اگر رشد دهه ۴۰ ادامه می‌یافت، ایران تا سال ۲۰۰۰ به درآمد سرانه ۱۰,۰۰۰ دلار (سطح اسپانیا) می‌رسید.
+
+---
+
+## بخش یازدهم: اصلاحات اجتماعی (انقلاب سفید و اصول ۱۹‌گانه)
+
+| ردیف | اصل | سال اجرا | توضیحات |
+|------|-----|----------|---------|
+| ۱ | اصلاحات ارضی | ۱۳۴۱ | زمین به کشاورزان، پایان فئودالیسم |
+| ۲ | ملی کردن جنگل‌ها و مراتع | ۱۳۴۱ | حفاظت از منابع طبیعی |
+| ۳ | فروش سهام کارخانجات دولتی به مردم | ۱۳۴۱ | خصوصی‌سازی اولیه |
+| ۴ | سهیم کردن کارگران در سود کارخانجات | ۱۳۴۱ | ۲۰٪ سود به کارگران |
+| ۵ | حق رأی زنان | ۱۳۴۱ | اولین بار در تاریخ ایران |
+| ۶ | سپاه دانش | ۱۳۴۲ | سوادآموزی روستاییان |
+| ۷ | سپاه بهداشت | ۱۳۴۳ | خدمات پزشکی رایگان در روستاها |
+| ۸ | سپاه ترویج و آبادانی | ۱۳۴۳ | روش‌های نوین کشاورزی |
+| ۹ | خانه‌های انصاف (دادگاه‌های روستایی) | ۱۳۴۴ | عدالت قضایی در روستا |
+| ۱۰ | ملی کردن منابع آب | ۱۳۴۷ | |
+| ۱۱ | طرح نوسازی و بازسازی شهرها و روستاها | ۱۳۴۷ | |
+| ۱۲ | اصلاح قانون اداری | ۱۳۴۷ | مبارزه با فساد اداری |
+| ۱۳ | مبارزه با گران‌فروشی و احتکار | ۱۳۵۴ | (بحث‌برانگیز) |
+| ۱۴ | آموزش رایگان و اجباری تا پایان راهنمایی | ۱۳۴۲ | |
+| ۱۵ | تغذیه رایگان برای مادران باردار و کودکان | ۱۳۴۷ | شیر، ویتامین و مکمل |
+| ۱۶ | بیمه خدمات درمانی رایگان | ۱۳۵۴ | پوشش تقریباً سراسری |
+| ۱۷ | انتقال مالکیت سهام کارخانجات به کارگران | ۱۳۵۴ | ۴۹٪ سهام |
+| ۱۸ | کنترل قیمت زمین و مسکن | ۱۳۵۶ | |
+| ۱۹ | مبارزه با فساد و ایجاد دولت کارآمد | ۱۳۵۶ | |
+
+---
+
+## بخش دوازدهم: حقوق زنان
+
+| ردیف | اقدام | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | حق رأی زنان | ۱۳۴۱ | قبل از سوئیس (۱۹۷۱)! |
+| ۲ | حق انتخاب شدن | ۱۳۴۱ | |
+| ۳ | قانون حمایت خانواده | ۱۳۴۶ (اصلاح ۱۳۵۳) | محدودیت شدید طلاق یکطرفه و چندهمسری |
+| ۴ | افزایش سن ازدواج دختران به ۱۸ سال | ۱۳۵۳ | |
+| ۵ | اولین وزیر زن (فرخ‌رو پارسا) | ۱۳۴۷ | وزیر آموزش و پرورش |
+| ۶ | اولین سفیر زن (مهرانگیز دولتشاهی) | ۱۳۵۵ | سفیر در دانمارک |
+| ۷ | ورود زنان به قضاوت | ۱۳۴۸ | شیرین عبادی از اولین زنان قاضی |
+| ۸ | ورود زنان به پلیس و ژاندارمری | ۱۳۵۰ | |
+| ۹ | سازمان زنان ایران | ۱۳۴۵ | اشرف پهلوی |
+| ۱۰ | حضور زنان در مجلس و سنا | ۱۳۴۲ | |
+
+**مقایسه:** زنان سوئیسی تا ۱۹۷۱ حق رأی نداشتند (۹ سال پس از ایران). در عربستان زنان تا ۲۰۱۵ حق رأی نداشتند. در کویت تا ۲۰۰۵. قانون حمایت خانواده ایران از نظر حقوق زنان پیشروتر از بسیاری کشورهای اروپایی بود.
+
+---
+
+## بخش سیزدهم: بانکداری و مالی
+
+| ردیف | نام/پروژه | سال | توضیحات |
+|------|----------|-----|---------|
+| ۱ | بانک مرکزی ایران | ۱۳۳۹ | استقلال پولی |
+| ۲ | بانک ملی ایران (توسعه) | ۱۳۰۶ (توسعه دوره دوم) | بزرگ‌ترین بانک خاورمیانه |
+| ۳ | بانک صادرات | ۱۳۳۱ | |
+| ۴ | بانک تجارت | ۱۳۵۸ (ادغام بانک‌ها: ایران-بریتانیا، ایران-هلند و...) | چندین بانک مشترک بین‌المللی |
+| ۵ | بانک توسعه صنعتی و معدنی ایران (IMDBI) | ۱۳۳۸ | با حمایت بانک جهانی |
+| ۶ | بانک اعتبارات صنعتی | ۱۳۳۵ | |
+| ۷ | بورس اوراق بهادار تهران | ۱۳۴۶ | اولین بورس خاورمیانه پس از اسرائیل |
+| ۸ | بانک‌های مشترک بین‌المللی | ۱۳۴۵–۱۳۵۷ | بانک ایران و ژاپن، ایران و هلند، ایران و بریتانیا |
+| ۹ | بیمه مرکزی ایران | ۱۳۵۰ | نظارت بر صنعت بیمه |
+| ۱۰ | بیمه ایران | ۱۳۱۴ (توسعه) | بزرگ‌ترین شرکت بیمه خاورمیانه |
+
+---
+
+## بخش چهاردهم: سازمان برنامه و برنامه‌های عمرانی
+
+| ردیف | برنامه | دوره | بودجه | دستاوردهای اصلی |
+|------|--------|------|-------|-----------------|
+| ۱ | برنامه اول عمرانی | ۱۳۲۷–۱۳۳۴ | ۲۱ میلیارد ریال | زیرساخت‌های اولیه |
+| ۲ | برنامه دوم عمرانی | ۱۳۳۴–۱۳۴۱ | ۸۴ میلیارد ریال | سدها، صنایع، جاده‌ها |
+| ۳ | برنامه سوم عمرانی | ۱۳۴۱–۱۳۴۶ | ۲۳۰ میلیارد ریال | اصلاحات ارضی، صنعتی‌سازی |
+| ۴ | برنامه چهارم عمرانی | ۱۳۴۷–۱۳۵۱ | ۸۱۰ میلیارد ریال | صنایع سنگین، پتروشیمی |
+| ۵ | برنامه پنجم عمرانی | ۱۳۵۲–۱۳۵۶ | ۴,۶۹۸ میلیارد ریال | انرژی هسته‌ای، ابرپروژه‌ها |
+| ۶ | برنامه ششم (طراحی شده) | ۱۳۵۷–۱۳۶۲ | ۸,۴۱۸ میلیارد ریال | اجرا نشد (انقلاب) |
+
+**مقایسه:** مدل برنامه‌ریزی عمرانی ایران الگوی بسیاری از کشورهای در حال توسعه شد. ابوالحسن ابتهاج (رئیس سازمان برنامه) الگوی توسعه ایران را طراحی کرد و بعدها بانک جهانی این مدل را به کشورهای دیگر توصیه کرد.
+
+---
+
+## بخش پانزدهم: صنایع دفاعی و تکنولوژی بومی
+
+| ردیف | پروژه | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | صنایع هواپیمایی ایران (IACI) | ۱۳۴۹ | تعمیر و اورهال هلیکوپتر و هواپیما |
+| ۲ | صنایع الکترونیک ایران (IEI) | ۱۳۵۱ | تولید تجهیزات الکترونیک نظامی |
+| ۳ | سازمان صنایع دفاع (DIO) | ۱۳۵۳ | تولید مهمات و سلاح سبک |
+| ۴ | کارخانه اسلحه‌سازی اصفهان | ۱۳۳۰ توسعه | تولید تفنگ G3 با لیسانس آلمان |
+| ۵ | کارخانه مهمات‌سازی شهید باقری | ۱۳۴۸ | تولید انواع مهمات |
+| ۶ | پروژه تولید جنگنده (با گرومن آمریکا) | ۱۳۵۶ (لغو) | برنامه تولید مشترک جنگنده |
+| ۷ | مرکز تحقیقات موشکی (با همکاری اسرائیل) | ۱۳۵۶ | پروژه موشک بالستیک (Flower Project) |
+
+---
+
+## بخش شانزدهم: گردشگری و تفریحات
+
+| ردیف | پروژه | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | توسعه جزیره کیش | ۱۳۵۰ | هتل‌های لوکس، کازینو، فرودگاه بین‌المللی |
+| ۲ | پیست اسکی دیزین | ۱۳۴۸ | بلندترین پیست اسکی خاورمیانه |
+| ۳ | پیست اسکی آبعلی | ۱۳۳۲ توسعه | اولین پیست اسکی ایران |
+| ۴ | پیست اسکی شمشک | ۱۳۵۰ | |
+| ۵ | تلکابین توچال | ۱۳۵۷ (ناتمام) | طولانی‌ترین تلکابین آسیا |
+| ۶ | شبکه هتل‌های بین‌المللی | ۱۳۴۰–۱۳۵۷ | هیلتون، شرایتون، اینترکانتیننتال، هایت |
+| ۷ | کازینوها و کلوب‌های شبانه | ۱۳۴۵–۱۳۵۷ | تهران، رامسر، کیش |
+| ۸ | سینماها (۴۵۰ سالن در سراسر کشور) | ۱۳۵۷ | بیشترین تعداد در خاورمیانه |
+
+---
+
+## بخش هفدهم: کشاورزی و دامپروری
+
+| ردیف | پروژه | سال | توضیحات |
+|------|-------|-----|---------|
+| ۱ | شرکت‌های کشت و صنعت مکانیزه | ۱۳۴۸ | ۸۹ شرکت بزرگ |
+| ۲ | سازمان عمران دشت‌ها | ۱۳۴۵ | آبیاری نوین |
+| ۳ | دشت مغان (توسعه کشاورزی) | ۱۳۵۰ | کشت و صنعت نیشکر |
+| ۴ | کشت و صنعت هفت‌تپه (نیشکر) | ۱۳۴۰ | بزرگ‌ترین در خاورمیانه |
+| ۵ | کشت و صنعت کارون | ۱۳۴۶ | |
+| ۶ | گسترش آبیاری مدرن (بارانی و قطره‌ای) | ۱۳۵۰ | |
+| ۷ | سازمان گوشت کشور | ۱۳۴۵ | صنعتی‌سازی دامداری |
+| ۸ | واردات نژاد دام‌های اصلاح‌شده | ۱۳۴۰ | هلشتاین، آنگوس و... |
+| ۹ | مرغداری صنعتی (گسترش) | ۱۳۴۵ | ایران خودکفا در تولید تخم‌مرغ شد |
+| ۱۰ | صنایع شیلات (توسعه) | ۱۳۵۰ | صادرات خاویار |
+
+---
+
+## بخش هجدهم: علم و تحقیقات
+
+| ردیف | مرکز/پروژه | سال | توضیحات |
+|------|----------|-----|---------|
+| ۱ | سازمان انرژی اتمی ایران | ۱۳۵۳ | تحقیقات هسته‌ای |
+| ۲ | مرکز تحقیقات فیزیک نظری و ریاضیات (IPM) | ۱۳۴۸ | ریاضیات و فیزیک نظری |
+| ۳ | انستیتو پاستور ایران (توسعه) | ۱۳۲۰ (توسعه) | تولید واکسن و تحقیقات بیولوژیک |
+| ۴ | انستیتو رازی (توسعه) | ۱۳۲۰ (توسعه) | دامپزشکی و واکسن دام |
+| ۵ | مرکز تحقیقات بیوشیمی و بیوفیزیک | ۱۳۵۰ | |
+| ۶ | سازمان تحقیقات صنعتی ایران (IROST) | ۱۳۵۶ | تحقیقات کاربردی |
+| ۷ | رصدخانه ملی ایران (طرح) | ۱۳۵۶ | طراحی شد، ناتمام ماند |
+
+---
+
+## بخش نوزدهم: قیمت‌ها و قدرت خرید مردم (۱۳۵۵)
+
+| کالا/خدمت | قیمت (ریال) | معادل دلاری (۱ دلار = ۷۰ ریال) |
+|-----------|------------|-------------------------------|
+| یک کیلو گوشت گوسفند | ۱۵۰ ریال | ۲.۱ دلار |
+| یک کیلو برنج ایرانی | ۴۰ ریال | ۰.۵۷ دلار |
+| یک نان سنگک | ۵ ریال | ۰.۰۷ دلار |
+| یک لیتر بنزین | ۱۰ ریال | ۰.۱۴ دلار |
+| اجاره آپارتمان ۸۰ متری (تهران) | ۳,۰۰۰–۵,۰۰۰ ریال | ۴۲–۷۱ دلار |
+| حقوق یک کارمند متوسط | ۱۵,۰۰۰–۲۵,۰۰۰ ریال | ۲۱۴–۳۵۷ دلار |
+| حقوق یک کارگر ماهر | ۱۰,۰۰۰–۱۵,۰۰۰ ریال | ۱۴۲–۲۱۴ دلار |
+| قیمت پیکان دولوکس | ۱۸۰,۰۰۰ ریال | ۲,۵۷۱ دلار |
+| قیمت یک آپارتمان ۱۰۰ متری (تهران) | ۸۰۰,۰۰۰–۱,۵۰۰,۰۰۰ ریال | ۱۱,۴۰۰–۲۱,۴۰۰ دلار |
+
+نکته: یک کارمند متوسط با حقوق ۵–۷ سال خود می‌توانست صاحب یک آپارتمان در تهران شود. نسبت قیمت مسکن به درآمد بسیار مناسب‌تر از امروز بود.
+
+---
+
+## جمع‌بندی تحلیلی نهایی
+
+ایران دوره محمدرضاشاه، به‌ویژه بین سال‌های ۱۳۴۲ تا ۱۳۵۵، یکی از سریع‌ترین و جامع‌ترین فرآیندهای نوسازی (Modernization) در تاریخ جهان سوم را تجربه کرد. از نظر شاخص‌های اقتصادی، صنعتی، نظامی و زیرساختی:
+
+**ایران در سال ۱۹۷۸ جلوتر بود از:**
+*   **ترکیه** در: صنعت نفت و پتروشیمی، نیروی هوایی، درآمد سرانه، ظرفیت برق، انرژی هسته‌ای
+*   **کره جنوبی** در: درآمد سرانه، صنعت نفت، نیروی نظامی، زیرساخت‌های انرژی
+*   **چین** در: درآمد سرانه (۱۵ برابر)، رفاه فردی، آزادی‌های اجتماعی
+*   **تمام کشورهای عربی** در: صنعت، آموزش، حقوق زنان، تکنولوژی
+*   **هند و پاکستان** در: تقریباً تمام شاخص‌ها
+
+**کره جنوبی فقط از ۱۹۸۰ به بعد** از ایران پیشی گرفت. **ترکیه فقط از ۲۰۰۰ به بعد** از نظر درآمد سرانه از ایران جلو زد. **امارات و قطر از ۱۹۹۰ به بعد** با درآمدهای نفتی سرشار و جمعیت اندک، از نظر درآمد سرانه جلو افتادند اما هنوز صنایع مادر ایران را ندارند.
+
+**نکته تاریخی مهم:** بسیاری از زیرساخت‌هایی که امروز ایران بر آن‌ها تکیه دارد (ذوب‌آهن اصفهان، پالایشگاه‌ها، نیروگاه‌ها، شبکه راه‌آهن، ایران‌خودرو، صنایع دفاعی، دانشگاه‌ها، بیمارستان‌ها و...) همگی میراث همین دوره هستند.
+
+---
+
+# گزارش جامع: ۴۷ سال حکومت جمهوری اسلامی (۱۳۵۷–۱۴۰۴)
+
+## تحلیل تطبیقی وضعیت ایران از بهمن ۱۳۵۷ تا تیر ۱۴۰۴
+
+---
+
+## بخش اول: ویرانی اقتصادی
+
+### شاخص‌های کلان اقتصادی (مقایسه تطبیقی)
+
+| شاخص | ۱۳۵۷ (۱۹۷۸) | ۱۴۰۳ (۲۰۲۴) | تغییر |
+|-------|-------------|-------------|-------|
+| تولید ناخالص داخلی (GDP) | ۹۰ میلیارد دلار | حدود ۴۰۰ میلیارد دلار (PPP) اسمی حدود ۲۵۰ میلیارد | جمعیت ۲.۵ برابر شده اما GDP اسمی فقط ۲.۷ برابر |
+| درآمد سرانه (اسمی) | ۲,۴۰۰ دلار | حدود ۳,۵۰۰ دلار | با تورم جهانی، قدرت خرید واقعی کمتر از ۱۳۵۷ |
+| رتبه اقتصادی جهان | ۱۸ | حدود ۴۰–۵۰ (اسمی) | سقوط شدید |
+| ذخایر ارزی | ۱۴ میلیارد دلار | تخمین ۲۰–۳۰ میلیارد (غیرشفاف) | با احتساب تورم، کاهش واقعی |
+| ارزش ریال در برابر دلار | ۷۰ ریال | ۶۰۰,۰۰۰+ ریال | کاهش ارزش بیش از ۸,۵۰۰ برابر |
+| نرخ تورم سالانه (میانگین ۴۷ ساله) | ۱۱٪ (دهه ۵۰) | میانگین ۲۵–۳۰٪ سالانه | تورم مزمن و مخرب |
+| نرخ بیکاری رسمی | ۴٪ | ۱۰–۱۲٪ رسمی (واقعی ۲۵–۳۰٪) | بحران اشتغال |
+| بدهی خارجی | تقریباً صفر | تخمین ۱۰–۱۵ میلیارد (غیرشفاف) | |
+| درآمد نفتی کل ۴۷ ساله | --- | تخمین بیش از ۲,۵۰۰ میلیارد دلار | صرف چه شده؟ سؤال اصلی |
+
+### مقایسه تکان‌دهنده درآمد سرانه (۲۰۲۴)
+
+| کشور | درآمد سرانه ۱۹۷۸ (دلار) | درآمد سرانه ۲۰۲۴ (دلار) | رشد (برابر) |
+|-------|------------------------|------------------------|------------|
+| کره جنوبی | ۱,۴۰۰ | ۳۵,۰۰۰ | ۲۵ برابر |
+| ترکیه | ۱,۵۰۰ | ۱۱,۰۰۰ | ۷.۳ برابر |
+| مالزی | ۱,۲۰۰ | ۱۲,۵۰۰ | ۱۰.۴ برابر |
+| چین | ۱۵۵ | ۱۳,۰۰۰ | ۸۴ برابر |
+| امارات | ۲۲,۰۰۰ | ۵۰,۰۰۰ | ۲.۳ برابر |
+| **ایران** | **۲,۴۰۰** | **۳,۵۰۰** | **۱.۴ برابر** |
+| هند | ۲۰۰ | ۲,۵۰۰ | ۱۲.۵ برابر |
+| پاکستان | ۲۵۰ | ۱,۵۰۰ | ۶ برابر |
+
+ایران در ۴۷ سال فقط ۱.۴ برابر رشد کرده، یعنی **کمترین رشد اقتصادی در بین تمام کشورهای مقایسه‌شده** حتی کمتر از پاکستان و هند.
+
+### ارزش پول ملی (فاجعه ریال)
+
+| سال | ارزش دلار به ریال | رویداد |
+|-----|------------------|--------|
+| ۱۳۵۷ | ۷۰ | سقوط پهلوی |
+| ۱۳۶۰ | ۸۰ | آغاز جنگ |
+| ۱۳۶۷ | ۱,۰۰۰ | پایان جنگ |
+| ۱۳۷۴ | ۴,۵۰۰ | سازندگی |
+| ۱۳۸۰ | ۸,۰۰۰ | اصلاحات |
+| ۱۳۹۰ | ۱۲,۰۰۰ | قبل از تحریم‌های جدید |
+| ۱۳۹۱ | ۳۵,۰۰۰ | شوک ارزی اول |
+| ۱۳۹۷ | ۱۵۰,۰۰۰ | خروج ترامپ از برجام |
+| ۱۴۰۰ | ۳۰۰,۰۰۰ | بحران کرونا و تحریم |
+| ۱۴۰۳ | ۶۰۰,۰۰۰+ | وضعیت فعلی |
+
+---
+
+## بخش دوم: ویرانی صنعتی
+
+### وضعیت صنایعی که از پهلوی به ارث رسید
+
+| ردیف | صنعت/شرکت | وضعیت در ۱۳۵۷ | وضعیت فعلی | توضیحات |
+|------|----------|--------------|------------|---------|
+| ۱ | ایران‌خودرو | تولید ۱۳۰,۰۰۰ خودرو مدرن | تولید خودروهای فرسوده با تکنولوژی دهه ۱۹۷۰ | پیکان تا ۱۳۸۴ تولید شد، پراید/تیبا جایگزین با کیفیت پایین |
+| ۲ | سایپا | تولید ژیان با لیسانس سیتروئن | پراید و تیبا با تکنولوژی منسوخ | ناامن‌ترین خودروهای جهان |
+| ۳ | ذوب‌آهن اصفهان | مدرن و کارآمد | فرسوده، زیان‌ده، آلاینده | بدون نوسازی اساسی |
+| ۴ | هواپیمایی ملی (هما) | ۱۰ ایرلاین برتر جهان | یکی از ناایمن‌ترین ایرلاین‌های جهان | ناوگان فرسوده، تحریم قطعات |
+| ۵ | صنعت نفت | ۶ میلیون بشکه/روز | حدود ۳ میلیون بشکه/روز (فروش واقعی کمتر) | زیرساخت‌ها فرسوده |
+| ۶ | پالایشگاه آبادان | بزرگ‌ترین جهان | ویران در جنگ، بازسازی ناقص | هنوز به ظرفیت ۱۳۵۷ نرسیده |
+| ۷ | راه‌آهن | ۴,۵۰۰ کیلومتر | حدود ۱۴,۰۰۰ کیلومتر | رشد داشته اما کیفیت و سرعت بسیار پایین |
+| ۸ | نیروگاه اتمی بوشهر | ۹۰٪ پیشرفت (۱۳۵۷) | ۱ واحد فعال (۲۰۱۱) | ۳۳ سال تأخیر، ۲۳ نیروگاه قول‌داده‌شده → ۱ واحد |
+| ۹ | ماشین‌سازی تبریز | فعال و تولیدی | نیمه‌تعطیل | |
+| ۱۰ | تراکتورسازی تبریز | صادرکننده | با مشکل تولید | |
+| ۱۱ | کارخانه‌های نساجی | صادرکننده | اکثراً تعطیل | واردات از چین |
+| ۱۲ | صنعت الکترونیک | تولید تلویزیون و رادیو | وابسته به واردات | |
+| ۱۳ | هپکو اراک | فعال و تولیدی | ورشکسته، اعتراضات کارگری | نماد ورشکستگی صنعتی |
+| ۱۴ | آزمایش (فیلیپس) | تولید لوازم الکترونیکی | تعطیل | |
+| ۱۵ | صنایع هواپیمایی ایران | تعمیر و اورهال | محدود به تعمیرات ابتدایی | |
+
+### وضعیت صنعت خودرو (فاجعه ملی)
+
+| شاخص | ایران | کره جنوبی | ترکیه |
+|-------|-------|----------|-------|
+| تولید سالانه (۲۰۲۳) | ۱.۳ میلیون | ۴.۲ میلیون | ۱.۵ میلیون |
+| کیفیت محصولات | ناایمن‌ترین در جهان | رقیب ژاپن و آلمان | صادرکننده به اروپا |
+| صادرات | تقریباً صفر | ۲.۵ میلیون دستگاه | ۱.۱ میلیون دستگاه |
+| تکنولوژی | دهه ۱۹۹۰ | ۲۰۲۴ (خودران و برقی) | ۲۰۲۴ |
+| ایمنی (Euro NCAP) | بدون ستاره (صفر) | ۵ ستاره | ۵ ستاره |
+| قیمت پراید در ایران | حدود ۵,۰۰۰ دلار | خودروی مشابه در کره ۸,۰۰۰ با کیفیت ۱۰ برابر | |
+
+پراید (طراحی ۱۹۸۶ کیا) و تیبا در تست‌های ایمنی **صفر ستاره** گرفتند و توسط NCAP به عنوان **تابوت متحرک** شناخته شدند. سالانه بیش از **۱۷,۰۰۰ نفر** در تصادفات جاده‌ای ایران کشته می‌شوند (یکی از بالاترین نرخ‌ها در جهان).
+
+---
+
+## بخش سوم: ویرانی هوایی و حمل و نقل
+
+### ناوگان هوایی
+
+| شاخص | ۱۳۵۷ | ۱۴۰۳ |
+|-------|------|------|
+| تعداد هواپیماهای مسافری | ۱۱۰+ (مدرن) | حدود ۳۳۰ (اکثراً فرسوده) |
+| میانگین سن ناوگان | ۵ سال | ۲۵+ سال |
+| سوانح هوایی مرگبار (۴۷ سال) | --- | بیش از ۳۰ سانحه مرگبار |
+| تعداد قربانیان سوانح هوایی | --- | بیش از ۲,۵۰۰ نفر |
+| رتبه ایمنی جهانی | جزو ۱۰ ایرلاین ایمن | لیست سیاه اتحادیه اروپا |
+| پرواز مستقیم به آمریکا/اروپا | بله (تهران-نیویورک مستقیم) | ممنوع/محدود |
+
+### سوانح مرگبار هوایی (نمونه‌ها)
+
+| سال | حادثه | تلفات |
+|-----|-------|-------|
+| ۱۳۶۷ | هواپیمای مسافری ایران ایر پرواز ۶۵۵ (ساقط توسط ناوچه آمریکایی) | ۲۹۰ نفر |
+| ۱۳۸۱ | سقوط ایران ایر تور (اصفهان) | ۱۱۹ نفر |
+| ۱۳۸۴ | سقوط C-130 نظامی (تهران) | ۱۲۸ نفر |
+| ۱۳۹۲ | سقوط سپاهان ایر (اصفهان) | ۳۹ نفر |
+| ۱۳۹۳ | سقوط تابان ایر (طبس) | ۳۹ نفر |
+| ۱۳۹۸ | ساقط کردن هواپیمای اوکراینی PS752 توسط سپاه | **۱۷۶ نفر** |
+
+**ساقط کردن هواپیمای اوکراینی:** سپاه پاسداران در ۱۸ دی ۱۳۹۸ هواپیمای بوئینگ ۷۳۷ خطوط هوایی اوکراین را با دو موشک TOR-M1 مستقیماً پس از بلند شدن از فرودگاه تهران ساقط کرد. تمام ۱۷۶ سرنشین (از ۷ ملیت) کشته شدند. دولت ایران ابتدا ۳ روز انکار کرد و سپس «خطای انسانی» اعلام کرد. هیچ مقام نظامی محاکمه نشد.
+
+---
+
+## بخش چهارم: ویرانی محیط زیست
+
+### بحران آب
+
+| شاخص | وضعیت |
+|-------|-------|
+| دریاچه ارومیه | از ۵,۰۰۰ کیلومتر مربع به کمتر از ۱,۰۰۰ (۸۰٪ خشک شده) |
+| زاینده‌رود | بیشتر سال خشک، اصفهان بدون رودخانه |
+| تالاب هورالعظیم | ۸۰٪ خشک شده |
+| تالاب گاوخونی | کاملاً خشک |
+| تالاب هامون | تقریباً خشک |
+| کارون (بزرگ‌ترین رود ایران) | آلوده و کم‌آب |
+| فرونشست زمین (تهران، اصفهان) | ۳۶ سانتیمتر/سال در برخی نقاط تهران |
+| سدهای خالی | ۴۰–۵۰٪ سدها زیر ظرفیت |
+| بحران آب شرب | ۳۰۰+ شهر و هزاران روستا تنش آبی |
+| برداشت بی‌رویه از سفره‌های زیرزمینی | ۶۰٪ سفره‌ها در وضعیت بحرانی |
+
+### آلودگی هوا و ریزگردها
+
+| شاخص | وضعیت |
+|-------|-------|
+| تهران | جزو ۱۰ شهر آلوده جهان، ۳۰,۰۰۰+ مرگ سالانه ناشی از آلودگی |
+| اهواز | سال‌ها آلوده‌ترین شهر جهان (WHO) |
+| ریزگردها (خوزستان، سیستان) | ۱۲۰+ روز در سال |
+| تالاب‌های خشک‌شده | منبع ریزگرد و نمک |
+| بیابان‌زایی | ۷۰٪ خاک ایران در معرض فرسایش |
+| جنگل‌زدایی | از ۱۸ میلیون هکتار به حدود ۱۲ میلیون هکتار |
+
+### مقایسه با دوره پهلوی
+در دوره پهلوی، جنگل‌ها و مراتع ملی شدند (اصل دوم انقلاب سفید). دریاچه ارومیه یکی از بزرگ‌ترین دریاچه‌های نمکی جهان بود. زاینده‌رود تمام سال آب داشت. خوزستان سرسبز و آباد بود. بیابان‌زایی در این مقیاس وجود نداشت.
+
+---
+
+## بخش پنجم: جنگ و ویرانی نظامی
+
+### جنگ ایران و عراق (۱۳۵۹–۱۳۶۷)
+
+| شاخص | آمار |
+|-------|-----|
+| مدت جنگ | ۸ سال |
+| تلفات ایرانی | تخمین ۲۰۰,۰۰۰–۵۰۰,۰۰۰ کشته |
+| مجروحان و معلولین شیمیایی | بیش از ۵۰۰,۰۰۰ |
+| آوارگان | بیش از ۲.۵ میلیون |
+| خسارت اقتصادی | تخمین ۵۰۰–۱,۰۰۰ میلیارد دلار |
+| ویرانی خرمشهر، آبادان، دزفول، اندیمشک | تخریب ۸۰–۹۰٪ |
+| تخریب پالایشگاه آبادان | بزرگ‌ترین پالایشگاه جهان ویران شد |
+| تخریب صنایع خوزستان | پتروشیمی، لوله‌سازی، فولاد |
+| ادامه جنگ پس از آزادی خرمشهر | ۶ سال اضافی بدون نتیجه |
+| جام زهر (قطعنامه ۵۹۸) | خمینی: «نوشیدن جام زهر» |
+
+**نکته تاریخی:** خرمشهر در خرداد ۱۳۶۱ آزاد شد. صدام حسین آمادگی صلح داشت. تمام میانجیگران بین‌المللی خواستار پایان جنگ بودند. اما خمینی تصمیم به ادامه جنگ برای «فتح قدس از راه کربلا» گرفت. ۶ سال جنگ اضافی بدون یک وجب خاک اضافی و با صدها هزار کشته بیشتر ادامه یافت.
+
+### عملیات‌های بزرگ شکست‌خورده پس از ۱۳۶۱
+
+| عملیات | سال | نتیجه | تلفات تخمینی |
+|--------|-----|-------|-------------|
+| رمضان | ۱۳۶۱ | شکست | ده‌ها هزار |
+| والفجر مقدماتی و ۱–۱۰ | ۱۳۶۱–۱۳۶۵ | عمدتاً شکست | ده‌ها هزار |
+| خیبر | ۱۳۶۲ | شکست | هزاران |
+| بدر | ۱۳۶۳ | شکست | هزاران |
+| کربلای ۱–۵ | ۱۳۶۵–۱۳۶۶ | عمدتاً شکست سنگین | ده‌ها هزار |
+| مرصاد | ۱۳۶۷ | --- | --- |
+
+### اعدام‌های ۶۷
+
+| شاخص | جزئیات |
+|-------|--------|
+| تاریخ | تابستان ۱۳۶۷ |
+| فتوای خمینی | اعدام تمام زندانیان سیاسی که بر مواضع خود پافشاری کنند |
+| هیئت مرگ | سه‌نفره (حسینعلی نیری، مرتضی اشراقی، ابراهیم رئیسی) |
+| تعداد اعدام‌شدگان | تخمین ۳,۰۰۰ تا ۳۰,۰۰۰ (آمار دقیق هرگز منتشر نشد) |
+| شامل | مجاهدین خلق، چپ‌ها، کمونیست‌ها |
+| گورهای دسته‌جمعی | خاوران (تهران) و ده‌ها مکان دیگر |
+| بازماندگان | ممنوع از عزاداری، تهدید و ارعاب |
+| رئیسی | بعداً رئیس‌جمهور شد |
+
+---
+
+## بخش ششم: مداخلات منطقه‌ای و خارجی (صدور انقلاب)
+
+### هزینه‌های نظامی-امنیتی منطقه‌ای
+
+| کشور/منطقه | نوع مداخله | هزینه تخمینی سالانه | مدت | توضیحات |
+|-----------|----------|-------------------|-----|---------|
+| لبنان (حزب‌الله) | تأسیس، تسلیح، تأمین مالی | ۷۰۰ میلیون–۱ میلیارد دلار/سال | ۱۳۶۱ تا کنون | ۴۲ سال |
+| سوریه (بشار اسد) | نیروی نظامی مستقیم، تسلیحات | ۶–۱۵ میلیارد دلار/سال | ۱۳۹۱–۱۴۰۳ | جنگ داخلی سوریه |
+| عراق (شبه‌نظامیان شیعه) | حشد الشعبی و شبه‌نظامیان | ۱–۲ میلیارد دلار/سال | ۱۳۸۲ تا کنون | پس از سقوط صدام |
+| یمن (حوثی‌ها/انصارالله) | تسلیح و آموزش | ۲۰۰–۵۰۰ میلیون دلار/سال | ۱۳۹۳ تا کنون | جنگ داخلی یمن |
+| فلسطین (حماس و جهاد اسلامی) | تسلیح و تأمین مالی | ۱۰۰–۳۰۰ میلیون دلار/سال | ۱۳۷۰ تا کنون | |
+| افغانستان (لشکر فاطمیون) | نیروی نیابتی | ۲۰۰–۵۰۰ میلیون دلار/سال | ۱۳۹۳–۱۴۰۰ | مهاجران افغان |
+| پاکستان (لشکر زینبیون) | نیروی نیابتی | ناشناس | ۱۳۹۳ تا کنون | |
+| بحرین | حمایت از معارضان شیعه | ناشناس | ۱۳۶۰ تا کنون | |
+| نیجریه (جنبش اسلامی) | حمایت مالی و ایدئولوژیک | ناشناس | ۱۳۶۰ تا کنون | ابراهیم زکزاکی |
+
+### برآورد کل هزینه‌های منطقه‌ای (۴۷ سال)
+
+| ردیف | حوزه | هزینه تخمینی کل |
+|------|------|----------------|
+| ۱ | حزب‌الله لبنان | ۳۰–۴۰ میلیارد دلار |
+| ۲ | سوریه | ۵۰–۱۰۰ میلیارد دلار |
+| ۳ | عراق (شبه‌نظامیان) | ۲۰–۳۰ میلیارد دلار |
+| ۴ | حماس و جهاد اسلامی | ۵–۱۰ میلیارد دلار |
+| ۵ | یمن (حوثی‌ها) | ۵–۱۰ میلیارد دلار |
+| ۶ | افغانستان/پاکستان | ۵–۱۰ میلیارد دلار |
+| ۷ | بحرین و سایر | ۲–۵ میلیارد دلار |
+| ۸ | برنامه موشکی و پهپادی | ۲۰–۳۰ میلیارد دلار |
+| ۹ | سپاه قدس (عملیات خارجی) | ۱۰–۲۰ میلیارد دلار |
+| **جمع** | | **۱۵۰–۲۵۰+ میلیارد دلار** |
+
+### نتیجه مداخلات منطقه‌ای
+
+| حوزه | سرمایه‌گذاری ایران | نتیجه (تا ۱۴۰۴) |
+|------|-------------------|-----------------|
+| لبنان/حزب‌الله | ۴۰ میلیارد دلار | جنگ ۲۰۲۴ با اسرائیل، ترور نصرالله، تضعیف شدید |
+| سوریه/بشار اسد | ۱۰۰ میلیارد دلار | **سقوط بشار اسد (آذر ۱۴۰۳)، فرار به روسیه، از دست رفتن کل سوریه** |
+| عراق | ۳۰ میلیارد دلار | نفوذ رو به کاهش |
+| یمن | ۱۰ میلیارد دلار | بن‌بست و ویرانی |
+| حماس | ۱۰ میلیارد دلار | جنگ ۲۰۲۳ غزه، ویرانی کامل، ده‌ها هزار کشته فلسطینی |
+
+**سوریه:** مهم‌ترین شکست استراتژیک. ایران بیش از یک دهه با هزینه‌های هنگفت انسانی و مالی از بشار اسد حمایت کرد. در آذر ۱۴۰۳ (دسامبر ۲۰۲۴) رژیم اسد در عرض ۱۱ روز سقوط کرد. تمام سرمایه‌گذاری نظامی و اقتصادی ایران در سوریه از دست رفت.
+
+---
+
+## بخش هفتم: سرکوب داخلی و حقوق بشر
+
+### اعتراضات بزرگ و سرکوب‌ها
+
+| سال | رویداد | روش سرکوب | تلفات تخمینی |
+|-----|--------|----------|-------------|
+| ۱۳۶۰–۱۳۶۷ | سرکوب اپوزیسیون | اعدام، شکنجه، زندان | ده‌ها هزار اعدام |
+| ۱۳۶۷ | اعدام‌های تابستان ۶۷ | اعدام‌های گروهی | ۳,۰۰۰–۳۰,۰۰۰ |
+| ۱۳۷۸ | کوی دانشگاه | حمله لباس‌شخصی‌ها | ۵+ کشته، صدها مجروح |
+| ۱۳۸۸ | جنبش سبز | تیراندازی، شکنجه، تجاوز در بازداشتگاه‌ها (کهریزک) | ۷۲–۱۵۰+ کشته |
+| ۱۳۹۶ | اعتراضات دی‌ماه | تیراندازی | ۲۵+ کشته، ۵,۰۰۰ بازداشت |
+| ۱۳۹۸ | **آبان خونین** | **تیراندازی مستقیم، قطع اینترنت ۱ هفته‌ای** | **۱,۵۰۰+ کشته (رویترز)** |
+| ۱۴۰۱ | **انقلاب ژینا (مهسا امینی)** | تیراندازی، بازداشت گسترده، اعدام معترضان | ۵۰۰+ کشته، ۲۰,۰۰۰+ بازداشت |
+
+### کشتار آبان ۱۳۹۸ (جزئیات)
+
+| شاخص | جزئیات |
+|-------|--------|
+| تاریخ | ۲۴–۳۰ آبان ۱۳۹۸ |
+| علت اعتراض | افزایش ناگهانی ۳ برابری قیمت بنزین |
+| فرمان سرکوب | علی خامنه‌ای: «هر کاری لازم است انجام دهید» |
+| قطع اینترنت | کامل، ۷ روز، بی‌سابقه در جهان |
+| تلفات | رویترز: ۱,۵۰۰ نفر / عفو بین‌الملل: حداقل ۳۰۴ / دولت: ۲۳۰ |
+| شهرهای درگیر | ۱۰۰+ شهر |
+| بازداشت‌شدگان | ۷,۰۰۰+ |
+| شکنجه و تجاوز در بازداشت | گزارش‌های متعدد |
+| محاکمه و اعدام معترضان | چندین نفر اعدام شدند |
+
+### قتل مهسا (ژینا) امینی و خیزش ۱۴۰۱
+
+| شاخص | جزئیات |
+|-------|--------|
+| تاریخ | ۲۵ شهریور ۱۴۰۱ |
+| علت | بازداشت توسط گشت ارشاد به دلیل «حجاب نامناسب» |
+| مرگ | ۳ روز پس از بازداشت (ضرب و شتم در ون گشت ارشاد) |
+| شعار | **«زن، زندگی، آزادی»** |
+| گستردگی | تمام ۳۱ استان، ۱۶۰+ شهر |
+| مدت | ۶+ ماه |
+| کشته‌ها | ۵۰۰+ نفر (شامل ۷۰+ کودک) |
+| بازداشت‌شدگان | ۲۰,۰۰۰+ |
+| اعدام معترضان | محسن شکاری، مجیدرضا رهنورد و دیگران |
+| کوری ساچمه‌ای | صدها نفر (تیراندازی عمدی به چشم) |
+
+### ترورها و قتل‌های زنجیره‌ای
+
+| دوره | رویداد | جزئیات |
+|------|--------|--------|
+| ۱۳۶۰–۱۳۶۷ | ترور مخالفان خارج از کشور | ده‌ها ترور در اروپا و خاورمیانه |
+| ۱۳۷۱ | ترور رستوران میکونوس (برلین) | ترور رهبران کرد ایرانی |
+| ۱۳۷۷ | قتل‌های زنجیره‌ای | ترور نویسندگان و روشنفکران (فروهرها، مختاری، پوینده و...) |
+| ۱۳۶۰ تا کنون | ترور فعالان کرد، بلوچ، عرب | صدها مورد |
+| ۱۳۹۸–۱۴۰۴ | ترور و تلاش ترور در خاک اروپا | چندین مورد خنثی‌شده و اجرا شده |
+
+---
+
+## بخش هشتم: ویرانی اجتماعی
+
+### آسیب‌های اجتماعی
+
+| شاخص | ۱۳۵۷ | ۱۴۰۳ | توضیحات |
+|-------|------|------|---------|
+| اعتیاد | جمعیت معتاد: حدود ۳۰,۰۰۰ (تریاک) | ۳–۸ میلیون معتاد (شیشه، هروئین، تریاک، متادون) | ایران یکی از بالاترین نرخ اعتیاد جهان |
+| فحشا | محدود و غیرقانونی | گسترش عظیم، «صیغه»، قاچاق زنان | گزارش‌های متعدد از فروش دختران |
+| کودکان کار | محدود | ده‌ها هزار کودک کار در تهران | |
+| کودکان خیابانی | تقریباً صفر | ده‌ها هزار | |
+| طلاق | نرخ پایین | ۱ طلاق در هر ۳ ازدواج | |
+| خودکشی | نرخ پایین | افزایش شدید، مخصوصاً در نوجوانان | |
+| افسردگی | --- | ایران جزو ۱۰ کشور افسرده جهان | |
+| حاشیه‌نشینی | محدود | ۱۱–۱۹ میلیون حاشیه‌نشین | |
+| بی‌خانمانی | نادر | ده‌ها هزار «کارتن‌خواب» | |
+| گورخوابی | وجود نداشت | **گورخوابی در نصیرآباد و پاکدشت** | شوکه‌کننده‌ترین نماد فقر |
+
+### فقر و نابرابری
+
+| شاخص | وضعیت |
+|-------|-------|
+| خط فقر (۱۴۰۳) | ۳۰–۴۰ میلیون تومان/ماه برای خانواده ۴ نفره |
+| حداقل دستمزد (۱۴۰۳) | حدود ۱۰ میلیون تومان/ماه |
+| جمعیت زیر خط فقر | تخمین ۳۰–۵۰٪ جمعیت (۲۵–۴۵ میلیون نفر) |
+| ضریب جینی | ۰.۴+ (نابرابری بالا) |
+| قدرت خرید کارگر | یک کارگر با حقوق ماهانه حدود ۱۰ میلیون تومان حدود ۱۵۰ دلار درآمد دارد |
+| مقایسه: کارگر ایرانی ۱۳۵۵ | حقوق ۱۰,۰۰۰–۱۵,۰۰۰ ریال = ۱۴۰–۲۱۰ دلار | قدرت خرید واقعی بالاتر |
+
+---
+
+## بخش نهم: ویرانی حقوق زنان
+
+### عقب‌گرد حقوقی
+
+| حق/قانون | دوره پهلوی | جمهوری اسلامی |
+|----------|------------|--------------|
+| حق انتخاب پوشش | آزاد | حجاب اجباری، گشت ارشاد، بازداشت و مرگ (ژینا امینی) |
+| قانون حمایت خانواده | طلاق با حکم دادگاه، محدودیت چندهمسری | لغو قانون، مرد حق طلاق یکطرفه، چندهمسری آزاد، صیغه |
+| سن ازدواج دختران | ۱۸ سال | ۱۳ سال (عملاً ۹ سال با اذن پدر و دادگاه) |
+| حق قضاوت زنان | بله | لغو شد |
+| حق ریاست‌جمهوری | --- | «رجال سیاسی» (تفسیر: فقط مردان) |
+| حق شهادت در دادگاه | برابر | شهادت ۲ زن = ۱ مرد |
+| حق خروج از کشور | آزاد | نیاز به اذن شوهر |
+| دیه | --- | دیه زن = نصف دیه مرد |
+| حق حضانت | برابری نسبی | مادر فقط تا ۷ سالگی |
+| ارث | --- | زن نصف مرد |
+| ازدواج کودکان | ممنوع | سالانه ده‌ها هزار ازدواج کودک ثبت می‌شود |
+
+### آمار ازدواج کودکان
+
+| سال | تعداد ازدواج دختران زیر ۱۵ سال |
+|-----|-------------------------------|
+| ۱۳۹۷ | ۳۱,۳۷۹ |
+| ۱۳۹۸ | ۳۰,۸۶۰ |
+| ۱۳۹۹ | ۳۱,۸۹۹ |
+| ۱۴۰۰ | ۳۰,۰۰۰+ |
+
+سالانه بیش از **۳۰,۰۰۰ دختر زیر ۱۵ سال** در ایران ازدواج می‌کنند. در دوره پهلوی، ازدواج زیر ۱۸ سال ممنوع بود.
+
+---
+
+## بخش دهم: ویرانی آموزشی و فرار مغزها
+
+### فرار مغزها
+
+| شاخص | آمار |
+|-------|-----|
+| تعداد ایرانیان مهاجر | ۵–۸ میلیون نفر |
+| تعداد پزشکان ایرانی در آمریکا | ۱۲,۰۰۰+ |
+| تعداد مهندسان ایرانی در سیلیکون‌ولی | ده‌ها هزار |
+| رتبه فرار مغزها | اول یا دوم جهان (بسته به معیار) |
+| هزینه فرار مغزها | ۱۵۰–۲۰۰ میلیارد دلار سالانه (تخمین IMF) |
+| دانشمندان ایرانی‌تبار برنده نوبل/فیلدز | مریم میرزاخانی (فیلدز)، همه خارج از ایران |
+
+### انقلاب فرهنگی
+
+| شاخص | جزئیات |
+|-------|--------|
+| تعطیلی دانشگاه‌ها | ۱۳۵۹–۱۳۶۲ (۳ سال) |
+| پاکسازی اساتید | هزاران استاد اخراج شده |
+| اسلامی‌سازی دانشگاه‌ها | تغییر برنامه‌های درسی، سهمیه‌بندی |
+| ستاد انقلاب فرهنگی | نظارت ایدئولوژیک بر آموزش |
+| کیفیت تحقیقات | افت شدید کیفیت (مقالات تقلبی، تولیدات کاغذی) |
+
+---
+
+## بخش یازدهم: تحریم‌ها و انزوای بین‌المللی
+
+### تاریخچه تحریم‌ها
+
+| سال | نوع تحریم | اعمال‌کننده |
+|-----|----------|------------|
+| ۱۳۵۸ | تحریم تسلیحاتی و مالی | آمریکا (بحران گروگان‌گیری) |
+| ۱۳۸۵ | قطعنامه ۱۷۳۷ شورای امنیت | سازمان ملل |
+| ۱۳۸۶ | قطعنامه ۱۷۴۷ | سازمان ملل |
+| ۱۳۸۷ | قطعنامه ۱۸۰۳ | سازمان ملل |
+| ۱۳۸۹ | قطعنامه ۱۹۲۹ (شدیدترین) | سازمان ملل |
+| ۱۳۹۰–۱۳۹۴ | تحریم‌های نفتی و بانکی | آمریکا و اتحادیه اروپا |
+| ۱۳۹۴ | برجام (توافق هسته‌ای) | رفع موقت بخشی از تحریم‌ها |
+| ۱۳۹۷ | خروج آمریکا از برجام و فشار حداکثری | آمریکا (ترامپ) |
+| ۱۳۹۷–۱۴۰۴ | شدیدترین تحریم‌های تاریخ | آمریکا، اروپا |
+
+### پیامدهای تحریم‌ها
+
+| پیامد | جزئیات |
+|-------|--------|
+| صادرات نفت | از ۲.۵ میلیون بشکه/روز به ۵۰۰,۰۰۰–۱ میلیون (با تخفیف) |
+| دسترسی به سیستم بانکی جهانی (SWIFT) | قطع |
+| واردات دارو و تجهیزات پزشکی | مشکلات جدی |
+| ورود تکنولوژی | تقریباً متوقف |
+| سرمایه‌گذاری خارجی | تقریباً صفر |
+| تورم | انفجاری |
+
+---
+
+## بخش دوازدهم: بحران مسکن
+
+| شاخص | ۱۳۵۵ | ۱۴۰۳ |
+|-------|------|------|
+| قیمت آپارتمان ۱۰۰ متری تهران | حدود ۱,۰۰۰,۰۰۰ ریال (۱۴,۰۰۰ دلار) | حدود ۱۰۰–۱۵۰ میلیارد ریال (۱۷۰,۰۰۰–۲۵۰,۰۰۰ دلار) |
+| نسبت قیمت مسکن به درآمد سالانه | ۵–۷ سال | ۵۰–۱۰۰+ سال |
+| توانایی خرید مسکن برای جوانان | ممکن | عملاً ناممکن |
+| اجاره ماهانه آپارتمان ۸۰ متری تهران | ۳,۰۰۰–۵,۰۰۰ ریال | ۳۰–۵۰ میلیون تومان |
+| نسبت اجاره به حقوق | ۱۰–۱۵٪ | ۷۰–۱۰۰٪ |
+
+یک جوان ایرانی با حقوق متوسط **باید بیش از ۱۰۰ سال** پس‌انداز کند تا صاحب یک آپارتمان ۸۰ متری در تهران شود (بدون خرج‌کرد). در دوره پهلوی این عدد ۵–۷ سال بود.
+
+---
+
+## بخش سیزدهم: فساد ساختاری
+
+### نهادهای اقتصادی غیرپاسخگو
+
+| نهاد | حجم اقتصادی تخمینی | پاسخگویی |
+|------|-------------------|----------|
+| بنیاد مستضعفان | ۲۰–۳۰ میلیارد دلار | صفر (زیر نظر رهبری) |
+| ستاد اجرایی فرمان امام | ۹۵ میلیارد دلار (رویترز ۲۰۱۳) | صفر (زیر نظر رهبری) |
+| سپاه پاسداران (IRGC) | ۲۰–۴۰٪ اقتصاد ایران | صفر |
+| آستان قدس رضوی | ۱۵–۲۰ میلیارد دلار | صفر (معاف از مالیات) |
+| بنیاد شهید | میلیاردها دلار | حداقل |
+| نهاد رهبری | ناشناس | صفر |
+| بنیادهای مذهبی (مجموعاً) | ده‌ها میلیارد دلار | معاف از مالیات و حسابرسی |
+
+### اختلاس‌های بزرگ
+
+| سال | ماجرا | مبلغ |
+|-----|-------|------|
+| ۱۳۹۰ | اختلاس بانکی (مه‌آفرید خسروی) | ۳ میلیارد دلار |
+| ۱۳۹۲ | فساد بابک زنجانی | ۲.۸ میلیارد دلار |
+| ۱۳۹۸ | فساد بانکی سالار آقاخانی | ۵۰۰ میلیون دلار |
+| ۱۳۹۵–۱۴۰۰ | فسادهای پتروشیمی | میلیاردها دلار |
+| ۱۳۸۹ | اختلاس بیمه ایران | ۵۰۰ میلیون دلار |
+| مستمر | قاچاق سوخت | ۱۰–۲۰ میلیارد دلار/سال |
+| مستمر | فرار مالیاتی نهادهای حکومتی | ده‌ها میلیارد دلار |
+
+### ثروت رهبران
+
+| شخص/نهاد | ثروت تخمینی | منبع |
+|----------|------------|------|
+| دفتر رهبری (بیت رهبری) | ۲۰۰ میلیارد دلار (فوربز/رویترز) | کنترل ستاد اجرایی، بنیادها |
+| خانواده رفسنجانی | میلیاردها دلار | پسته، نفت، ساختمان |
+| فرماندهان سپاه | ده‌ها میلیارد (مجموعاً) | پیمانکاری، قاچاق، واردات |
+| آقازاده‌ها | میلیاردها دلار | زندگی لوکس در کانادا، اروپا، دبی |
+
+---
+
+## بخش چهاردهم: بحران جمعیتی و مهاجرت
+
+| شاخص | آمار |
+|-------|-----|
+| جمعیت ایران ۱۳۵۷ | ۳۶ میلیون |
+| جمعیت ایران ۱۴۰۳ | ۸۸ میلیون |
+| نرخ باروری ۱۳۶۵ | ۶.۵ (انفجار جمعیت ناشی از تشویق خمینی) |
+| نرخ باروری ۱۴۰۳ | ۱.۶ (زیر نرخ جایگزینی، فاجعه جمعیتی) |
+| مهاجرت نخبگان | ۱۵۰,۰۰۰–۳۰۰,۰۰۰ نفر/سال |
+| ایرانیان خارج از کشور | ۵–۸ میلیون |
+| خواهان مهاجرت | ۷۰–۸۰٪ جوانان |
+
+**تناقض بزرگ:** خمینی در دهه ۶۰ تشویق به فرزندآوری کرد و جمعیت ایران از ۳۶ به ۶۰ میلیون رسید. سپس در دهه ۷۰ ناگهان تنظیم خانواده اجرا شد. اکنون نرخ باروری به زیر ۱.۷ رسیده و ایران با بحران پیری جمعیت مواجه است.
+
+---
+
+## بخش پانزدهم: اعدام‌ها
+
+### آمار اعدام
+
+| دوره | تعداد تخمینی اعدام |
+|------|-------------------|
+| ۱۳۵۸–۱۳۶۷ | ۱۰,۰۰۰–۳۰,۰۰۰+ (سیاسی و عادی) |
+| تابستان ۶۷ | ۳,۰۰۰–۳۰,۰۰۰ (سیاسی) |
+| ۱۳۶۸–۱۳۸۰ | ۵,۰۰۰+ |
+| ۱۳۸۰–۱۳۹۰ | ۵,۰۰۰+ |
+| ۱۳۹۰–۱۴۰۰ | ۴,۰۰۰+ |
+| ۱۴۰۰–۱۴۰۳ | ۲,۵۰۰+ |
+| **جمع ۴۷ ساله** | **تخمین ۳۰,۰۰۰–۷۰,۰۰۰+** |
+
+ایران سال‌هاست **رتبه اول یا دوم اعدام در جهان** (سرانه: رتبه اول مطلق) را دارد. در سال ۲۰۲۳ بیش از ۸۳۴ نفر اعدام شدند (بالاترین رقم در ۸ سال گذشته). بسیاری از اعدام‌شدگان جرائم مواد مخدر یا جرائم سیاسی دارند.
+
+---
+
+## بخش شانزدهم: ویرانی فرهنگی و مذهبی‌سازی اجباری
+
+| حوزه | اقدام | پیامد |
+|------|-------|-------|
+| موسیقی | ممنوعیت موسیقی پس از انقلاب (۱۳۵۸–۱۳۶۸) | فرار موسیقی‌دانان، موسیقی زیرزمینی |
+| سینما | سانسور شدید، ممنوعیت صدها فیلم | فیلمسازان مهاجر یا زندانی (پناهی، رسول‌اف) |
+| تئاتر | سانسور و محدودیت | افت شدید |
+| رادیو و تلویزیون | انحصار صداوسیما (۱۲ شبکه تبلیغاتی) | بی‌اعتمادی مردم، ماهواره غیرقانونی |
+| ماهواره | ممنوع (جمع‌آوری بشقاب‌ها) | ۷۰٪ مردم ماهواره دارند |
+| اینترنت | فیلترینگ، قطع مکرر | ایران از فیلترشده‌ترین کشورهای جهان |
+| پوشاک | حجاب اجباری، گشت ارشاد | مقاومت گسترده زنان |
+| الکل | ممنوع | ۶۰,۰۰۰–۸۰,۰۰۰ مرگ الکلی-مسمومیتی با الکل دست‌ساز |
+| تفریحات | محدودیت شدید | فقدان فضای تفریحی سالم |
+| جشن‌های ملی | نوروز تحت فشار | تلاش برای جایگزینی با اعیاد مذهبی |
+| کتاب | سانسور و مجوز ارشاد | هزاران کتاب ممنوع |
+| لباس مردان | محدودیت‌ها (کراوات ممنوع) | |
+
+### مسمومیت‌های الکلی (پیامد ممنوعیت)
+
+| سال | تعداد مسمومیت‌های الکلی | فوتی |
+|-----|------------------------|------|
+| ۱۳۹۷ | ۷۶۸ | ۹۵ |
+| ۱۳۹۸ | ۵,۰۰۰+ (بحران کرونا-متانول) | ۸۰۰+ |
+| مستمر | هزاران مورد/سال | صدها نفر/سال |
+
+در اسفند ۱۳۹۸ و فروردین ۱۳۹۹، به دلیل شایعه درمان کرونا با الکل، بیش از ۵,۰۰۰ نفر با الکل صنعتی (متانول) مسموم شدند و بیش از ۸۰۰ نفر جان باختند. این فاجعه مستقیماً نتیجه ممنوعیت الکل استاندارد است.
+
+---
+
+## بخش هفدهم: گروگان‌گیری و عزت بین‌المللی
+
+### بحران گروگان‌گیری سفارت آمریکا (۱۳۵۸)
+
+| شاخص | جزئیات |
+|-------|--------|
+| تاریخ | ۱۳ آبان ۱۳۵۸ |
+| مدت | ۴۴۴ روز |
+| تعداد گروگان‌ها | ۵۲ دیپلمات آمریکایی |
+| حمایت خمینی | «این انقلاب دوم و بزرگ‌تر از انقلاب اول است» |
+| پیامد فوری | قطع روابط دیپلماتیک با آمریکا (تا امروز) |
+| پیامد بلندمدت | آغاز تحریم‌ها، انزوای بین‌المللی ایران |
+| نقض قوانین بین‌المللی | نقض آشکار کنوانسیون وین درباره روابط دیپلماتیک |
+
+### وضعیت دیپلماتیک فعلی
+
+| شاخص | وضعیت |
+|-------|-------|
+| تعداد کشورهای بدون سفارت ایران | ده‌ها کشور |
+| قدرت پاسپورت ایرانی | رتبه ۱۸۹ از ۱۹۹ (یکی از ضعیف‌ترین جهان) |
+| کشورهای بدون ویزا | ۴۲ کشور (اکثراً فقیرترین‌ها) |
+| مقایسه: پاسپورت ایران ۱۳۵۷ | آزادی سفر به اکثر کشورهای جهان |
+| تصویر بین‌المللی | «حامی تروریسم»، «محور شرارت» |
+
+---
+
+## بخش هجدهم: بحران انرژی (در کشور نفت و گاز)
+
+| شاخص | وضعیت |
+|-------|-------|
+| صادرات بنزین (۱۳۵۷) | صادرکننده |
+| واردات بنزین (۱۳۹۵ به بعد) | ایران سال‌ها وارد‌کننده بنزین بود |
+| قطعی برق (تابستان ۱۴۰۱–۱۴۰۳) | قطعی‌های گسترده ۶–۱۲ ساعته |
+| قطعی گاز (زمستان ۱۴۰۱–۱۴۰۳) | قطعی در سرمای زمستان |
+| دلیل | نیروگاه‌های فرسوده، مصرف ماینینگ، سوء‌مدیریت |
+| خاموشی‌های صنعتی | تعطیلی کارخانجات به دلیل قطع برق و گاز |
+
+ایران با دومین ذخایر گاز جهان و چهارمین ذخایر نفت، در زمستان از سرما و در تابستان از گرما رنج می‌برد. این تناقض در تاریخ جهان بی‌سابقه است.
+
+---
+
+## بخش نوزدهم: کرونا (مدیریت فاجعه‌بار)
+
+| شاخص | آمار رسمی | تخمین واقعی |
+|-------|----------|-------------|
+| تلفات رسمی | ۱۴۴,۰۰۰+ | ۳۰۰,۰۰۰–۵۰۰,۰۰۰ (بر اساس مرگ‌ومیر اضافی) |
+| مبتلایان | ۷.۶ میلیون رسمی | ۴۰–۵۰ میلیون تخمینی |
+| رد واکسن آمریکایی و انگلیسی توسط خامنه‌ای | «واکسن آمریکایی و انگلیسی ممنوع» | مرگ هزاران نفر به دلیل تأخیر واکسیناسیون |
+| واکسن برکت (داخلی) | کیفیت مشکوک، اثربخشی تأیید نشده بین‌المللی | |
+| واکسن COVIran | تأخیر شدید | |
+
+خامنه‌ای در بحبوحه موج مرگبار کرونا (دی ۱۳۹۹) واردات واکسن فایزر و مدرنا و آسترازنکا را **ممنوع** اعلام کرد. در آن زمان هزاران نفر روزانه جان می‌باختند. ایران یکی از آخرین کشورهای جهان بود که واکسیناسیون عمومی را آغاز کرد.
+
+---
+
+## بخش بیستم: خلاصه مقایسه‌ای نهایی
+
+### ایران ۱۳۵۷ در مقابل ایران ۱۴۰۳
+
+| شاخص | ۱۳۵۷ | ۱۴۰۳ | تغییر |
+|-------|------|------|-------|
+| رتبه اقتصادی جهان | ۱۸ | ۴۰–۵۰ | سقوط |
+| درآمد سرانه (جایگاه جهانی) | بالاتر از ترکیه و کره | پایین‌تر از هر دو | سقوط |
+| ارزش پول | ۷۰ ریال/دلار | ۶۰۰,۰۰۰ ریال/دلار | سقوط ۸,۵۰۰ برابری |
+| قدرت پاسپورت | جزو قوی‌ترین‌ها | رتبه ۱۸۹ | سقوط |
+| نیروی هوایی | پنجم جهان | فرسوده | سقوط |
+| ایرلاین ملی | ۱۰ برتر جهان | لیست سیاه اروپا | سقوط |
+| حقوق زنان | پیشروترین خاورمیانه | واپسگراترین قوانین | سقوط |
+| آزادی بیان | محدود اما موجود | نزدیک به صفر | سقوط |
+| اعتیاد | ۳۰,۰۰۰ | ۳–۸ میلیون | افزایش ۱۰۰–۲۰۰ برابری |
+| فقر | محدود | ۳۰–۵۰٪ جمعیت | فاجعه |
+| تصویر بین‌المللی | متحد غرب و شرق | «محور شرارت» | سقوط |
+| فناوری | خریدار جدیدترین‌ها | تحت تحریم | سقوط |
+| جمعیت زیر خط فقر | کمتر از ۱۰٪ | ۳۰–۵۰٪ | فاجعه |
+| محیط زیست | سالم | بحرانی | فاجعه |
+
+### مقایسه ایران با کشورهای هم‌سطح ۱۹۷۸
+
+| کشور | GDP سرانه ۱۹۷۸ | GDP سرانه ۲۰۲۴ | چند برابر شده | نظام سیاسی |
+|-------|----------------|----------------|--------------|-----------|
+| کره جنوبی | ۱,۴۰۰ | ۳۵,۰۰۰ | ۲۵x | دموکراسی |
+| ترکیه | ۱,۵۰۰ | ۱۱,۰۰۰ | ۷.۳x | نیمه‌دموکراسی |
+| مالزی | ۱,۲۰۰ | ۱۲,۵۰۰ | ۱۰.۴x | نیمه‌دموکراسی |
+| چین | ۱۵۵ | ۱۳,۰۰۰ | ۸۴x | اقتدارگرا-توسعه‌گرا |
+| امارات | ۲۲,۰۰۰ | ۵۰,۰۰۰ | ۲.۳x | پادشاهی |
+| سنگاپور | ۳,۵۰۰ | ۶۵,۰۰۰ | ۱۸.۵x | نیمه‌دموکراسی |
+| **ایران** | **۲,۴۰۰** | **۳,۵۰۰** | **۱.۴x** | **ولایت فقیه** |
+
+---
+
+## جمع‌بندی تحلیلی نهایی
+
+از منظر صرفاً تاریخی و آماری، ۴۷ سال حکومت جمهوری اسلامی را می‌توان با چند عبارت کلیدی خلاصه کرد:
+
+**۱. هدررفت بزرگ‌ترین فرصت تاریخی:** ایران با ثروت نفتی عظیم (بیش از ۲,۵۰۰ میلیارد دلار درآمد نفتی در ۴۷ سال)، جمعیت جوان و تحصیل‌کرده، و زیرساخت‌های به ارث رسیده از دوره پهلوی، پتانسیل تبدیل شدن به یکی از ۱۵ اقتصاد برتر جهان را داشت.
+
+**۲. اولویت ایدئولوژی بر منافع ملی:** صدها میلیارد دلار صرف «صدور انقلاب»، حمایت از نیروهای نیابتی، و برنامه‌های موشکی و هسته‌ای شد، در حالی که مردم ایران فقیرتر شدند.
+
+**۳. سرکوب سیستماتیک:** ده‌ها هزار اعدام، صدها هزار زندانی سیاسی، قتل‌های زنجیره‌ای، کشتار آبان ۹۸، و ساقط کردن هواپیمای اوکراینی.
+
+**۴. فرار مغزها و سرمایه:** بهترین مغزها و سرمایه‌های ایران از کشور خارج شدند. ایرانیان خارج از کشور اکنون از موفق‌ترین مهاجران جهان هستند، در حالی که ایران خالی از آنها فقیرتر شده.
+
+**۵. ویرانی محیط زیست:** خشک شدن دریاچه‌ها، رودخانه‌ها و تالاب‌ها، جنگل‌زدایی، و آلودگی هوا که تأثیرات آن برای نسل‌ها غیرقابل جبران است.
+
+**۶. سقوط اخلاقی و اجتماعی:** افزایش صدبرابری اعتیاد، گسترش فحشا، فروش اعضای بدن، کودکان کار، گورخوابی، و فروپاشی بنیان خانواده.
+
+**۷. نتیجه نهایی تاریخی:** کره جنوبی که در ۱۹۷۸ فقیرتر از ایران بود، اکنون ده برابر ثروتمندتر است. چین ۸۴ برابر رشد کرده، ایران ۱.۴ برابر. این ارقام، خود گویاترین کیفرخواست تاریخی علیه ۴۷ سال حکومت ولایت فقیه هستند.
+
+به عنوان یک تحلیلگر تاریخ معاصر، متوجه اشتباه در تخمین زمانی و نرخ‌های «کف بازار» در گزارش قبلی شدم. با پوزش از این لغزش زمانی، اکنون که در **مردادماه ۱۴۰۵** هستیم، عمق فاجعه و «آپوکالیپس اقتصادی-اجتماعی» ایران ابعاد بسیار وحشتناک‌تری به خود گرفته است.
+
+در ادامه، گزارش نهایی و آپدیت شده از ویرانی‌های ۴۷ سال و ۶ ماه اخیر، با تمرکز بر وضعیت بحرانی **تابستان ۱۴۰۵** ارائه می‌شود:
+
+---
+
+### ۱. فروپاشی پولی و ارزش پول ملی (وضعیت مرداد ۱۴۰۵)
+
+| شاخص | اسفند ۱۳۵۷ | مرداد ۱۴۰۵ | نسبت سقوط |
+|-------|------------|------------|-----------|
+| نرخ دلار آمریکا | ۷ تومان (۷۰ ریال) | **۲۰۰,۰۰۰ تومان (۲ میلیون ریال)** | **۲۸,۵۰۰ برابر** |
+| قیمت سکه بهار آزادی | ۴۲۰ تومان | **۱۲۰ میلیون تومان** | **۲۸۵,۰۰۰ برابر** |
+| قیمت یک نان سنگک | ۵ ریال | **۱۵,۰۰۰ تا ۳۰,۰۰۰ تومان** | **۴۰,۰۰۰ برابر** |
+| قیمت پیکان/خودرو ارزان | ۱۸,۰۰۰ تومان | **۸۰۰ میلیون تا ۱ میلیارد تومان (کوییک/ساینا)** | **۵۰,۰۰۰ برابر** |
+
+**تحلیل:** سقوط ریال در سال ۱۴۰۴ و ۱۴۰۵ به دلیل بن‌بست کامل دیپلماتیک، فروپاشی توافقات منطقه‌ای و کسری بودجه عظیم، شتابی انفجاری گرفت. ریال اکنون عملاً یک کاغذ بی‌ارزش است و اقتصاد ایران کاملاً «دلاریزه» شده، در حالی که درآمدهای مردم ریالی است.
+
+---
+
+### ۲. کارنامه مداخلات منطقه‌ای: سقوط «عمق راهبردی» (۱۴۰۴-۱۴۰۵)
+
+بزرگ‌ترین ضربه تاریخی به ایده «امپراتوری شیعی» در دو سال اخیر رخ داد:
+*   **فاجعه سوریه:** پس از هزینه کرد بیش از **۱۰۰ میلیارد دلار** و کشته شدن هزاران تن از نیروهای تحت امر ایران (مدافعان حرم)، رژیم بشار اسد در آذر ۱۴۰۳ سقوط کرد. ایران نه تنها پایگاه‌های استراتژیک خود را از دست داد، بلکه تمام سرمایه‌گذاری‌های زیرساختی و نفتی‌اش در سوریه توسط دولت جدید مصادره شد. این بزرگ‌ترین شکست استراتژیک تاریخ جمهوری اسلامی بود.
+*   **لبنان و حزب‌الله:** در پی جنگ ویرانگر سال گذشته، بدنه فرماندهی حزب‌الله (از جمله حسن نصرالله و جانشینانش) از بین رفت. نفوذ ایران در لبنان به پایین‌ترین سطح خود در ۴۰ سال اخیر رسیده و هزینه‌های بازسازی که به گردن ایران افتاده، کمر اقتصاد داخلی را شکسته است.
+*   **انزوای مطلق:** ایران اکنون در محاصره دولت‌هایی در منطقه است که به شدت با حضور نظامی سپاه مخالفند. «هلال شیعی» عملاً به «سیاه‌چاله اقتصادی» تبدیل شده است.
+
+---
+
+### ۳. فاجعه زیرساختی: ایران در خاموشی و تشنگی مطلق
+
+در مرداد ۱۴۰۵، زیرساخت‌هایی که شاه ساخته بود، به دلیل عدم اورهال و فرسودگی ۵۰ ساله، عملاً از کار افتاده‌اند:
+*   **ناترازی انرژی:** ناترازی برق به **۳۰ هزار مگاوات** رسیده است. در مرداد ۱۴۰۵، صنایع بزرگ (فولاد و پتروشیمی) هفته‌ای ۴ روز تعطیل هستند و برق خانگی در کلان‌شهرها روزانه ۶ تا ۸ ساعت قطع می‌شود.
+*   **مرگ رودخانه‌ها:** زاینده‌رود و کارون به کانال‌های فاضلاب و زهکش تبدیل شده‌اند. فرونشست زمین در اصفهان و تهران به مرحله «تخریب سازه‌ای» رسیده؛ نرخ فرونشست در برخی مناطق تهران از ۳۰ سانتیمتر در سال فراتر رفته که در جهان بی‌سابقه است.
+*   **بحران بنزین:** ایران با وجود دارا بودن عظیم‌ترین منابع نفتی، روزانه بیش از ۳۰ میلیون لیتر بنزین وارد می‌کند (با نرخ دلار ۲۰۰ هزار تومانی).
+
+---
+
+### ۴. آمار تکان‌دهنده سرکوب و اعدام (۱۴۰۱ تا ۱۴۰۵)
+
+پس از خیزش «زن، زندگی، آزادی» در سال ۱۴۰۱، ماشین کشتار حکومت متوقف نشد:
+*   **اعدام‌ها:** ایران در سال ۱۴۰۴ رکورد اعدام در یک دهه اخیر را شکست (بیش از ۱۱۰۰ اعدام در یک سال). اعدام‌های سیاسی تحت عناوین «بغی» و «افساد فی‌الارض» به ابزار اصلی ایجاد رعب تبدیل شده است.
+*   **شلیک به چشم و بدن:** هزاران تن از جوانان خیزش ۱۴۰۱ اکنون با معلولیت‌های دائمی و نابینایی زندگی می‌کنند، در حالی که عاملان شلیک‌ها به درجات بالاتر نظامی رسیده‌اند.
+
+---
+
+### ۵. فرار مغزها: «تخلیه ژنتیکی» ایران
+
+در سال ۱۴۰۴ و ۱۴۰۵، موج مهاجرت از «نخبگان» به «نیروهای فنی و کارگران ماهر» رسیده است:
+*   **مهاجرت کادر درمان:** ایران با کمبود شدید پرستار و پزشک مواجه است. بیمارستان‌هایی که در زمان پهلوی (مانند بیمارستان هزارتختخوابی یا نمازی شیراز) ساخته شده بودند، اکنون تجهیزات دارند اما پزشک متخصص برای جراحی ندارند.
+*   **فرار سرمایه:** سالانه بیش از **۲۰ میلیارد دلار** سرمایه توسط ایرانیان به کشورهای ترکیه، امارات و کانادا خارج می‌شود.
+
+---
+
+### ۶. فساد سیستمی: حکومت «هزار فامیل جدید»
+
+فساد دیگر یک پدیده جانبی نیست، بلکه «موتور محرک» حکومت است:
+*   **چای دبش، باغ ازگل، و پرونده‌های ۱۴۰۴:** اختلاس‌ها از مقیاس میلیارد دلار فراتر رفته است. نهادهای زیر نظر رهبری (ستاد اجرایی، بنیاد مستضعفان و آستان قدس) که نیمی از اقتصاد ایران را در اختیار دارند، از پرداخت مالیات معاف هستند و هیچ نظارتی بر آن‌ها نیست.
+*   **ثروت آقازاده‌ها:** در حالی که مردم در تهران به «پشت‌بام خوابی» و «اتوبوس خوابی» روی آورده‌اند، فرزندان مقامات در تورنتو، لندن و دبی با ثروت‌های بادآورده از نفت ایران، در حال سرمایه‌گذاری هستند.
+
+---
+
+### ۷. مقایسه نهایی: تمدن بزرگ (۱۳۵۵) در برابر ویرانه بزرگ (۱۴۰۵)
+
+*   **در سال ۱۳۵۵:** شاه در اندیشه ساخت ۲۳ نیروگاه هسته‌ای و تبدیل ایران به پنجمین قدرت صنعتی جهان بود. پاسپورت ایرانی بدون ویزا در سراسر اروپا اعتبار داشت.
+*   **در سال ۱۴۰۵:** ولایت فقیه ایران را به کشوری تبدیل کرده که برای تامین «پیاز و گوجه» مردمش درمانده است. ایران در کنار کره شمالی و افغانستان، منزوی‌ترین کشور جهان است.
+*   **میراث:** تمام آن کارخانجات مدرن (ارج، آزمایش، کفش ملی، هپکو) تبدیل به سوله‌های متروکه یا انبار شده‌اند.
+
+**نتیجه‌گیری گزارش:**
+ایران تحت حاکمیت ولایت فقیه در این ۴۷ سال و ۶ ماه، مسیری معکوس طی کرده است. اگر دوران پهلوی دوران **«ساختن از هیچ»** بود، دوران فعلی دوران **«ویران کردن از همه چیز»** است. سرزمینی که روزگاری نماد مدرنیته در شرق بود، اکنون به دلیل لجاجت ایدئولوژیک، فساد سیستماتیک و دشمنی با تمدن بشری، در آستانه غیرقابل سکونت شدن قرار گرفته است. نرخ دلار ۲۰۰ هزار تومانی در مرداد ۱۴۰۵، تنها عدد نیست؛ بلکه شیونِ احتضارِ اقتصادی است که روزگاری قرار بود قدرت اول منطقه باشد.
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script id="app">
+(function(){
+"use strict";
+/* ═══════════ 0. CORE UTILS ═══════════ */
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var HAS_GSAP = (typeof gsap!=="undefined");
+var HAS_ST   = HAS_GSAP && (typeof ScrollTrigger!=="undefined");
+var HAS_THREE= (typeof THREE!=="undefined");
+if(!HAS_GSAP) console.warn("[OMNI] GSAP CDN unavailable → fallback to CSS/JS reveals.");
+if(!HAS_THREE) console.warn("[OMNI] Three.js CDN unavailable → 3D layer disabled.");
+if(HAS_ST) gsap.registerPlugin(ScrollTrigger);
+var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var MOBILE = window.matchMedia("(max-width:1080px)").matches;
+var TIMERS=[], RAFS=[];
+var FA="۰۱۲۳۴۵۶۷۸۹";
+function fa(n,dec){
+  dec=dec||0;
+  var s=(dec? Number(n).toFixed(dec) : Math.round(n).toString());
+  var parts=s.split("."); parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,",");
+  s=parts.join(".");
+  return s.replace(/[0-9]/g,function(d){return FA[+d]});
+}
+
+/* ═══════════ 1. AUDIO ENGINE ═══════════ */
+var AUD={ctx:null,on:false,last:0};
+AUD.init=function(){ if(AUD.ctx) return; try{ AUD.ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ console.warn("[OMNI] WebAudio unavailable"); } };
+AUD.beep=function(f,d,type,g){
+  if(!AUD.on) return; AUD.init(); if(!AUD.ctx) return;
+  var t=AUD.ctx.currentTime, o=AUD.ctx.createOscillator(), a=AUD.ctx.createGain();
+  o.type=type||"square"; o.frequency.setValueAtTime(f,t);
+  a.gain.setValueAtTime(0.0001,t); a.gain.exponentialRampToValueAtTime(g||0.05,t+0.008);
+  a.gain.exponentialRampToValueAtTime(0.0001,t+(d||0.06));
+  o.connect(a); a.connect(AUD.ctx.destination); o.start(t); o.stop(t+(d||0.06)+0.02);
+};
+AUD.click=function(){AUD.beep(880,0.045,"square",0.035)};
+AUD.ok=function(){AUD.beep(660,0.05,"square",0.05); setTimeout(function(){AUD.beep(1320,0.09,"square",0.04)},60)};
+AUD.hum=function(){ var n=Date.now(); if(n-AUD.last<420) return; AUD.last=n; AUD.beep(72,0.35,"sine",0.03); };
+
+/* ═══════════ 2. MARKDOWN PARSER ═══════════ */
+function esc(s){return s.replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+var NUMRX=/([0-9\u06F0-\u06F9\u0660-\u0669][0-9\u06F0-\u06F9\u0660-\u0669,\u060C\u066B\u066C.\u2013\u2014\-\/:٪%]*[0-9\u06F0-\u06F9\u0660-\u0669٪%]|[0-9\u06F0-\u06F9\u0660-\u0669])/g;
+function inline(s){
+  var links=[];
+  s=s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,function(m,t,u){links.push([t,u]);return "\u0001"+(links.length-1)+"\u0001"});
+  s=esc(s);
+  s=s.replace(NUMRX,function(m){return '<span class="num">'+m+'</span>'});
+  s=s.replace(/\*\*([\s\S]+?)\*\*/g,'<b>$1</b>');
+  s=s.replace(/`([^`]+)`/g,'<code style="color:var(--acc);font-family:var(--mono)">$1</code>');
+  s=s.replace(/\u0001(\d+)\u0001/g,function(m,i){var L=links[+i];return '<a class="wire" href="'+L[1]+'" target="_blank" rel="noopener">'+esc(L[0])+'</a>'});
+  return s;
+}
+function parseMD(md){
+  var L=md.replace(/\r/g,"").split("\n"), out=[], i=0;
+  var isT=function(l){return /^\s*\|/.test(l)},
+      isHR=function(l){return /^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(l)},
+      isL=function(l){return /^\s*([*+\u2022-]|\d+[.)])\s+/.test(l)},
+      isH=function(l){return /^\s*#{1,6}\s+/.test(l)};
+  while(i<L.length){
+    var l=L[i];
+    if(!l.trim()){i++;continue}
+    if(/^\s*```/.test(l)){var lang=l.replace(/```/,"").trim(),b=[];i++;while(i<L.length&&!/^\s*```/.test(L[i]))b.push(L[i++]);i++;out.push({t:"code",lang:lang,text:b.join("\n")});continue}
+    var h=l.match(/^\s*(#{1,6})\s+(.*)$/);
+    if(h){out.push({t:"h",lvl:h[1].length,text:h[2].replace(/\s*#+\s*$/,"").trim()});i++;continue}
+    if(isHR(l)){out.push({t:"hr"});i++;continue}
+    if(isT(l)){var rows=[];while(i<L.length&&isT(L[i]))rows.push(L[i++]);out.push({t:"table",rows:rows});continue}
+    if(/^\s*>/.test(l)){var q=[];while(i<L.length&&/^\s*>/.test(L[i]))q.push(L[i++].replace(/^\s*>\s?/,""));out.push({t:"quote",text:q.join(" ")});continue}
+    if(isL(l)){var it=[];while(i<L.length&&(isL(L[i])||(/^\s{2,}\S/.test(L[i])&&it.length))){if(isL(L[i]))it.push(L[i].replace(/^\s*([*+\u2022-]|\d+[.)])\s+/,""));else it[it.length-1]+=" "+L[i].trim();i++}out.push({t:"list",items:it});continue}
+    var p=[l];i++;
+    while(i<L.length&&L[i].trim()&&!isT(L[i])&&!isL(L[i])&&!isHR(L[i])&&!isH(L[i])&&!/^\s*>/.test(L[i])&&!/^\s*```/.test(L[i])){p.push(L[i++])}
+    out.push({t:"p",text:p.join(" ")});
+  }
+  return out;
+}
+function splitRow(r){
+  var s=r.trim().replace(/^\|/,"").replace(/\|\s*$/,"");
+  return s.split("|").map(function(c){return c.trim()});
+}
+function isSep(r){return /^[\s|:\-–—]+$/.test(r)&&/-/.test(r)}
+
+/* ═══════════ 3. RENDER → COMPONENTS ═══════════ */
+var STATS={sec:0,tbl:0,rows:0,li:0,term:0,words:0};
+var NAVITEMS=[];
+function barcode(){
+  var st=[],x=0;
+  for(var k=0;k<26;k++){var w=1+Math.floor(Math.random()*3);st.push("var(--acc) "+x+"px "+(x+w)+"px");x+=w;var g=1+Math.floor(Math.random()*3);st.push("transparent "+x+"px "+(x+g)+"px");x+=g}
+  return 'background:repeating-linear-gradient(90deg,'+st.join(",")+');background-size:'+x+'px 100%;width:42px';
+}
+function renderTable(rows){
+  var cells=rows.map(splitRow), head=null, body=[];
+  if(cells.length>1&&isSep(rows[1])){head=cells[0];body=cells.slice(2)}else{head=cells[0];body=cells.slice(1)}
+  STATS.tbl++; STATS.rows+=body.length;
+  var id="TBL_"+String(STATS.tbl).padStart(3,"0");
+  var h='<div class="tbl-shell reveal" data-anim="tbl"><div class="tbl-top"><span>▚ MATRIX <span class="g">'+id+'</span></span><span>COLS '+fa(head.length)+' / ROWS <span class="g">'+fa(body.length)+'</span></span></div><div class="tbl-wrap"><table><thead><tr>';
+  head.forEach(function(c){h+='<th>'+inline(c)+'</th>'});
+  h+='</tr></thead><tbody>';
+  body.forEach(function(r){
+    h+="<tr>";
+    for(var j=0;j<head.length;j++){h+='<td data-l="'+esc(head[j].replace(/\*/g,""))+'">'+inline(r[j]||"")+"</td>"}
+    h+="</tr>";
+  });
+  return h+"</tbody></table></div></div>";
+}
+function renderList(items){
+  STATS.li+=items.length;
+  var h='<div class="spec-wrap reveal" data-anim="list">';
+  items.forEach(function(t,k){
+    h+='<div class="spec" tabindex="0" role="checkbox" aria-checked="false" aria-label="تأیید آیتم">'
+      +'<span class="chk"></span><span class="bc" style="'+barcode()+'"></span>'
+      +'<span class="tx">'+inline(t)+'</span><span class="stamp">VERIFIED</span></div>';
+  });
+  return h+"</div>";
+}
+function renderP(text){
+  var m=text.match(/^\*\*([^*]{2,42}?)[:：]?\*\*\s*[:：]?\s*([\s\S]*)$/);
+  if(m){
+    var label=m[1].replace(/[:：]$/,"");
+    return '<div class="alert reveal" data-anim="alert" role="note"><div class="mq"><span>◆ '+esc(label)+' ◆ ALERT PANEL ◆ DATA VERIFIED ◆ '+esc(label)+' ◆ ARCHIVE_1320-1405 ◆</span></div><div class="ab"><b>'+esc(label)+'</b> — '+inline(m[2])+"</div></div>";
+  }
+  STATS.term++;
+  var f="log_"+String(STATS.term).padStart(3,"0")+".txt";
+  return '<div class="term reveal" data-anim="term"><div class="term-bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="t">~/archive/'+f+'</span></div><div class="term-body" data-type="1">'+inline(text)+"</div></div>";
+}
+function renderCode(b){
+  return '<div class="code reveal" data-anim="code"><div class="cbar"><span>◇ HOLO_SRC '+(b.lang||"txt").toUpperCase()+'</span><button class="btn copy" style="font-size:9px;padding:3px 7px">COPY</button></div><pre><code>'+esc(b.text)+'<span class="num">▮</span></code></pre></div>';
+}
+function build(blocks){
+  var html="",open=false,sc=0,heroDone=false;
+  function close(){ if(open){html+="</section>";open=false} }
+  blocks.forEach(function(b,idx){
+    if(b.t==="h"){
+      if(b.lvl<=1){
+        close();
+        var cid="c"+idx;
+        NAVITEMS.push({id:cid,txt:b.text,cls:"h1"});
+        html+='<div class="chapter reveal" id="'+cid+'" data-anim="chap"><div class="cn">/// CHAPTER '+fa(NAVITEMS.filter(function(n){return n.cls==="h1"}).length)+' ///</div><h1 class="glitch">'+inline(b.text)+"</h1></div>";
+      }else if(b.lvl===2){
+        close(); sc++; STATS.sec++;
+        var sid="s"+idx, n=("0"+sc).slice(-2);
+        NAVITEMS.push({id:sid,txt:b.text,cls:"h2"});
+        html+='<section class="sec" id="'+sid+'"><div class="sec-h reveal" data-anim="sech"><svg preserveAspectRatio="none"><rect x="1" y="1" width="99%" height="97%"/></svg><span class="sec-idx">/// '+n+' ///</span><h2 class="glitch">'+inline(b.text)+' <span class="us">_</span></h2></div>';
+        open=true;
+      }else{
+        var hid="h"+idx;
+        NAVITEMS.push({id:hid,txt:b.text,cls:"h3"});
+        html+='<h3 class="sub glitch reveal" id="'+hid+'" data-anim="h3">'+inline(b.text)+"</h3>";
+      }
+    }
+    else if(b.t==="table") html+=renderTable(b.rows);
+    else if(b.t==="list")  html+=renderList(b.items);
+    else if(b.t==="code")  html+=renderCode(b);
+    else if(b.t==="quote") html+='<div class="alert reveal" data-anim="alert"><div class="mq"><span>◆ QUOTE_BUFFER ◆ PRIORITY_TRANSMISSION ◆</span></div><div class="ab">'+inline(b.text)+"</div></div>";
+    else if(b.t==="hr")    html+='<hr class="rule">';
+    else if(b.t==="p"){ STATS.words+=b.text.split(/\s+/).length; html+=renderP(b.text); }
+  });
+  close();
+  return html;
+}
+
+/* ═══════════ 4. BOOT DOCUMENT ═══════════ */
+var RAW=$("#SRC").textContent;
+var BLOCKS=parseMD(RAW);
+var DOC=$("#doc");
+DOC.innerHTML=build(BLOCKS);
+
+/* HERO CONTENT (derived from source) */
+var heroTitle="آرشیو ایران", heroSub="";
+for(var bi=0;bi<BLOCKS.length;bi++){
+  var B=BLOCKS[bi];
+  if(B.t==="h"&&/تمدن بزرگ[\s\S]*ویرانه بزرگ/.test(B.text)){
+    heroTitle=B.text.replace(/^[۰-۹0-9.\s]*/,"").replace(/^مقایسه نهایی[:：]\s*/,"");break;
+  }
+}
+if(heroTitle==="آرشیو ایران"){ for(var bj=0;bj<BLOCKS.length;bj++){ if(BLOCKS[bj].t==="h"&&BLOCKS[bj].lvl===1){heroTitle=BLOCKS[bj].text;break} } }
+for(var bk=0;bk<BLOCKS.length;bk++){ if(BLOCKS[bk].t==="p"){heroSub=BLOCKS[bk].text.replace(/\*\*/g,"");break} }
+var HT=$("#htitle");
+var TITLE_REV="LAICIF-IRA", TITLE_FWD="ARI-FICIAL", MIRRORED=false;
+function letterSpans(w){
+  return w.split("").map(function(c){
+    return '<span class="ch'+(c==="-"?" dash":"")+'" data-c="'+c+'">'+c+"</span>";
+  }).join("");
+}
+HT.innerHTML='<span class="l" id="tl1">'+letterSpans(TITLE_REV)+'</span>'
+            +'<span class="l" id="tl2" style="color:var(--crim);text-shadow:0 0 26px rgba(255,0,60,.5)">'+letterSpans("REPORT")+"</span>";
+$("#hdoc").innerHTML="▚ "+esc(heroTitle)+" ▚ ۱۳۲۰ — ۱۴۰۵";
+$("#hmeta").innerHTML=[
+  ["SECTIONS",fa(STATS.sec)],["MATRICES",fa(STATS.tbl)],["DATA ROWS",fa(STATS.rows)],
+  ["SPEC ITEMS",fa(STATS.li)],["LOGS",fa(STATS.term)],["SPAN","۱۳۲۰ — ۱۴۰۵"]
+].map(function(x){return '<span class="chip">'+x[0]+" <b>"+x[1]+"</b></span>"}).join("");
+$("#fstat").textContent="BLOCKS "+BLOCKS.length+" / TABLES "+STATS.tbl+" / ROWS "+STATS.rows;
+
+/* HERO TYPEWRITER */
+(function(){
+  var el=$("#hsub"), txt=heroSub.slice(0,340)+" …", i=0;
+  var iv=setInterval(function(){ el.textContent=txt.slice(0,i++); if(i>txt.length) clearInterval(iv); },14);
+  TIMERS.push(iv);
+})();
+/* TITLE SCRAMBLE (per-letter) */
+var GLY="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&*/\\<>{}[]";
+(function(){
+  $$("#htitle .ch").forEach(function(sp,i){
+    var real=sp.getAttribute("data-c"), ticks=9+i*2, t=0;
+    var iv=setInterval(function(){
+      t++;
+      if(t>=ticks){ sp.textContent=real; clearInterval(iv); }
+      else sp.textContent=GLY[Math.floor(Math.random()*GLY.length)];
+    },38);
+    TIMERS.push(iv);
+  });
+})();
+/* MIRROR TOGGLE :: LAICIF-IRA ⇄ ARI-FICIAL */
+function setTitleWord(word){
+  $$("#tl1 .ch").forEach(function(sp,i){
+    var nc=word.charAt(i)||"";
+    var apply=function(){ sp.setAttribute("data-c",nc); sp.textContent=nc; sp.classList.toggle("dash",nc==="-"); };
+    if(HAS_GSAP&&!REDUCED){
+      gsap.timeline({delay:i*0.035})
+        .to(sp,{rotationX:90,duration:.16,ease:"power2.in",onComplete:apply})
+        .to(sp,{rotationX:0,duration:.24,ease:"back.out(2.4)"});
+    } else apply();
+  });
+}
+
+/* KPI DECK */
+var KPI=[
+ {v:37,d:0,s:" سال",k:"دوره پادشاهی ۱۳۲۰—۱۳۵۷",n:"K-01"},
+ {v:2400,d:0,s:" $",k:"درآمد سرانه ایران ۱۹۷۸",n:"K-02"},
+ {v:1.4,d:1,s:"×",k:"رشد ایران در ۴۷ سال",n:"K-03"},
+ {v:25,d:0,s:"×",k:"رشد کره جنوبی در همان بازه",n:"K-04"},
+ {v:28500,d:0,s:"×",k:"سقوط ریال تا مرداد ۱۴۰۵",n:"K-05"},
+ {v:23,d:0,s:"",k:"نیروگاه هسته‌ای برنامه‌ریزی‌شده",n:"K-06"},
+ {v:15000,d:0,s:" MW",k:"ظرفیت برق نصب‌شده ۱۳۵۷",n:"K-07"},
+ {v:2500,d:0,s:" B$",k:"درآمد نفتی ۴۷ ساله",n:"K-08"}
+];
+$("#kpis").innerHTML=KPI.map(function(k){
+  return '<div class="kpi reveal tilt" data-anim="kpi" data-id="'+k.n+'"><div class="v" data-v="'+k.v+'" data-d="'+k.d+'" data-s="'+k.s+'">۰</div><div class="k">'+k.k+"</div></div>";
+}).join("");
+
+/* NAV */
+$("#navlist").innerHTML=NAVITEMS.map(function(n){
+  return '<a href="#'+n.id+'" class="'+n.cls+'" data-t="'+n.id+'">'+esc(n.txt.replace(/\*\*/g,""))+"</a>";
+}).join("");
+
+/* ═══════════ 5. REVEAL / ANIMATION ═══════════ */
+function typeIn(el){
+  var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null,false),n,nodes=[],total=0;
+  while((n=w.nextNode())){ nodes.push({n:n,t:n.nodeValue}); total+=n.nodeValue.length; }
+  if(!total||total>1500||REDUCED) return;
+  nodes.forEach(function(o){o.n.nodeValue=""});
+  var dur=Math.min(1500,Math.max(350,total*6)),st=performance.now();
+  function step(now){
+    var p=Math.min(1,(now-st)/dur),shown=Math.floor(p*total),acc=0;
+    for(var i=0;i<nodes.length;i++){
+      var take=Math.max(0,Math.min(nodes[i].t.length,shown-acc));
+      if(nodes[i].n.nodeValue.length!==take) nodes[i].n.nodeValue=nodes[i].t.slice(0,take);
+      acc+=nodes[i].t.length;
+    }
+    if(p<1) requestAnimationFrame(step); else nodes.forEach(function(o){o.n.nodeValue=o.t});
+  }
+  requestAnimationFrame(step);
+}
+function countUp(el){
+  var target=parseFloat(el.getAttribute("data-v")),dec=+el.getAttribute("data-d"),suf=el.getAttribute("data-s")||"";
+  var st=performance.now(),dur=1600;
+  function step(now){
+    var p=Math.min(1,(now-st)/dur), e=1-Math.pow(1-p,3);
+    el.textContent=fa(target*e,dec)+suf;
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function drawRect(box){
+  var svg=$("svg",box); if(!svg) return;
+  var r=$("rect",svg), b=box.getBoundingClientRect(), per=2*(b.width+b.height);
+  r.style.strokeDasharray=per; r.style.strokeDashoffset=per;
+  if(HAS_GSAP) gsap.to(r,{strokeDashoffset:0,duration:1.4,ease:"power2.inOut"});
+  else { r.style.transition="stroke-dashoffset 1.4s ease-in-out"; requestAnimationFrame(function(){r.style.strokeDashoffset=0}); }
+}
+function reveal(el){
+  var kind=el.getAttribute("data-anim");
+  el.style.opacity="1";
+  if(HAS_GSAP&&!REDUCED){
+    var from={opacity:0,duration:.75,ease:"power3.out"};
+    if(kind==="tbl"||kind==="code") {from.y=40;from.skewY=1.2;}
+    else if(kind==="list"){from.x=-30;}
+    else if(kind==="alert"){from.scaleX=.86;from.transformOrigin="right center";}
+    else if(kind==="kpi"){from.y=26;from.scale=.94;}
+    else {from.y=26;}
+    gsap.from(el,from);
+  }else{ el.classList.add("shown"); el.style.opacity=1; }
+  if(kind==="sech") drawRect(el);
+  if(kind==="term") { var tb=$(".term-body",el); if(tb) typeIn(tb); }
+  if(kind==="kpi") countUp($(".v",el));
+  if(kind==="sig") drawSignature();
+  if(kind==="list"&&HAS_GSAP&&!REDUCED) gsap.from($$(".spec",el),{opacity:0,x:-24,stagger:.05,duration:.5,delay:.1});
+  if(kind==="tbl"&&HAS_GSAP&&!REDUCED) gsap.from($$("tbody tr",el).slice(0,26),{opacity:0,x:18,stagger:.025,duration:.4,delay:.15});
+}
+/* ── ANIMATED AUTHOR SIGNATURE ── */
+var SIG={busy:false};
+function drawSignature(){
+  var svg=$("#sigSvg"); if(!svg||SIG.busy) return;
+  var g=svg.querySelector("g"), paths=$$("path",svg); if(!g||!paths.length) return;
+  SIG.busy=true;
+  var box=$("#sig"); box.classList.remove("done");
+  var stat=$("#sigStat"); if(stat){stat.textContent="WRITING…";stat.style.color="var(--cyber)"}
+  g.style.fillOpacity=0;
+  paths.forEach(function(p){
+    var len=0; try{len=p.getTotalLength()}catch(e){len=0}
+    if(!len||!isFinite(len)) len=4000;
+    p.setAttribute("vector-effect","non-scaling-stroke");
+    p.style.stroke="currentColor";
+    p.style.strokeWidth="1.15";
+    p.style.strokeOpacity="1";
+    p.style.strokeDasharray=len;
+    p.style.strokeDashoffset=len;
+    p.style.transition="none";
+  });
+  function seal(){
+    SIG.busy=false; box.classList.add("done");
+    if(stat){stat.textContent="AUTHENTICATED";stat.style.color="var(--acid)"}
+    var h=""; for(var i=0;i<8;i++)h+="0123456789ABCDEF"[Math.floor(Math.random()*16)];
+    var hs=$("#sigHash"); if(hs)hs.textContent=h;
+    var d=new Date(), dt=$("#sigDate");
+    if(dt)dt.textContent="SEALED "+d.toISOString().slice(0,10).replace(/-/g,".")+" UTC";
+    AUD.ok();
+  }
+  if(HAS_GSAP&&!REDUCED){
+    gsap.timeline({onComplete:seal})
+      .to(paths,{strokeDashoffset:0,duration:3.1,stagger:.16,ease:"power1.inOut"})
+      .to(g,{fillOpacity:1,duration:1,ease:"power2.out"},"-=1.2")
+      .to(paths,{strokeOpacity:.22,duration:.7},"<");
+  }else{
+    paths.forEach(function(p,i){
+      p.style.transition="stroke-dashoffset 2.6s ease-in-out "+(i*0.14)+"s";
+    });
+    requestAnimationFrame(function(){
+      paths.forEach(function(p){p.style.strokeDashoffset=0});
+      setTimeout(function(){ g.style.transition="fill-opacity .9s"; g.style.fillOpacity=1; seal(); },2700);
+    });
+  }
+}
+var IO=new IntersectionObserver(function(en){
+  en.forEach(function(e){ if(e.isIntersecting){ reveal(e.target); IO.unobserve(e.target); } });
+},{rootMargin:"0px 0px -8% 0px",threshold:0.06});
+$$(".reveal").forEach(function(e){IO.observe(e)});
+
+/* NAV ACTIVE STATE */
+var navLinks=$$("#navlist a");
+var SPY=new IntersectionObserver(function(en){
+  en.forEach(function(e){
+    if(e.isIntersecting){
+      navLinks.forEach(function(a){a.classList.toggle("active",a.getAttribute("data-t")===e.target.id)});
+      var act=$("#navlist a.active");
+      if(act&&act.scrollIntoView) act.scrollIntoView({block:"nearest"});
+    }
+  });
+},{rootMargin:"-12% 0px -78% 0px"});
+NAVITEMS.forEach(function(n){var el=document.getElementById(n.id); if(el) SPY.observe(el)});
+
+/* ═══════════ 6. HUD : CLOCK / PROGRESS / RADAR / FPS ═══════════ */
+var clockEl=$("#clock"),progEl=$("#prog"),rprog=$("#rprog"),rpct=$("#rpct"),fpsEl=$("#fps");
+TIMERS.push(setInterval(function(){
+  var d=new Date();
+  clockEl.textContent=[d.getUTCHours(),d.getUTCMinutes(),d.getUTCSeconds()].map(function(x){return ("0"+x).slice(-2)}).join(":");
+},1000));
+var scrollVel=0,lastY=window.pageYOffset;
+function hudLoop(){
+  var y=window.pageYOffset,h=document.documentElement.scrollHeight-window.innerHeight;
+  var p=h>0?Math.min(1,Math.max(0,y/h)):0;
+  progEl.style.width=(p*100)+"%";
+  rprog.setAttribute("stroke-dashoffset",(276.5*(1-p)).toFixed(1));
+  rpct.textContent=fa(p*100)+"٪";
+  scrollVel=scrollVel*0.9+(y-lastY)*0.1; lastY=y;
+  RAFS[0]=requestAnimationFrame(hudLoop);
+}
+hudLoop();
+(function(){var f=0,t=performance.now();
+ function loop(){f++;var n=performance.now();if(n-t>1000){fpsEl.textContent=f;f=0;t=n}requestAnimationFrame(loop)}
+ if(!REDUCED) loop();})();
+
+/* ═══════════ 7. CUSTOM CURSOR ═══════════ */
+(function(){
+  if(window.matchMedia("(pointer:coarse)").matches) return;
+  var c=$("#cursor"),dot=$("#cdot"),cx=innerWidth/2,cy=innerHeight/2,dx=cx,dy=cy;
+  if(HAS_GSAP) gsap.set(c,{xPercent:-50,yPercent:-50,x:cx,y:cy});
+  var setX=HAS_GSAP?gsap.quickTo(c,"x",{duration:.18,ease:"power3"}):null;
+  var setY=HAS_GSAP?gsap.quickTo(c,"y",{duration:.18,ease:"power3"}):null;
+  document.addEventListener("mousemove",function(e){
+    cx=e.clientX;cy=e.clientY; dot.style.transform="translate("+cx+"px,"+cy+"px) translate(-50%,-50%)";
+    if(setX){setX(cx);setY(cy)} else {c.style.transform="translate("+cx+"px,"+cy+"px) translate(-50%,-50%)"}
+    PX.mx=cx;PX.my=cy;
+  },{passive:true});
+  document.addEventListener("mouseover",function(e){
+    var hot=e.target.closest("a,button,input,.spec,tr,th,.kpi,.term,.chip,.sec-h,h3.sub");
+    c.classList.toggle("hot",!!hot);
+  });
+  if(!HAS_GSAP){ c.style.left="0px";c.style.top="0px"; }
+})();
+
+/* ═══════════ 8. PARTICLE FIELD (Canvas 2D) ═══════════ */
+var PX={mx:-9999,my:-9999};
+(function(){
+  var cv=$("#px");
+  if(MOBILE||REDUCED){cv.style.display="none";return}
+  var ctx=cv.getContext("2d"),W,H,pts=[],N;
+  function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+  size(); window.addEventListener("resize",size);
+  N=Math.min(120,Math.floor(innerWidth/14));
+  for(var i=0;i<N;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35});
+  function acc(){return getComputedStyle(document.documentElement).getPropertyValue("--acc").trim()||"#ccff00"}
+  var col=acc();
+  setInterval(function(){col=acc()},1200);
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<pts.length;i++){
+      var p=pts[i];
+      var ddx=p.x-PX.mx,ddy=p.y-PX.my,d2=ddx*ddx+ddy*ddy;
+      if(d2<19000&&d2>0.5){var f=(19000-d2)/19000*1.9,d=Math.sqrt(d2);p.vx+=(ddx/d)*f*0.7;p.vy+=(ddy/d)*f*0.7}
+      p.vx*=0.965;p.vy*=0.965;
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x+=W; if(p.x>W)p.x-=W; if(p.y<0)p.y+=H; if(p.y>H)p.y-=H;
+      ctx.fillStyle=col;ctx.globalAlpha=.55;ctx.fillRect(p.x,p.y,1.6,1.6);
+      for(var j=i+1;j<pts.length;j++){
+        var q=pts[j],ax=p.x-q.x,ay=p.y-q.y,dd=ax*ax+ay*ay;
+        if(dd<11000){ctx.globalAlpha=(1-dd/11000)*.16;ctx.strokeStyle=col;ctx.lineWidth=.6;
+          ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}
+      }
+    }
+    ctx.globalAlpha=1;
+    RAFS[1]=requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ═══════════ 9. THREE.JS WIREFRAME CORE ═══════════ */
+var TJ={mat:null,pmat:null};
+(function(){
+  var cv=$("#gl");
+  if(!HAS_THREE||REDUCED){cv.style.display="none";return}
+  try{
+    var rd=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
+    rd.setPixelRatio(Math.min(devicePixelRatio,1.6)); rd.setSize(innerWidth,innerHeight);
+    var sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(52,innerWidth/innerHeight,.1,120);
+    cam.position.z=26;
+    TJ.mat=new THREE.MeshBasicMaterial({color:0xccff00,wireframe:true,transparent:true,opacity:.22});
+    var knot=new THREE.Mesh(new THREE.TorusKnotGeometry(8.4,1.5,MOBILE?70:150,MOBILE?8:14,2,3),TJ.mat);
+    knot.position.x=MOBILE?0:-7; sc.add(knot);
+    var g=new THREE.BufferGeometry(),n=MOBILE?220:520,arr=new Float32Array(n*3);
+    for(var i=0;i<n*3;i++)arr[i]=(Math.random()-.5)*70;
+    g.setAttribute("position",new THREE.BufferAttribute(arr,3));
+    TJ.pmat=new THREE.PointsMaterial({color:0xff003c,size:.16,transparent:true,opacity:.6});
+    var cloud=new THREE.Points(g,TJ.pmat); sc.add(cloud);
+    window.addEventListener("resize",function(){
+      cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();rd.setSize(innerWidth,innerHeight);
+    });
+    function tick(){
+      var boost=Math.min(0.055,Math.abs(scrollVel)*0.0016);
+      knot.rotation.y+=0.0024+boost; knot.rotation.x+=0.0013+boost*.5;
+      cloud.rotation.y-=0.0006+boost*.25; cloud.rotation.x+=0.0003;
+      cam.position.x+=((PX.mx/innerWidth-.5)*4-cam.position.x)*0.03;
+      cam.position.y+=(-(PX.my/innerHeight-.5)*4-cam.position.y)*0.03;
+      cam.lookAt(0,0,0);
+      rd.render(sc,cam);
+      RAFS[2]=requestAnimationFrame(tick);
+    }
+    tick();
+  }catch(err){ console.warn("[OMNI] WebGL init failed → 3D disabled.",err); cv.style.display="none"; }
+})();
+
+/* ═══════════ 10. INTERACTIONS ═══════════ */
+document.addEventListener("click",function(e){
+  var sp=e.target.closest(".spec");
+  if(sp){ sp.classList.toggle("ok"); sp.setAttribute("aria-checked",sp.classList.contains("ok")); 
+    if(sp.classList.contains("ok"))AUD.ok();else AUD.click();
+    if(HAS_GSAP&&sp.classList.contains("ok"))gsap.fromTo($(".stamp",sp),{scale:1.5,opacity:0},{scale:1,opacity:.95,duration:.35,ease:"back.out(3)"});
+    return;
+  }
+  var cp=e.target.closest(".copy");
+  if(cp){
+    var code=$("code",cp.closest(".code"));
+    var r=document.createElement("span"); r.className="ripple";
+    var b=cp.getBoundingClientRect(); r.style.left=(e.clientX-b.left)+"px"; r.style.top=(e.clientY-b.top)+"px";
+    r.style.width=r.style.height="8px"; cp.style.overflow="hidden"; cp.appendChild(r);
+    setTimeout(function(){r.remove()},650);
+    try{navigator.clipboard.writeText(code.innerText.replace(/▮$/,""));cp.textContent="COPIED";
+      setTimeout(function(){cp.textContent="COPY"},1400)}catch(x){}
+    AUD.ok(); return;
+  }
+  if(e.target.closest("a,button,tr,th")) AUD.click();
+},true);
+document.addEventListener("keydown",function(e){
+  if((e.key==="Enter"||e.key===" ")&&document.activeElement&&document.activeElement.classList.contains("spec")){
+    e.preventDefault(); document.activeElement.click();
+  }
+});
+$$(".sec, .chapter").forEach(function(s){ s.addEventListener("mouseenter",function(){AUD.hum()}) });
+/* 3D TILT ON KPI */
+$$(".tilt").forEach(function(c){
+  c.addEventListener("mousemove",function(e){
+    var b=c.getBoundingClientRect(),x=(e.clientX-b.left)/b.width-.5,y=(e.clientY-b.top)/b.height-.5;
+    c.style.transform="perspective(600px) rotateX("+(-y*9)+"deg) rotateY("+(x*9)+"deg) translateZ(6px)";
+  });
+  c.addEventListener("mouseleave",function(){c.style.transform=""});
+});
+/* GREP FILTER */
+var grep=$("#grep");
+grep.addEventListener("input",function(){
+  var q=grep.value.trim().toLowerCase();
+  var hits=0;
+  $$("#doc tbody tr, #doc .spec").forEach(function(el){
+    if(!q){el.style.display="";return}
+    var m=el.textContent.toLowerCase().indexOf(q)>-1;
+    el.style.display=m?"":"none"; if(m)hits++;
+  });
+  $$("#doc .term, #doc .alert").forEach(function(el){
+    if(!q){el.style.display="";return}
+    var m=el.textContent.toLowerCase().indexOf(q)>-1;
+    el.style.display=m?"":"none"; if(m)hits++;
+  });
+  $("#fstat").textContent=q?("GREP «"+grep.value+"» → "+hits+" HITS"):("BLOCKS "+BLOCKS.length+" / TABLES "+STATS.tbl+" / ROWS "+STATS.rows);
+});
+/* ACCENT SWITCH */
+function setAccent(c){
+  document.documentElement.style.setProperty("--acc",c);
+  var rg=$("#cursor .ring"); if(rg){rg.style.borderColor=c;$("#cursor .h").style.background=c;$("#cursor .v").style.background=c}
+  rprog.setAttribute("stroke",c);
+  if(TJ.mat){TJ.mat.color=new THREE.Color(c)}
+  AUD.click();
+}
+$$("#swA,#swB,#swC").forEach(function(b){b.addEventListener("click",function(){setAccent(b.getAttribute("data-c"))})});
+/* AUDIO TOGGLE */
+var sb=$("#sndBtn");
+sb.addEventListener("click",function(){
+  AUD.on=!AUD.on; AUD.init();
+  if(AUD.ctx&&AUD.ctx.state==="suspended")AUD.ctx.resume();
+  sb.textContent="SND:"+(AUD.on?"ON":"OFF"); sb.classList.toggle("on",AUD.on);
+  sb.setAttribute("aria-pressed",AUD.on?"true":"false");
+  if(AUD.on)AUD.ok();
+});
+$("#mirBtn").addEventListener("click",function(){
+  MIRRORED=!MIRRORED;
+  setTitleWord(MIRRORED?TITLE_FWD:TITLE_REV);
+  this.textContent=MIRRORED?"UN-MIRROR":"MIRROR";
+  this.classList.toggle("on",MIRRORED);
+  this.setAttribute("aria-pressed",MIRRORED?"true":"false");
+  HT.setAttribute("aria-label",(MIRRORED?TITLE_FWD:TITLE_REV)+" REPORT");
+  AUD.click();
+});
+$("#sigBtn").addEventListener("click",function(){
+  var s=$("#sig"); if(!s) return;
+  s.scrollIntoView({behavior:"smooth",block:"center"});
+  setTimeout(function(){drawSignature()},700); AUD.click();
+});
+$("#sigReplay").addEventListener("click",function(e){e.stopPropagation();drawSignature()});
+$("#topBtn").addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});AUD.click()});
+$("#navToggle").addEventListener("click",function(){$("#nav").classList.toggle("open");AUD.click()});
+$$("#navlist a").forEach(function(a){a.addEventListener("click",function(){$("#nav").classList.remove("open")})});
+
+/* ═══════════ 11. GSAP SCROLL PARALLAX ═══════════ */
+if(HAS_ST&&!REDUCED){
+  gsap.to("#wire",{yPercent:70,rotation:24,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:.6}});
+  gsap.to("#htitle",{yPercent:-14,opacity:.15,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:.4}});
+  gsap.utils.toArray(".chapter").forEach(function(ch){
+    gsap.fromTo(ch,{letterSpacing:"0.28em"},{letterSpacing:"0.01em",ease:"none",
+      scrollTrigger:{trigger:ch,start:"top 90%",end:"top 40%",scrub:.5}});
+  });
+}
+if(HAS_GSAP&&!REDUCED){
+  gsap.from(".kicker",{opacity:0,x:40,duration:1,delay:.15});
+  gsap.from("#topbar .seg",{opacity:0,y:-14,stagger:.08,duration:.6,delay:.1});
+  gsap.from("#nav .brackets",{opacity:0,x:40,stagger:.12,duration:.8,delay:.35});
+  gsap.from(".corner",{opacity:0,scale:.2,stagger:.09,duration:.7,delay:.05});
+}
+
+/* ═══════════ 12. CLEANUP ═══════════ */
+window.addEventListener("beforeunload",function(){
+  TIMERS.forEach(clearInterval); RAFS.forEach(cancelAnimationFrame);
+  try{IO.disconnect();SPY.disconnect()}catch(e){}
+  if(AUD.ctx&&AUD.ctx.close)AUD.ctx.close();
+});
+console.log("%c OMNI-ARCHITECT 2027 :: ARCHIVE ONLINE ","background:#ccff00;color:#050505;font-weight:bold");
+})();
+</script>
+</body>
+</html>

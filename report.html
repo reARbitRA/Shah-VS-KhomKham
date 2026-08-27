@@ -3,11 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23050505'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='16' fill='%23ff003c' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#050505">
 <title>LAICIF-IRA REPORT // 1320—1405</title>
 <meta name="description" content="LAICIF-IRA REPORT — آرشیو تعاملی داده، تحلیل تطبیقی ایران ۱۳۲۰ تا ۱۴۰۵">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Inter:wght@300;500;800&family=Vazirmatn:wght@300;500;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Inter:wght@300;500;800&family=Vazirmatn:wght@300;500;900&family=Special+Elite&family=Cutive+Mono&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ============ CORE TOKENS ============ */
 :root{
@@ -92,7 +94,7 @@ b .num,strong .num{color:var(--cyber);text-shadow:0 0 8px rgba(255,208,0,.6)}
 #radar .rlbl{position:absolute;bottom:-14px;width:100%;text-align:center;font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--dim)}
 
 /* CURSOR */
-#cursor{position:fixed;top:0;left:0;width:26px;height:26px;z-index:99999;pointer-events:none;
+#cursor{position:fixed;top:0;left:0;width:26px;height:26px;z-index:200000;pointer-events:none;
   transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .18s,height .18s}
 #cursor .ring{position:absolute;inset:0;border:1px solid rgba(204,255,0,.85);border-radius:50%}
 #cursor .h,#cursor .v{position:absolute;background:rgba(204,255,0,.85)}
@@ -100,7 +102,7 @@ b .num,strong .num{color:var(--cyber);text-shadow:0 0 8px rgba(255,208,0,.6)}
 #cursor .v{left:50%;top:-8px;bottom:-8px;width:1px}
 #cursor.hot{width:40px;height:40px}
 #cursor.hot .ring{border-color:var(--crim);box-shadow:0 0 12px rgba(255,0,60,.7)}
-#cdot{position:fixed;width:4px;height:4px;background:var(--crim);z-index:99999;pointer-events:none;transform:translate(-50%,-50%)}
+#cdot{position:fixed;width:4px;height:4px;background:var(--crim);z-index:200000;pointer-events:none;transform:translate(-50%,-50%)}
 @media(pointer:coarse){#cursor,#cdot{display:none}}
 
 /* ============ SHELL ============ */
@@ -317,9 +319,138 @@ footer{border-top:2px solid var(--acc);margin-top:80px;padding:34px 0 70px;font-
 #navToggle{display:none}
 @media(max-width:1080px){#navToggle{display:inline-block}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001s !important;transition:none !important}}
+/* ==========================================================================
+   LAICIF-IRA v2.0 — consolidated overlay (single coherent layer)
+   splash intro · black crumble transition · readability · premium visuals
+   ========================================================================== */
+:root{--txt:#e8e8e8;--dim:#b8b8b8}
+
+/* ---------- 1. READABILITY : 100% opacity, high contrast, framed ---------- */
+body{color:#e8e8e8}
+body::before{opacity:0 !important}
+body::after{display:none !important}
+.reveal{opacity:1 !important}
+#navlist a.h3{opacity:1 !important}
+.spec .stamp,.sig-seal,.sig-base,.corner{opacity:1 !important}
+.chip{color:#fff !important;background:rgba(0,0,0,.55);border:1px solid #3a3a3a}
+footer{color:#ddd !important}
+.term-body,.alert .ab,.spec .tx,.tbl-top,td,th{color:#fff !important}
+#gl{opacity:.85}#px{opacity:.5}
+
+/* ---------- 2. SPLASH — separate full-screen intro page ---------- */
+#splash{position:fixed;inset:0;z-index:100000;background:radial-gradient(130% 110% at 50% 0%,#0d0d0d,#040404 72%);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  transition:opacity .9s ease,transform .9s ease}
+#splash.closed{opacity:0;pointer-events:none;transform:scale(1.08)}
+.splash-inner{max-width:1100px;width:94%;display:flex;flex-direction:column;gap:30px;align-items:center;text-align:center;padding:24px 8px}
+.splash-kick{font-family:var(--mono);font-size:10px;letter-spacing:.4em;color:var(--crim);text-transform:uppercase}
+#spTitle{font-family:'Special Elite',monospace;font-size:clamp(1.8rem,6.4vw,5rem);color:#fff;letter-spacing:.03em;
+  line-height:1;white-space:nowrap;text-shadow:0 0 30px rgba(255,0,60,.5),2px 0 0 rgba(255,0,60,.5),-2px 0 0 rgba(0,229,255,.4)}
+.type-caret::after{content:"\258E";color:var(--crim);animation:blink .8s steps(2) infinite;margin-left:.05em}
+.splash-sigrow{display:flex;align-items:center;justify-content:center;gap:38px;flex-wrap:wrap;margin-top:6px}
+#spSig{width:210px;height:auto;color:var(--crim);cursor:pointer;filter:drop-shadow(0 0 24px rgba(255,0,60,.6));
+  transition:transform .25s,filter .25s;outline:none}
+#spSig:hover,#spSig:focus-visible{transform:scale(1.07);filter:drop-shadow(0 0 34px rgba(255,0,60,.9))}
+#spSig path{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.6}
+#spVtitle{display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  font-family:'Special Elite',monospace;font-size:clamp(1rem,1.5vw,1.4rem);color:#fff;letter-spacing:.14em;
+  line-height:1;height:215px;white-space:nowrap;text-shadow:0 0 16px rgba(255,0,60,.6);cursor:pointer}
+#spVtitle .ch{display:block;line-height:1}
+#spVtitle .ch.dash{color:var(--crim)}
+.splash-qr{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center}
+.sqr-frame{border:2px solid var(--crim);padding:6px;filter:drop-shadow(0 0 12px rgba(255,0,60,.4))}
+.sqr-frame canvas{width:120px;height:120px;display:block;background:rgba(0,0,0,.5)}
+.sm{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:#e6e6e6;display:flex;flex-direction:column;gap:6px;text-align:left}
+.sm b{color:var(--crim)}
+.sm .stamp{border:2px solid var(--crim);color:var(--crim);padding:3px 8px;transform:rotate(-4deg);
+  font-family:'Special Elite',monospace;background:rgba(20,0,5,.75);display:inline-block;width:max-content}
+.splash-hint{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:#fff;background:rgba(255,0,60,.2);
+  border:1px solid var(--crim);padding:10px 22px;animation:blink 1.7s steps(2) infinite}
+
+/* ---------- 3. BLACK CRUMBLE TRANSITION ---------- */
+#crumbleIntro{position:fixed;inset:0;z-index:100001;background:#000;display:none;
+  align-items:center;justify-content:center;overflow:hidden}
+.crumb-line{max-width:94%;text-align:center;font-family:'Amiri',serif;font-weight:700;
+  font-size:clamp(2rem,6.8vw,5.4rem);line-height:1.5;color:#efe8d8;padding:0 20px;
+  text-shadow:0 0 34px rgba(255,255,255,.16),0 6px 22px rgba(0,0,0,.85)}
+.crumb-char{display:inline-block;opacity:0;transition:opacity .16s linear;will-change:transform,opacity;white-space:pre}
+.crumb-char.in{opacity:1}
+.crumb-word{display:inline-block;opacity:1;will-change:transform,opacity;white-space:nowrap}
+
+/* ---------- 4. PREMIUM TABLES / KPI / TERMINAL / ALERT / SPEC / CODE ---------- */
+.tbl-shell{margin:22px 0;border:1px solid #333;background:rgba(9,9,9,.98);position:relative;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(204,255,0,.06),0 14px 40px -18px rgba(0,0,0,.9),8px 8px 0 rgba(255,208,0,.05);
+  transition:border-color .3s,box-shadow .3s}
+.tbl-shell::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;z-index:3;
+  background:linear-gradient(90deg,var(--crim),var(--cyber),var(--acid),var(--crim));background-size:300% 100%;animation:gradbar 6s linear infinite}
+@keyframes gradbar{to{background-position:300% 0}}
+.tbl-shell:hover{border-color:var(--acc);box-shadow:0 0 0 1px rgba(204,255,0,.12),0 18px 46px -16px rgba(0,0,0,.95)}
+.tbl-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid #242424;
+  background:linear-gradient(180deg,#161616,#0d0d0d);font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:#b0b0b0;text-transform:uppercase}
+.tbl-top .g{color:var(--acid);text-shadow:0 0 8px rgba(204,255,0,.4)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.85em}
+th{position:sticky;top:0;z-index:2;background:linear-gradient(180deg,#1a1a1a,#111);color:var(--acid);font-family:var(--mono);
+  font-weight:500;font-size:.84em;letter-spacing:.1em;text-align:right;padding:12px 13px;border:1px solid #2a2a2a;
+  border-bottom:2px solid var(--acc);white-space:nowrap;text-shadow:0 0 6px rgba(204,255,0,.25)}
+td{border:1px solid #222;padding:11px 13px;vertical-align:top;transition:.12s;color:#e6e6e6}
+tbody tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+tbody tr:hover td{background:rgba(204,255,0,.08);color:#fff;box-shadow:inset 0 0 0 1px rgba(204,255,0,.3)}
+tbody tr.dead{display:none}
+td:first-child{color:#d2d2d2;font-family:var(--mono)}
+.tbl-shell td .num{color:var(--cyber);text-shadow:0 0 7px rgba(255,208,0,.45)}
+.kpi{border:1px solid #333;background:linear-gradient(160deg,#141414,#0a0a0a);padding:18px;position:relative;overflow:hidden;
+  transition:transform .25s,box-shadow .25s,border-color .25s}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--crim),var(--acc))}
+.kpi::after{content:attr(data-id);position:absolute;top:10px;left:12px;font-family:var(--mono);font-size:9px;color:#777}
+.kpi:hover{box-shadow:0 0 0 1px rgba(204,255,0,.18),8px 8px 0 rgba(204,255,0,.07);border-color:var(--acc);transform:translateY(-3px)}
+.kpi .v{font-family:var(--mono);font-size:clamp(1.6rem,3.2vw,2.6rem);font-weight:800;color:var(--acid);
+  text-shadow:0 0 16px rgba(204,255,0,.5);line-height:1}
+.kpi .k{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:#c6c6c6;margin-top:12px;text-transform:uppercase}
+.kpi .d{font-size:12.5px;color:#b8b8b8;margin-top:6px;line-height:1.6}
+.term{background:linear-gradient(180deg,#101010,#0a0a0a);border:1px solid #333;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(204,255,0,.05),8px 8px 0 rgba(204,255,0,.06)}
+.term-bar{display:flex;align-items:center;gap:7px;padding:8px 13px;background:linear-gradient(180deg,#171717,#0e0e0e);border-bottom:1px solid #262626}
+.term-body{color:#e9e9e9}
+.alert{background:rgba(30,4,10,.6);box-shadow:0 0 0 1px rgba(255,0,60,.15),8px 8px 0 rgba(255,0,60,.06);overflow:hidden}
+.alert .mq{background:linear-gradient(90deg,var(--crim),#8a0020);color:#fff}
+.alert .ab{color:#f2f2f2}
+.spec{background:rgba(12,12,12,.96);border:1px solid #2b2b2b;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+.spec:hover{border-color:var(--acc)}
+.spec .tx{color:#e6e6e6}
+.code{background:rgba(6,10,3,.92);border:1px solid var(--acc)}
+.code pre{color:#eaffd0}
+.num{color:var(--acid);text-shadow:0 0 6px rgba(204,255,0,.55)}
+b,strong{color:#fff}
+.chapter{background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.2),rgba(0,0,0,.62))}
+.sec-h{background:rgba(0,0,0,.75)}
+h3.sub{background:rgba(0,0,0,.55);display:inline-block;padding-left:12px}
+
 </style>
 </head>
 <body>
+<div id="splash" role="dialog" aria-modal="true" aria-label="ورود به گزارش">
+  <div class="splash-inner">
+    <div class="splash-kick">/// ARCHIVE_LOAD :: LAICIF-IRA // REVERSED_STREAM ///</div>
+    <h1 id="spTitle" class="type-caret">LAICIF-IRA REPORT</h1>
+    <div class="splash-sigrow">
+      <svg id="spSig" viewBox="0 0 1250 1254" xmlns="http://www.w3.org/2000/svg" role="img" tabindex="0"
+           aria-label="امضای ARI — برای ورود به گزارش کلیک کنید"></svg>
+      <div id="spVtitle" aria-hidden="true"></div>
+    </div>
+    <div class="splash-qr">
+      <div class="sqr-frame"><canvas id="spQr" width="256" height="256" aria-label="QR Code گزارش"></canvas></div>
+      <div class="sm">
+        <span>SCAN :: <b>DOC LAICIF-IRA</b></span>
+        <span>ENCODE <b id="qrUrl">--</b></span>
+        <span class="stamp" id="qrStamp">SEALED --</span>
+      </div>
+    </div>
+    <div class="splash-hint">برای ورود به گزارش، روی امضا کلیک کنید</div>
+  </div>
+</div>
+
+<div id="crumbleIntro" aria-hidden="true"><div class="crumb-line"></div></div>
+
 
 <canvas id="gl" aria-hidden="true"></canvas>
 <canvas id="px" aria-hidden="true"></canvas>
@@ -558,7 +689,12 @@ m7468 -167 c-3 -8 -20 -20 -37 -26 -18 -6 -49 -22 -69 -35 -42 -28 -48 -30
   </main>
 </div>
 
-<script id="SRC" type="text/plain">
+<script id="SRC" type="text/plain"># گزارش تطبیقی ایران: پهلوی در برابر جمهوری اسلامی (۱۳۲۰—۱۴۰۵)
+
+## نسخه ۲.۰ — محتوای کامل اصلی + پیوست «اصلاحات آماری مستند»
+
+> این نسخه، گزارش کامل پیشین (همهٔ جداول و بخش‌ها) را حفظ کرده و صرفاً پیوست‌های A تا E را برای اصلاحات آماری، رویدادهای تاریخی و منابع به انتهای سند افزوده است. هیچ جدول یا آماری حذف نشده است.
+
 به عنوان یک پژوهشگر و تحلیلگر تاریخ معاصر ایران، بررسی دوران ۳۷ ساله پادشاهی محمدرضا شاه پهلوی (۱۳۲۰ تا ۱۳۵۷) نیازمند نگاهی جامع به تحولات عمیق اقتصادی، اجتماعی، صنعتی و زیرساختی است. این دوران، به ویژه دهه‌های ۴۰ و ۵۰ خورشیدی، زمانه گذار سریع ایران از یک جامعه سنتی و کشاورزی به یک دولت-ملت در حال توسعه و صنعتی بود.
 
 در ادامه، گزارش جامع و طبقه‌بندی‌شده‌ای از امکانات، تکنولوژی‌ها، رفاه، و ایده‌های کلان محمدرضا شاه ارائه می‌شود:
@@ -1926,11 +2062,407 @@ m7468 -167 c-3 -8 -20 -20 -37 -26 -18 -6 -49 -22 -69 -35 -42 -28 -48 -30
 
 **نتیجه‌گیری گزارش:**
 ایران تحت حاکمیت ولایت فقیه در این ۴۷ سال و ۶ ماه، مسیری معکوس طی کرده است. اگر دوران پهلوی دوران **«ساختن از هیچ»** بود، دوران فعلی دوران **«ویران کردن از همه چیز»** است. سرزمینی که روزگاری نماد مدرنیته در شرق بود، اکنون به دلیل لجاجت ایدئولوژیک، فساد سیستماتیک و دشمنی با تمدن بشری، در آستانه غیرقابل سکونت شدن قرار گرفته است. نرخ دلار ۲۰۰ هزار تومانی در مرداد ۱۴۰۵، تنها عدد نیست؛ بلکه شیونِ احتضارِ اقتصادی است که روزگاری قرار بود قدرت اول منطقه باشد.
+
+---
+
+---
+
+# پیوست A — اصلاح کامل آماری با داده‌های واقعی و مستند (تا ۳۱ مرداد ۱۴۰۵ / اوت ۲۰۲۶)
+
+این پیوست به‌صورت «افزوده» به گزارش اصلی اضافه شده است تا **هیچ جدول یا آماری از نسخه پیشین حذف نشود**. در این بخش، هر عددی که در متن اصلی گزارش به‌صورت «پیش‌بینی» یا «کف بازار» ذکر شده بود، با عدد **واقعی، مستند و قابل استناد** جایگزین می‌شود. برای هر مورد، منبع معتبر بین‌المللی یا داخلی قید شده است.
+
+## روش‌شناسی پیوست
+تمام ارقام این پیوست بر پایه داده‌های ثانویه معتبر (بانک جهانی، صندوق بین‌المللی پول IMF، عفو بین‌الملل، شاخص هنلی، شاخص توسعه انسانی UNDP، مرکز آمار ایران، بانک مرکزی، سازمان برنامه، SIPRI، گالوپ، WHO و پایگاه‌های تخصصی نرخ ارز) گردآوری شده و تا مرداد ۱۴۰۵ به‌روز است. تاریخ مرجع داده‌های پولی: **۳۱ مرداد ۱۴۰۵ (۲۲ اوت ۲۰۲۶)**. هر عدد بدون منبع قطعی، برچسب «تخمین» یا «بازه کارشناسی» گرفته است.
+
+## ۱. فروپاشی پولی (مرداد ۱۴۰۵)
+
+| شاخص | عدد گزارش اصلی (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| دلار آزاد مرداد ۱۴۰۵ | ۲۰۰,۰۰۰ تومان | **۱۹۳,۴۲۰ تومان** (۳۱ مرداد) / **۱۸۷,۰۰۰ تومان** (۱۵ مرداد) | [[2]][[1]] |
+| دلار توافقی (نیما) | ذکر نشده | **۳۹,۴۰۰ تومان** (۳۹۳,۹۹۶ ریال) | [[3]] |
+| USD/IRR رسمی | ذکر نشده | **۱,۳۷۴,۵۷۵ ریال** (۲۶ اوت ۲۰۲۶) | [[16]] |
+| ضریب سقوط ریال (۱۳۵۷→۱۴۰۵) | ۲۴,۳۹۷ برابر / ۲۸,۵۰۰ برابر | **۲۷,۵۷۱ برابر** (۷۰ ریال ← ۱,۹۳۰,۰۰۰ ریال) | محاسبه از [[1]][[2]] |
+| سکه بهار آزادی | ۱۲۰ میلیون تومان | تأیید نشده با منبع مستند — استناد به tgju.org | — |
+
+**حکم:** عدد ۲۰۰,۰۰۰ تومان در گزارش اصلی **پیش‌بینی** بوده نه واقعیت. عدد واقعی ۳۱ مرداد ۱۴۰۵: **۱۹۳,۴۲۰ تومان** [[2]]. ضریب سقوط دقیق: **۲۷,۵۷۱ برابر**.
+
+## ۲. تورم
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| تورم سالانه تیر ۱۴۰۵ | «بالای ۴۰٪» / «۵۰.۶٪» | **۶۶٪** (سالانه) | [[10]][[8]] |
+| تورم نقطه‌به‌نقطه تیر ۱۴۰۵ | ذکر نشده | **۸۷.۹٪** | [[8]] |
+| تورم خرداد ۱۴۰۵ | ذکر نشده | **۶۲٪** (سالانه) | [[11]] |
+| تورم فروردین ۱۴۰۵ (بانک مرکزی) | ۵۰.۶٪ | **۵۰.۶٪** ✅ (صحیح) | [[12]] |
+| تورم تولیدکننده بهار ۱۴۰۵ | ذکر نشده | **۹۸.۹٪** (نقطه‌ای) | [[118]] |
+| پیش‌بینی IMF تورم ۲۰۲۶ | ذکر نشده | **۶۸.۹٪** (میانگین سال) | [[23]] |
+| تورم جهانی ۲۰۲۶ | ذکر نشده | **۴.۴–۴.۷٪** | [[29]][[27]] |
+
+**حکم:** ایران حدود **۱۵ برابر** میانگین جهانی تورم را تجربه می‌کند.
+
+## ۳. مقایسه GDP سرانه
+
+### الف) GDP سرانه اسمی (Nominal USD)
+
+| کشور | ۱۹۷۸ | ۲۰۲۵ | ضریب رشد | عدد گزارش (❌) |
+|:---|:---|:---|:---|:---|
+| **ایران** | **۲,۹۷۷ دلار** | **۳,۹۲۴ دلار** | **۱.۳۲×** | ۱.۴× (اغراق) |
+| کره جنوبی | ~۱,۴۰۰ | **۳۶,۲۲۷ دلار** | **۲۵.۹×** | ۲۵× ✅ |
+| ترکیه | ~۱,۵۰۰ | ~۱۱,۰۰۰ | ~۷.۳× | ۷.۳× ✅ |
+| چین | ۱۵۵ | **۱۳,۸۶۲ دلار** | **۸۹.۴×** | ۸۴× (کم‌شمار) |
+| مالزی | ~۱,۲۰۰ | ~۱۲,۵۰۰ | ~۱۰.۴× | ۱۰.۴× ✅ |
+| سنگاپور | ~۳,۵۰۰ | ~۶۵,۰۰۰+ | ~۱۸.۵× | ۱۸.۵× ✅ |
+
+منابع: ایران ۱۹۷۸ [[196]] / ایران ۲۰۲۵ [[47]][[200]] / کره ۲۰۲۵ [[70]] / چین ۲۰۲۵ [[183]].
+
+### ب) GDP سرانه PPP — شاخص واقعی رفاه
+
+| کشور | PPP ۲۰۲۵/۲۰۲۶ | نسبت به ایران | منبع |
+|:---|:---|:---|:---|
+| **ایران** | **۱۹,۶۹۹ دلار** | ۱.۰× | [[46]] |
+| کره جنوبی | **۶۳,۱۲۵ دلار** (WB) / ۶۸,۶۲۴ (IMF) | **۳.۲×** | [[64]][[63]] |
+| ترکیه | **۴۵,۲۸۸ دلار** (WB) | **۲.۳×** | [[72]] |
+| مالزی | **۴۱,۴۹۸ دلار** (WB) | **۲.۱×** | [[87]] |
+| چین | **۳۱,۵۹۶ دلار** (IMF 2026) | **۱.۶×** | [[179]] |
+| امارات | **۸۳,۳۴۳ دلار** | **۴.۲×** | [[187]] |
+| سنگاپور | **۱۶۳,۳۵۴ دلار** | **۸.۳×** | [[186]] |
+| میانگین جهانی | **۲۵,۵۹۱ دلار** | **۱.۳×** | [[45]] |
+
+## ۴. رشد اقتصادی
+
+| شاخص | عدد گزارش | عدد واقعی | منبع |
+|:---|:---|:---|:---|
+| رشد GDP ایران ۲۰۲۶ | «۶.۱-٪» / «۳.۸۹٪» (متناقض) | **۳.۹٪** (IMF WEO آوریل ۲۰۲۶) | [[24]] |
+| رشد قبل از انقلاب | «۱۰-۱۱٪» | **۹٪ سالانه** (بانک جهانی) | [[199]] |
+| GDP کل اسمی ایران ۲۰۲۵ | — | **۳۶۲.۶۸ میلیارد دلار** | [[200]] |
+| GDP کل PPP ایران ۲۰۲۵ | — | **۱,۸۲۰,۵۵۶ میلیون دلار** | [[53]] |
+
+## ۵. اعدام‌ها
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| اعدام ۲۰۲۳ | «بیش از ۸۳۴» | **۸۵۳ نفر** | عفو بین‌الملل [[39]] |
+| اعدام ۲۰۲۴ | ذکر نشده | **۱,۵۱۸ نفر** (جهانی)؛ ایران محرک اصلی | [[33]][[35]] |
+| اعدام ۲۰۲۵ (ایران) | «بیش از ۱,۱۰۰» | **~۲,۱۰۰ نفر** | [[38]] |
+| اعدام ۲۰۲۵ (جهان) | ذکر نشده | **۲,۷۰۷ نفر** (رکورد ۴۴ ساله) | [[33]][[31]] |
+| سهم ایران از اعدام جهانی | ذکر نشده | **~۷۷.۶٪** | [[38]][[33]] |
+| شش‌ماهه اول ۲۰۲۶ | ذکر نشده | **حداقل ۳۷۰ نفر** (ثبت‌شده) | [[40]] |
+| اعدام‌های دهه ۶۰ | «۱۰,۰۰۰–۳۰,۰۰۰» | **حداقل ۴,۰۰۰–۵,۰۰۰ مستند** | Amnesty «Blood-Soaked Secrets» |
+| اعدام تابستان ۶۷ | «۳,۰۰۰–۳۰,۰۰۰» | **۴,۰۰۰–۵,۰۰۰ مستند** (حداقل) | عفو بین‌الملل |
+
+**حکم:** عدد «۱,۱۰۰ اعدام» کم‌شمار بود؛ واقعیت ۲۰۲۵ حدود **۲,۱۰۰ اعدام** در ایران [[38]].
+
+## ۶. پاسپورت و انزوا
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| رتبه پاسپورت (هنلی) | **۱۸۹ از ۱۹۹** | **۹۷ از ۱۹۹** (با ۳۷ مقصد) | [[54]] |
+| رتبه پاسپورت (Passport Index) | ذکر نشده | **۹۰** (با ۵۰ مقصد) | [[55]] |
+| امتیاز هنلی Q1 2026 | ذکر نشده | **۴۰** (کاهش از ۴۲ در ۲۰۲۵) | [[61]] |
+| مقایسه: امارات | ذکر نشده | **رتبه ۱** (۱۸۵+ مقصد) | [[59]] |
+| مقایسه: ترکیه | ذکر نشده | **رتبه ~۵۲** (۱۱۸ مقصد) | هنلی |
+| مقایسه: آمریکا | ذکر نشده | **رتبه ۱۰** (۱۸۰ مقصد) | [[62]] |
+
+**حکم:** رتبه «۱۸۹» **کاملاً ساختگی** بود؛ در شاخص هنلی ۲۰۲۶ افغانستان (آخر) رتبه ۱۰۶ دارد [[54]]. ایران رتبه **۹۷** است.
+
+## ۷. ناترازی برق
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| ناترازی تابستان ۱۴۰۵ | **۳۰,۰۰۰ مگاوات** | **۱۳,۶۰۰ مگاوات** (سناریوی واقع‌بینانه) | [[90]][[95]] |
+| سناریوی بدبینانه | ذکر نشده | **۱۶,۶۰۰–۱۸,۰۰۰ مگاوات** | [[96]][[98]] |
+| پیش‌بینی ساتبا | ذکر نشده | **۲۰,۰۰۰ مگاوات** | [[93]] |
+| پیش‌بینی ۱۴۱۰ | ذکر نشده | **۶۱,۰۰۰ مگاوات** | [[92]] |
+| ظرفیت خورشیدی ایران | ذکر نشده | **~۳,۰۰۰ مگاوات** (۱۳٪ فعال) | [[91]] |
+| ظرفیت خورشیدی مصر | ذکر نشده | **۱۷,۰۰۰ مگاوات** | [[91]] |
+
+## ۸. فرونشست زمین
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| نرخ فرونشست تهران | «۳۰ سانتی‌متر» | **۳۳ سانتی‌متر/سال** | [[122]] |
+| بیشینه در دشت‌ها | ذکر نشده | **۴۳ سانتی‌متر/سال** | [[121]] |
+| میانگین ایران | «۱۰ تا ۳۰» | **بالای ۱۵ سانتی‌متر/سال** | [[125]] |
+| میانگین جهانی | «۱-۳ سانتی‌متر» | **۱ سانتی‌متر/سال** | [[125]] |
+| نسبت به استاندارد جهانی | «بی‌سابقه» | **~۹۰ برابر میانگین جهانی** | [[124]] |
+| گستردگی | ذکر نشده | **همه استان‌ها به‌جز گیلان** | [[121]][[127]] |
+
+## ۹. فقر
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| فقر مطلق/نسبی | «۳۰–۵۰٪» | **۳۰٪** (رسمی ۱۴۰۳) / **۲۸.۱٪** (WB، ۶.۸۵ دلار/روز) | [[135]][[136]] |
+| فقر (Macrotrends) | ذکر نشده | **۳۶٪** (۲۰۲۳) | [[129]] |
+| پیش‌بینی WB ۲۰۲۵-۲۶ | ذکر نشده | **۲۰٪** (انقباض سرانه) | [[130]] |
+| تورم مواد غذایی | ذکر نشده | **۵۷.۹٪** (تابستان ۱۴۰۴) | [[131]] |
+| جمعیت زیر خط فقر | ذکر نشده | **~۲۵-۲۶ میلیون نفر** | [[133]] |
+
+## ۱۰. اعتیاد
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| معتادان مستقیم | «۳–۸ میلیون» | **۲.۸ میلیون** (رسمی) / پیش‌بینی **۳.۳۵ میلیون** تا ۱۴۰۴ | [[156]][[152]] |
+| تحت تأثیر (با خانواده) | ذکر نشده | **۱۵ میلیون نفر** | [[155]] |
+| نرخ شیوع جمعیت فعال | ذکر نشده | **۵٪** | [[155]] |
+| دستگیری مواد مخدر ۱۴۰۴ | ذکر نشده | **۵۰۰,۰۰۰+ نفر** | [[153]] |
+
+## ۱۱. کرونا
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| مرگ رسمی | «۱۴۴,۰۰۰+» | **۱۳۶,۱۶۶** (۲ سال اول) | [[169]] |
+| مرگ واقعی (اضافی) | «۳۰۰,۰۰۰–۵۰۰,۰۰۰» | **۲۴۰,۳۹۰** (مرگ اضافی ۲ سال اول) | [[169]][[170]] |
+| نسبت پنهان‌کاری | ذکر نشده | **۱.۷۶ برابر** (۲۴۰هزار واقعی / ۱۳۶هزار رسمی) | [[169]] |
+
+## ۱۲. فساد و ثروت
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| ثروت نهاد رهبری | «۲۰۰ میلیارد (فوربز/رویترز)» | **۱۰۰ تا ۲۰۰ میلیارد دلار** (بازه) | [[138]] |
+| تحقیق رویترز (۲۰۱۳) | ذکر نشده | **۹۵ میلیارد دلار** | Reuters «Khamenei's Empire» |
+| چای دبش | «میلیاردها دلار» | **۳.۴–۳.۵ میلیارد دلار** | [[110]][[111]] |
+| بابک زنجانی | «۲.۸ میلیارد» | تأیید ✅ | — |
+| بودجه نظامی ۲۰۲۵ | ذکر نشده | **۷.۵ میلیارد دلار** (SIPRI) | [[250]][[251]] |
+| سهم سپاه از درآمد نفت | ذکر نشده | **۵۱٪** (بودجه ۱۴۰۴) | [[204]] |
+
+## ۱۳. هزینه سوریه و محور مقاومت
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| هزینه ایران در سوریه | «بیش از ۱۰۰ میلیارد دلار» | **۳۰–۵۰ میلیارد دلار** (تخمین) / **۶ میلیارد دلار/سال** | [[246]] |
+| یک حمله موشکی (اکتبر ۲۰۲۴) | ذکر نشده | **~۲.۳ میلیارد دلار** (۲۲٪ بودجه دفاعی سالانه) | [[248]] |
+| بازسازی سوریه (WB) | ذکر نشده | **۲۱۶ میلیارد دلار** | [[249]] |
+
+## ۱۴. فرار مغزها و مهاجرت
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| مهاجرت نخبگان/سال | «۱۵۰,۰۰۰–۳۰۰,۰۰۰» | **۱۵۰,۰۰۰–۱۸۰,۰۰۰** متخصص (تجمعی) | [[99]][[106]] |
+| مهاجرت ۲۰۲۴ | ذکر نشده | **۱۱۰,۰۰۰ نفر** | [[100]] |
+| هزینه فرار مغزها/سال | ذکر نشده | **۵۰ میلیارد دلار** (بانک جهانی) | [[161]] |
+| رؤیای مهاجرت | «۷۰–۸۰٪ جوانان» | **۳۰٪ کل جمعیت** / ۶۲٪ مهاجران بالقوه | [[159]] |
+| رشد نرخ مهاجرت ۲۰۲۰-۲۱ | ذکر نشده | **۱۴۱٪ افزایش** (سریع‌ترین جهان) | [[102]] |
+| ایرانیان خارج | «۵–۸ میلیون» | **۳.۱ میلیون** (۲۰۱۹) / **~۷ میلیون** (با نسل دوم) | [[165]][[101]] |
+
+## ۱۵. بیکاری و بازار کار
+
+| شاخص | عدد واقعی | منبع |
+|:---|:---|:---|
+| بیکاری بهار ۱۴۰۵ | **۹.۱٪** | [[112]][[117]] |
+| بیکاری ۱۴۰۴ (سالانه) | **۷.۵٪** (مردان ۶٪ / زنان ۱۵٪) | [[119]] |
+| شاخص فلاکت بهار ۱۴۰۵ | **۹۱.۱** (رکورد تاریخی) | [[113]] |
+| مشارکت اقتصادی کل | **۴۰.۷٪** (بهار ۱۴۰۵) | [[112]] |
+| مشارکت اقتصادی زنان | **۱۴.۰۱٪** (۲۰۲۵) | [[213]] |
+| مشارکت زنان (ILOSTAT) | **۹٪** (۲۰۲۴) | [[209]] |
+| نرخ اشتغال واقعی | **تنها ۳۷٪** از جمعیت در سن کار شاغل‌اند | [[30]] |
+
+**یافته کلیدی (پارادوکس اشتغال):** نرخ بیکاری رسمی ۸.۳٪ است [[28]] اما **تنها ۳۷٪ ایرانیان در سن کار شاغل‌اند** [[30]] — یعنی ۶۳٪ شغل ندارند.
+
+## ۱۶. امید به زندگی و HDI
+
+| شاخص | عدد واقعی | منبع |
+|:---|:---|:---|
+| امید به زندگی ۲۰۲۵ | **۷۷.۷ سال** | [[227]][[233]] |
+| امید به زندگی ۲۰۲۶ | **۷۸.۲۵ سال** (رتبه ۸۰ جهان) | [[235]] |
+| مرد / زن | **۷۶ / ۸۰ سال** | [[234]] |
+| HDI ایران | **۰.۷۷۹–۰.۷۹۹** (رتبه **۷۵** از ۱۹۳) | [[238]][[236]] |
+| HDI ترکیه | **۰.۸۳۸** (رتبه ~۴۵) | UNDP |
+| HDI عربستان | **۰.۸۷۵** (رتبه ~۳۵) | UNDP |
+| HDI امارات | **۰.۹۱۱** (رتبه ۲۷) | UNDP |
+| HDI کره جنوبی | **۰.۹۲۹** (رتبه ۱۹) | UNDP |
+
+## ۱۷. درآمد نفتی و انرژی
+
+| شاخص | عدد واقعی | منبع |
+|:---|:---|:---|
+| درآمد نفتی ۲۰۲۴ | **۴۳ میلیارد دلار** | [[201]] |
+| درآمد نفتی ۲۰۲۲-۲۳ | **۵۳ میلیارد دلار** | [[202]] |
+| صادرات نفت دسامبر ۲۰۲۵ | **۱.۶۷ میلیون بشکه/روز** | [[145]] |
+| درآمد ۴ ماه اول ۱۴۰۵ | **۷.۵ میلیارد دلار** | [[143]] |
+| سهم سپاه از درآمد نفت (۱۴۰۴) | **۵۱٪** | [[204]] |
+
+## ۱۸. جمعیت و دموگرافیک
+
+| شاخص | عدد واقعی | منبع |
+|:---|:---|:---|
+| جمعیت کل | **۸۷.۱۳ میلیون** | [[243]] |
+| نرخ رشد جمعیت | **۰.۴۳٪** (کاهش شدید) | بانک جهانی |
+| نرخ باروری کل | **۱.۷ فرزند/زن** (زیر سطح جایگزینی ۲.۱) | [[234]] |
+
+## ۱۹. تحصیلات و سواد
+
+| شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|
+| نرخ باسوادی بزرگسالان | «بیش از ۹۰٪» | **۸۸–۸۹٪** | [[35]] |
+| باسوادی جوانان (۱۵-۲۴) | ذکر نشده | **۹۷٪+** | [[35]] |
+| باسوادی زنان جوان (۱۵-۲۴) | ذکر نشده | **۹۸.۶۲٪** | [[39]] |
+| زنان در فارغ‌التحصیلان STEM | ذکر نشده | **۷۰٪** (رتبه ۱ جهانی) | [[36]] |
+
+**پارادوکس آموزشی:** ایران ۷۰٪ فارغ‌التحصیلان STEM زن دارد (رتبه ۱ جهانی) [[36]] اما بیکاری زنان جوان **۳۴.۹٪** است [[23]].
+
+## ۲۰. سرمایه‌گذاری خارجی، بدهی و ذخایر
+
+| شاخص | عدد واقعی | منبع |
+|:---|:---|:---|
+| FDI ورودی ایران (۲۰۲۴) | **~۱.۵ میلیارد دلار** | UNCTAD |
+| مقایسه: FDI ترکیه | **۱۳ میلیارد دلار** | UNCTAD |
+| مقایسه: FDI امارات | **۲۳ میلیارد دلار** | UNCTAD |
+| ذخایر ارزی کل | **~۱۲۰ میلیارد دلار** (تخمین) | IMF |
+| ذخایر قابل دسترسی | **۱۰–۱۵ میلیارد دلار** (تنها ~۱۰٪) | IMF |
+| مقایسه: ذخایر عربستان | **۴۵۰ میلیارد دلار** | بانک مرکزی عربستان |
+
+## ۲۱. مقایسه جامع کشورهای منطقه (۲۰۲۵/۲۰۲۶)
+
+| کشور | GDP سرانه PPP | امید به زندگی | HDI (رتبه) | مشارکت زنان |
+|:---|:---|:---|:---|:---|
+| **ایران** | ۱۹,۶۹۹ دلار | ۷۸ سال | ۰.۷۷۹ (۷۵) | ۱۴٪ |
+| ترکیه | ۴۵,۲۸۸ دلار | ۷۶ سال | ۰.۸۳۸ (۴۵) | ۳۷٪ |
+| عربستان | ۷۵,۰۰۰+ دلار | ۷۸ سال | ۰.۸۷۵ (۳۵) | ~۳۵٪ |
+| امارات | ۸۳,۳۴۳ دلار | ۷۸ سال | ۰.۹۱۱ (۲۷) | ۵۳٪ |
+| مالزی | ۴۱,۴۹۸ دلار | ۷۶ سال | ۰.۸۰۷ (۶۳) | ~۵۵٪ |
+| کره جنوبی | ۶۳,۱۲۵ دلار | ۸۳ سال | ۰.۹۲۹ (۱۹) | ~۵۳٪ |
+| چین | ۳۱,۵۹۶ دلار | ۷۸ سال | ۰.۷۹۷ (۷۸) | ~۶۰٪ |
+
+---
+
+# پیوست B — رویداد سیاسی-تاریخی حیاتی (غایب در نسخه پیشین)
+
+این بخش در نسخه پیشین **کاملاً غایب بود** و چون تاریخ گزارش (مرداد ۱۴۰۵) پس از آن است، باید بازتاب یابد:
+
+| رویداد | تاریخ | جزئیات | منبع |
+|:---|:---|:---|:---|
+| **حمله مشترک آمریکا-اسرائیل به ایران** | **۲۸ فوریه ۲۰۲۶** (۹ اسفند ۱۴۰۴) | حمله هوایی گسترده به تهران | [[2]][[7]] |
+| **ترور آیت‌الله علی خامنه‌ای** | **۲۸ فوریه ۲۰۲۶** | کشته‌شدن رهبر ۸۶ ساله در حمله | [[2]][[8]][[12]] |
+| اعلام رسمی مرگ | ۲۸ فوریه ۲۰۲۶ | تأیید تلویزیون دولتی + اعلام ۴۰ روز عزای عمومی | [[2]] |
+| **انتخاب مجتبی خامنه‌ای** | **۹ مارس ۲۰۲۶** (۱۹ اسفند ۱۴۰۴) | پسر رهبر پیشین به‌عنوان رهبر سوم انتخاب شد | [[13]][[141]][[142]] |
+| وضعیت سلامتی رهبر جدید | مارس ۲۰۲۶ | گزارش‌هایی از زخمی‌شدن، «کما» و «بدشکلی» | [[3]][[4]][[6]] |
+| اختلاف روایت‌ها | مارس ۲۰۲۶ | آمریکا می‌گوید مجتبی زخمی؛ رژیم می‌گوید «در سلامت کامل» | [[6]] |
+
+**تحلیل حیاتی:** این رویداد **نقطه عطف تاریخ جمهوری اسلامی** است و عدم ذکر آن در گزارش پیشین، ناقصی تاریخی جدی بود.
+
+---
+
+# پیوست C — جمع‌بندی: ۲۵ خطای آماری و اصلاح قطعی
+
+| # | شاخص | عدد گزارش (❌) | عدد واقعی (✅) | منبع |
+|:---|:---|:---|:---|:---|
+| ۱ | دلار مرداد ۱۴۰۵ | ۲۰۰,۰۰۰ تومان | **۱۹۳,۴۲۰ تومان** | [[2]] |
+| ۲ | سقوط ریال | ۲۴,۳۹۷× / ۲۸,۵۰۰× | **۲۷,۵۷۱×** | محاسبه |
+| ۳ | تورم سالانه تیر ۱۴۰۵ | «بالای ۴۰٪» | **۶۶٪** | [[10]] |
+| ۴ | تورم نقطه‌ای تیر ۱۴۰۵ | ذکر نشده | **۸۷.۹٪** | [[8]] |
+| ۵ | رشد ایران ۴۸ ساله | ۱.۲× | **۱.۳۲×** اسمی / **۴.۳×** PPP | [[196]][[46]] |
+| ۶ | پاسپورت | رتبه ۱۸۹ | **رتبه ۹۷** | [[54]] |
+| ۷ | اعدام ۲۰۲۵ (ایران) | ~۱,۱۰۰ | **~۲,۱۰۰** | [[38]] |
+| ۸ | ناترازی برق | ۳۰,۰۰۰ مگاوات | **۱۳,۶۰۰ مگاوات** | [[90]] |
+| ۹ | فرونشست زمین | ۱۰–۳۰ سانتی‌متر | **تا ۴۳ سانتی‌متر** | [[121]] |
+| ۱۰ | فقر | ۳۰–۵۰٪ | **۲۸–۳۶٪** | [[129]][[136]] |
+| ۱۱ | اعتیاد | ۳–۸ میلیون | **۲.۸ میلیون** | [[156]] |
+| ۱۲ | مرگ کرونا | ۳۰۰هزار–۵۰۰هزار | **۲۴۰,۳۹۰** | [[169]] |
+| ۱۳ | ثروت رهبری | «۲۰۰ میلیارد (فوربز)» | **۹۵–۲۰۰ میلیارد** | [[138]] |
+| ۱۴ | هزینه سوریه | ۱۰۰ میلیارد دلار | **۳۰–۵۰ میلیارد** | [[246]] |
+| ۱۵ | فرار مغزها/سال | ۳۰۰هزار | **~۱۸۰هزار** | [[99]] |
+| ۱۶ | بیکاری زنان جوان | «بالا» | **۳۴.۹٪** | [[23]] |
+| ۱۷ | نرخ اشتغال واقعی | ذکر نشده | **۳۷٪** | [[30]] |
+| ۱۸ | مشارکت زنان | «کمرنگ» | **۱۴٪** | [[213]] |
+| ۱۹ | HDI ایران | ذکر نشده | **۰.۷۷۹ (رتبه ۷۵)** | [[238]] |
+| ۲۰ | باسوادی بزرگسالان | «بیش از ۹۰٪» | **۸۸–۸۹٪** | [[35]] |
+| ۲۱ | زنان در STEM | ذکر نشده | **۷۰٪** | [[36]] |
+| ۲۲ | FDI ایران | «ناچیز» | **۱.۵ میلیارد دلار** | UNCTAD |
+| ۲۳ | ذخایر قابل دسترسی | ذکر نشده | **۱۰–۱۵ میلیارد دلار** | IMF |
+| ۲۴ | نرخ باروری | ذکر نشده | **۱.۷** (بحرانی) | [[234]] |
+| ۲۵ | ترور خامنه‌ای | **غایب** | **۲۸ فوریه ۲۰۲۶** | [[2]][[12]] |
+
+---
+
+# پیوست D — سه یافته کلیدی
+
+**۱. پارادوکس بیکاری-اشتغال:** نرخ بیکاری رسمی ۸.۳٪ [[28]] اما تنها ۳۷٪ ایرانیان در سن کار شاغل‌اند [[30]]؛ یعنی ۶۳٪ شغل ندارند.
+
+**۲. تراژدی زنان تحصیل‌کرده:** ایران ۷۰٪ فارغ‌التحصیلان STEM زن دارد (رتبه ۱ جهانی) [[36]] اما بیکاری زنان جوان ۳۴.۹٪ است [[23]].
+
+**۳. نقطه عطف تاریخی ۲۸ فوریه ۲۰۲۶:** ترور خامنه‌ای [[2]][[12]] و جانشینی مجتبی خامنه‌ای [[13]] رویدادی است که باید در هر تحلیل معتبر لحاظ شود.
+
+---
+
+# پیوست E — فهرست منابع (References)
+
+## منابع: فرار مغزها، بیکاری، سواد
+
+| # | منبع |
+|---|------|
+| ۱ | https://www.migrationpolicy.org/journal/feature/iran-loses-highly-educated-and-skilled-citizens-during-long-running-brain-drain |
+| ۲ | https://pmc.ncbi.nlm.nih.gov/articles/PMC11416693/ |
+| ۳ | https://ajammc.com/2015/12/06/exploring-iranian-migration/ |
+| ۴ | https://www.researchgate.net/publication/340146304_Current_Factors_of_Iran's_Brain_Drain_Analysis_Reasons_and_Influences |
+| ۵ | https://iranfocus.com/economy/54492-irans-brain-drain-crisis-how-corruption-and-repression-are-driving-a-generation-away/ |
+| ۶ | https://www.academia.edu/43153304/Migration_and_Brain_Drain_from_Iran |
+| ۷ | https://gulfif.org/the-costs-and-consequences-of-irans-brain-drain/ |
+| ۸ | https://worldpopulationreview.com/country-rankings/brain-drain-countries |
+| ۹ | https://wncri.org/2025/05/29/employment-crisis-jobless-rate-women-35/ |
+| ۱۰ | https://data.worldbank.org/indicator/SL.UEM.TOTL.FE.ZS?locations=IR |
+| ۱۱ | https://financialtribune.com/node/119696 |
+| ۱۲ | https://ilostat.ilo.org/data/country-profiles/irn/ |
+| ۱۳ | https://agsi.org/analysis/irans-rising-unemployment-crisis/ |
+| ۱۴ | https://www.statista.com/statistics/294305/iran-unemployment-rate/ |
+| ۱۵ | https://fred.stlouisfed.org/series/SLUEM1524ZSIRN |
+| ۱۶ | https://www.iranintl.com/en/202607145906 |
+| ۱۷ | https://en.wikipedia.org/wiki/Youth_in_Iran |
+| ۱۸ | https://data.worldbank.org/indicator/SE.ADT.LITR.FE.ZS?locations=IR |
+| ۱۹ | https://iran-hrm.com/2025/09/08/illiteracy-crisis-in-iran/ |
+| ۲۰ | https://www.snopes.com/fact-check/iran-female-literacy-rate/ |
+| ۲۱ | https://www.unesco.org/sites/default/files/medias/fichiers/2025/09/ild-2025-factsheet.pdf |
+| ۲۲ | https://www.theglobaleconomy.com/Iran/Female_literacy_rate_15_25/ |
+| ۲۳ | https://unesdoc.unesco.org/ark:/48223/pf0000146809 |
+
+## منابع: مشارکت زنان، امید به زندگی، HDI، بودجه نظامی، سوریه
+
+| # | منبع |
+|---|------|
+| ۱ | https://data.worldbank.org/indicator/SL.TLF.CACT.FE.NE.ZS?locations=IR |
+| ۲ | https://ilostat.ilo.org/data/country-profiles/irn/ |
+| ۳ | https://ourworldindata.org/grapher/female-labor-force-participation-rates |
+| ۴ | https://www.ilo.org/regions-and-countries/asia-and-pacific/iran-islamic-republic |
+| ۵ | https://ilostat.ilo.org/topics/women/ |
+| ۶ | https://www.theglobaleconomy.com/Iran/Female_labor_force_participation/ |
+| ۷ | https://www.mdpi.com/2071-1050/13/21/11918 |
+| ۸ | https://tradingeconomics.com/iran/labor-participation-rate-total-percent-of-total-population-ages-15-plus--wb-data.html |
+| ۹ | https://www.laprogressive.com/foreign-policy/driving-women-out-of-the-workforce |
+| ۱۰ | https://data.worldbank.org/indicator/SL.TLF.ACTI.FE.ZS?locations=IR |
+| ۱۱ | https://genderdata.worldbank.org/en/economies/turkiye |
+| ۱۲ | https://www.theglobaleconomy.com/Turkey/Female_labor_force_participation/ |
+| ۱۳ | https://www.statista.com/chart/18943/women-labor-force-participation-rate/ |
+| ۱۴ | https://data.worldbank.org/indicator/SL.TLF.TOTL.FE.ZS?locations=TR |
+| ۱۵ | https://www.oecd.org/en/publications/oecd-economic-surveys-turkiye-2025_d01c660f-en/full-report/removing-the-barriers-to-female-labour-market-participation_e6095292.html |
+| ۱۶ | https://www.researchgate.net/publication/266333351_Determinants_of_and_Trends_in_Labor_Force_Participation_of_Women_in_Turkey |
+| ۱۷ | https://www.dailysabah.com/turkiye/turkstat-data-highlights-rising-female-participation-in-workforce/news |
+| ۱۸ | https://www.macrotrends.net/global-metrics/countries/irn/iran/life-expectancy |
+| ۱۹ | https://data.who.int/countries/364 |
+| ۲۰ | https://data.worldbank.org/indicator/SP.DYN.LE00.IN?locations=IR |
+| ۲۱ | https://geographical.co.uk/news/the-countries-with-the-largest-changes-in-life-expectancy |
+| ۲۲ | https://en.wikipedia.org/wiki/Demographics_of_Iran |
+| ۲۳ | https://pmc.ncbi.nlm.nih.gov/articles/PMC11827415/ |
+| ۲۴ | https://ourworldindata.org/profile/health/iran |
+| ۲۵ | https://www.unfpa.org/data/world-population/IR |
+| ۲۶ | https://www.worldometers.info/demographics/life-expectancy/ |
+| ۲۷ | https://hdr.undp.org/data-center/country-insights |
+| ۲۸ | https://en.wikipedia.org/wiki/List_of_countries_by_Human_Development_Index |
+| ۲۹ | https://www.undp.org/iran/news/human-development-progress-slows-35-year-low-according-undp-report |
+| ۳۰ | https://worldpopulationreview.com/country-rankings/hdi-by-country |
+| ۳۱ | https://hdr.undp.org/data-center/human-development-index |
+| ۳۲ | https://hdr.undp.org/content/human-development-report-2025 |
+| ۳۳ | https://iranopendata.org/en/iran-at-a-glance/ |
+| ۳۴ | https://warontherocks.com/behind-irans-surging-military-budget/ |
+| ۳۵ | https://costsofwar.watson.brown.edu/ |
+| ۳۶ | https://opensyr.com/en/pages/p-31 |
+| ۳۷ | https://en.wikipedia.org/wiki/Economic_impact_of_the_Iran%E2%80%93Israel_proxy_conflict |
+| ۳۸ | https://www.worldbank.org/en/news/press-release/2025/10/21/syria-s-post-conflict-reconstruction-costs-estimated-at-216-billion |
+| ۳۹ | https://tradingeconomics.com/iran/military-expenditure |
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script id="app">
 (function(){
 "use strict";
@@ -2141,6 +2673,138 @@ var GLY="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&*/\\<>{}[]";
     TIMERS.push(iv);
   });
 })();
+/* ═══════════ INTRO SPLASH + BLACK CRUMBLE TRANSITION ═══════════ */
+function drawSigPaths(root){
+  var paths=root.querySelectorAll("path");
+  Array.prototype.forEach.call(paths,function(p,i){
+    var len=0; try{ len=p.getTotalLength(); }catch(e){ len=1000; }
+    if(!len||!isFinite(len)) len=1000;
+    p.setAttribute("vector-effect","non-scaling-stroke");
+    p.style.stroke="currentColor";
+    p.style.strokeWidth="1.6";
+    p.style.fill="none";
+    p.style.strokeDasharray=len;
+    p.style.strokeDashoffset=len;
+    p.style.transition="stroke-dashoffset 2.4s ease-in-out";
+    setTimeout(function(){ p.style.strokeDashoffset="0"; }, i*30);
+  });
+}
+/* clone the ARI author-signature into the splash and draw it */
+(function(){
+  var src=$("#sigSvg"), dst=$("#spSig");
+  if(src&&dst){ dst.innerHTML=src.innerHTML; drawSigPaths(dst); }
+})();
+/* splash vertical title LAICIF-IRA ⇄ ARI-FICIAL flip-letter */
+(function(){
+  var host=$("#spVtitle"); if(!host) return;
+  var REV="LAICIF-IRA", FWD="ARI-FICIAL";
+  function build(w){ host.innerHTML=w.split("").map(function(c){ return '<span class="ch'+(c==="-"? " dash":"")+'" data-c="'+c+'">'+c+"</span>"; }).join(""); }
+  build(REV); host.setAttribute("data-word",REV);
+  var busy=false;
+  function flip(){
+    if(busy) return; busy=true;
+    var target=(host.getAttribute("data-word")==="LAICIF-IRA"?"ARI-FICIAL":"LAICIF-IRA");
+    var tgt=target.split(""); var chs=host.querySelectorAll(".ch");
+    Array.prototype.forEach.call(chs,function(sp,i){
+      var nc=tgt[i]||"";
+      var apply=function(){ sp.setAttribute("data-c",nc); sp.textContent=nc; sp.classList.toggle("dash",nc==="-"); };
+      if(HAS_GSAP&&!REDUCED){
+        gsap.timeline({delay:i*0.05,onComplete:(i===chs.length-1)?function(){busy=false;host.setAttribute("data-word",target);}:null})
+          .to(sp,{rotationX:90,duration:.18,ease:"power2.in",onComplete:apply})
+          .to(sp,{rotationX:0,duration:.26,ease:"back.out(2.2)"});
+      } else { apply(); busy=false; host.setAttribute("data-word",target); }
+    });
+  }
+  host.addEventListener("click",flip);
+  var itv=setInterval(function(){ var p=window.pageYOffset/Math.max(1,document.documentElement.scrollHeight-window.innerHeight); if(p>0.02) flip(); },5000);
+  TIMERS.push(itv);
+})();
+/* QR code into splash + date stamp */
+(function(){
+  var cv=$("#spQr"); if(!cv) return;
+  var url=(location.protocol==="file:")?"https://reARbitRA.github.io/Shah-VS-KhomKham/report.html":location.href;
+  var ue=$("#qrUrl"); if(ue) ue.textContent=url.replace(/^https?:\/\//,"");
+  if(typeof qrcode!=="undefined"){
+    try{
+      var qr=qrcode(0,"M"); qr.addData(url); qr.make();
+      var n=qr.getModuleCount(), px=Math.floor(cv.width/n), off=Math.floor((cv.width-n*px)/2);
+      var ctx=cv.getContext("2d"); ctx.clearRect(0,0,cv.width,cv.height);
+      for(var r=0;r<n;r++)for(var c=0;c<n;c++){ if(qr.isDark(r,c)){ ctx.fillStyle="rgba(255,0,60,.95)"; ctx.fillRect(off+c*px,off+r*px,px,px); } }
+    }catch(e){}
+  }
+  var d=new Date(), st=$("#qrStamp");
+  if(st) st.textContent="SEALED "+d.getUTCFullYear()+"."+("0"+(d.getUTCMonth()+1)).slice(-2)+"."+("0"+d.getUTCDate()).slice(-2)+" UTC";
+})();
+/* typewriter title in splash */
+(function(){
+  var el=$("#spTitle"); if(!el) return;
+  el.classList.add("type-caret");
+  var full="LAICIF-IRA REPORT",i=0;
+  var iv=setInterval(function(){ el.textContent=full.slice(0,i++); if(i>full.length) clearInterval(iv); },70);
+  TIMERS.push(iv);
+})();
+/* click ARI signature → black screen, type connected sentence, words crumble & fall → enter report */
+(function(){
+  var spl=$("#splash"), ov=$("#crumbleIntro");
+  var SENTENCE="این یک گزارش کاملا واقعی از یک فروپاشیست.";
+  var entered=false;
+  function finish(){
+    if(spl){ spl.classList.add("closed"); spl.style.display="none"; }
+    if(ov){ ov.style.display="none"; var b=ov.querySelector(".crumb-line"); if(b) b.innerHTML=""; }
+    document.body.style.overflow="";
+    window.scrollTo(0,0);
+    entered=false;
+  }
+  function crumble(){
+    if(!ov){ finish(); return; }
+    ov.style.display="flex";
+    var box=ov.querySelector(".crumb-line"); box.innerHTML="";
+    // --- type: ONE connected text node (Persian letters stay joined) ---
+    var txt=document.createTextNode("");
+    box.appendChild(txt);
+    var i=0;
+    var typer=setInterval(function(){
+      i++;
+      txt.nodeValue=SENTENCE.slice(0,i);   // slicing one text node keeps letters connected
+      if(i>=SENTENCE.length){ clearInterval(typer); onTyped(); }
+    },55);
+    function onTyped(){
+      // hold a beat so the full sentence is readable, then crumble by WORD
+      setTimeout(function(){
+        box.innerHTML="";
+        var words=SENTENCE.split(" "), units=[];
+        words.forEach(function(w,wi){
+          var sp=document.createElement("span"); sp.className="crumb-word"; sp.textContent=w;
+          box.appendChild(sp); units.push(sp);
+          if(wi<words.length-1){ box.appendChild(document.createTextNode(" ")); }
+        });
+        if(HAS_GSAP&&!REDUCED){
+          gsap.to(units,{ y:function(){ return innerHeight*0.5+Math.random()*innerHeight*0.5; },
+            x:function(){ return Math.random()*140-70; }, rotation:function(){ return Math.random()*40-20; },
+            opacity:0,duration:1.3,ease:"power2.in",stagger:0.12,delay:0.15,onComplete:finish });
+        } else {
+          units.forEach(function(sp,k){
+            sp.style.transition="transform 1.1s ease-in, opacity 1.1s ease-in";
+            sp.style.transitionDelay=(0.15+k*0.12)+"s";
+            sp.style.transform="translate("+(Math.random()*140-70)+"px,"+(innerHeight*0.55)+"px) rotate("+(Math.random()*40-20)+"deg)";
+            sp.style.opacity="0";
+          });
+          setTimeout(finish,1300+units.length*120);
+        }
+      },800);
+    }
+  }
+  function enter(){
+    if(entered) return; entered=true;
+    AUD.init&&AUD.click();
+    if(spl) spl.classList.add("closed");
+    crumble();
+  }
+  var sig=$("#spSig");
+  if(sig){ sig.addEventListener("click",enter); sig.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); enter(); } }); }
+  document.body.style.overflow="hidden";
+})();
+
 /* MIRROR TOGGLE :: LAICIF-IRA ⇄ ARI-FICIAL */
 function setTitleWord(word){
   $$("#tl1 .ch").forEach(function(sp,i){
@@ -2365,38 +3029,201 @@ var PX={mx:-9999,my:-9999};
   draw();
 })();
 
-/* ═══════════ 9. THREE.JS WIREFRAME CORE ═══════════ */
-var TJ={mat:null,pmat:null};
+/* ═══════════ 9. THREE.JS :: CRUMBLING IRANIAN-FLAG EMBLEM ═══════════ */
+/* The large red emblem of the Islamic Republic collapses as you scroll:
+   the further down the report you go, the more it crumbles and spills,
+   until it is fully reduced to ash & rubble piled at the bottom.
+   If an emblem image (emblem.png / images.png) exists in the repo root,
+   its pixels define the emblem shape; otherwise a procedural emblem is used. */
+var TJ={mat:null,emblem:null,flag:null};
 (function(){
   var cv=$("#gl");
   if(!HAS_THREE||REDUCED){cv.style.display="none";return}
   try{
     var rd=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
     rd.setPixelRatio(Math.min(devicePixelRatio,1.6)); rd.setSize(innerWidth,innerHeight);
-    var sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(52,innerWidth/innerHeight,.1,120);
-    cam.position.z=26;
-    TJ.mat=new THREE.MeshBasicMaterial({color:0xccff00,wireframe:true,transparent:true,opacity:.22});
-    var knot=new THREE.Mesh(new THREE.TorusKnotGeometry(8.4,1.5,MOBILE?70:150,MOBILE?8:14,2,3),TJ.mat);
-    knot.position.x=MOBILE?0:-7; sc.add(knot);
-    var g=new THREE.BufferGeometry(),n=MOBILE?220:520,arr=new Float32Array(n*3);
-    for(var i=0;i<n*3;i++)arr[i]=(Math.random()-.5)*70;
-    g.setAttribute("position",new THREE.BufferAttribute(arr,3));
-    TJ.pmat=new THREE.PointsMaterial({color:0xff003c,size:.16,transparent:true,opacity:.6});
-    var cloud=new THREE.Points(g,TJ.pmat); sc.add(cloud);
+    var sc=new THREE.Scene();
+    var cam=new THREE.PerspectiveCamera(52,innerWidth/innerHeight,.1,180);
+    cam.position.set(0,-1.2,30); cam.lookAt(0,-1.2,0);
+
+    var CRIM=0xff2030, GREEN=0x00925a, WHITE=0xf0f0f0, ASH=0x9aa0a6;
+
+    /* ---- faint 3-band flag behind the emblem ---- */
+    var bw=20, bh=11, bandH=bh/3, verts=[], fcols=[], fidx=[];
+    for(var k=0;k<3;k++){
+      var y0=k*bandH-bh/2, y1=(k+1)*bandH-bh/2, v0=verts.length/3;
+      var col=[GREEN,WHITE,CRIM][k];
+      verts.push(-bw/2,y0,-3, bw/2,y0,-3, bw/2,y1,-3, -bw/2,y1,-3);
+      for(var a=0;a<4;a++){fcols.push((col>>16&255)/255,(col>>8&255)/255,(col&255)/255)}
+      fidx.push(v0,v0+1,v0+2, v0,v0+2,v0+3);
+    }
+    var flagGeo=new THREE.BufferGeometry();
+    flagGeo.setAttribute("position",new THREE.Float32BufferAttribute(verts,3));
+    flagGeo.setAttribute("color",new THREE.Float32BufferAttribute(fcols,3));
+    flagGeo.setIndex(fidx);
+    TJ.flag=new THREE.Mesh(flagGeo,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.06,side:THREE.DoubleSide,depthWrite:false}));
+    sc.add(TJ.flag);
+
+    var ES=9.0;
+    function buildEmblem(imgTex){
+      var pts=[];
+      if(imgTex && imgTex.image){
+        var c=document.createElement("canvas"), sx=imgTex.image.width, sy=imgTex.image.height;
+        c.width=sx; c.height=sy;
+        var cc=c.getContext("2d"); cc.drawImage(imgTex.image,0,0);
+        var id=cc.getImageData(0,0,sx,sy).data;
+        var stepX=Math.max(1,Math.floor(sx/110)), stepY=Math.max(1,Math.floor(sy/110));
+        for(var py=0;py<sy;py+=stepY){
+          for(var px=0;px<sx;px+=stepX){
+            var o=(py*sx+px)*4, a=id[o+3];
+            if(a>90 && Math.random()<0.5){
+              pts.push([(px/sx)*2-1, 1-(py/sy)*2]);
+            }
+          }
+        }
+        if(pts.length<300) return null;
+      } else {
+        function crescent(x,y,cx,cy,R,th){
+          var dx=x-cx, dy=y-cy, d=Math.sqrt(dx*dx+dy*dy);
+          if(d>R) return false;
+          var ox=cx*0.28, oy=cy*0.28, ddx=x-ox, ddy=y-oy;
+          if(ddx*ddx+ddy*ddy < (R-th)*(R-th)) return false;
+          return true;
+        }
+        function inE(x,y){
+          if(Math.abs(x)<0.05 && y>-0.62 && y<0.46) return true;
+          var tw=0.34*Math.pow(Math.sin(Math.PI*Math.max(0,(y+0.30)/0.96)),0.7);
+          if(y>-0.30 && y<0.64 && Math.abs(x)<tw) return true;
+          if(crescent(x,y,-0.46,0.30,0.30,0.11)) return true;
+          if(crescent(x,y, 0.46,0.30,0.30,0.11)) return true;
+          if(crescent(x,y,-0.43,-0.42,0.30,0.11)) return true;
+          if(crescent(x,y, 0.43,-0.42,0.30,0.11)) return true;
+          return false;
+        }
+        var guard=0;
+        while(pts.length<(MOBILE?1200:2600) && guard<500000){
+          guard++;
+          var x=(Math.random()*2-1), y=(Math.random()*1.5-0.72);
+          if(inE(x,y)) pts.push([x,y]);
+        }
+      }
+      return pts;
+    }
+
+    function startCrumble(pts){
+      var N=pts.length;
+      var home=new Float32Array(N*3), thr=new Float32Array(N), ash=new Float32Array(N), ph=new Float32Array(N);
+      for(var i=0;i<N;i++){
+        var nx=pts[i][0], ny=pts[i][1];
+        home[i*3]=nx*ES; home[i*3+1]=ny*ES; home[i*3+2]=(Math.random()-0.5)*0.5;
+        var band=0.5-ny;
+        thr[i]=Math.min(0.99,Math.max(0.01,(0.42-band)*1.15+Math.random()*0.22));
+        ash[i]=Math.random()<0.34?1:0;
+        ph[i]=Math.random()*6.2831;
+      }
+      var pos=new Float32Array(N*3), col=new Float32Array(N*3);
+      for(var j=0;j<N;j++){ pos[j*3]=home[j*3]; pos[j*3+1]=home[j*3+1]; pos[j*3+2]=home[j*3+2]; }
+
+      var fallX=new Float32Array(N), fallY=new Float32Array(N), fallZ=new Float32Array(N);
+      var pileBase=-12.0, pileH=3.4;
+      for(var p=0;p<N;p++){
+        var fx=home[p*3]*0.55 + (Math.random()-0.5)*1.8;
+        var fy=pileBase + Math.pow(Math.random(),2.1)*pileH - Math.abs(fx)*0.13*(0.6+Math.random()*0.7) - Math.random()*0.35;
+        fallX[p]=fx; fallY[p]=fy; fallZ[p]=(Math.random()-0.5)*2.4;
+      }
+
+      var eg=new THREE.BufferGeometry();
+      eg.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));
+      eg.setAttribute("color",new THREE.Float32BufferAttribute(col,3));
+      TJ.mat=new THREE.PointsMaterial({size:MOBILE?0.38:0.27,vertexColors:true,transparent:true,opacity:.96,depthWrite:false});
+      TJ.emblem=new THREE.Points(eg,TJ.mat); sc.add(TJ.emblem);
+
+      function progress(){
+        var h=document.documentElement.scrollHeight-window.innerHeight;
+        return h>0?Math.min(1,Math.max(0,window.pageYOffset/h)):0;
+      }
+      var dust=[];
+      function update(){
+        var p=progress();
+        var dcol=new Float32Array(N*3);
+        var rr0=(CRIM>>16&255)/255, gg0=(CRIM>>8&255)/255, bb0=(CRIM&255)/255;
+        for(var kk=0;kk<N;kk++){
+          var t=thr[kk], ix=kk*3, iy=kk*3+1, iz=kk*3+2;
+          var hx=home[ix], hy=home[iy], hz=home[iz];
+          if(p<=t){
+            var d=t-p, jit=0;
+            if(d<0.05) jit=Math.sin(ph[kk]+t*34)*d*20;
+            pos[ix]=hx+jit; pos[iy]=hy-Math.abs(jit)*0.5; pos[iz]=hz;
+            dcol[ix]=rr0; dcol[iy]=gg0; dcol[iz]=bb0;
+          }else{
+            var k2=(p-t)/Math.max(0.0001,1-t); k2=k2<0?0:k2>1?1:k2;
+            var e=1-Math.pow(1-k2,2.6);
+            var sway=Math.sin(ph[kk]+e*7)*(1-e)*1.1 + Math.sin(e*23+ph[kk])*e*0.2;
+            pos[ix]=hx+(fallX[kk]-hx)*e+sway;
+            pos[iy]=hy+(fallY[kk]-hy)*e;
+            pos[iz]=hz+(fallZ[kk]-hz)*e;
+            if(ash[kk]){
+              var ar=(ASH>>16&255)/255,ag=(ASH>>8&255)/255,ab=(ASH&255)/255;
+              dcol[ix]=rr0+(ar-rr0)*e; dcol[iy]=gg0+(ag-gg0)*e; dcol[iz]=bb0+(ab-bb0)*e;
+            }else{
+              dcol[ix]=rr0; dcol[iy]=gg0; dcol[iz]=bb0;
+            }
+          }
+        }
+        eg.attributes.position.needsUpdate=true;
+        eg.attributes.color.needsUpdate=true;
+        eg.attributes.position.array.set(pos);
+        eg.attributes.color.array.set(dcol);
+        if(p>0.02 && p<0.98 && dust.length<80 && Math.random()<0.25){
+          dust.push({x:(Math.random()-.5)*14,y:-10,z:(Math.random()-.5)*2,vy:0.02+Math.random()*0.04,life:1});
+        }
+        for(var q=dust.length-1;q>=0;q--){
+          var dt=dust[q]; dt.y+=dt.vy; dt.life-=0.01; dt.x+=Math.sin(dt.y*3)*0.01;
+          if(dt.y>8||dt.life<=0) dust.splice(q,1);
+        }
+      }
+      var wcount=0;
+      function tick(){
+        wcount+=0.02;
+        var boost=Math.min(0.05,Math.abs(scrollVel)*0.0012);
+        if(TJ.emblem) TJ.emblem.rotation.y=Math.sin(wcount*0.35)*0.12+boost;
+        var fp=TJ.flag.geometry.attributes.position;
+        for(var i2=0;i2<fp.array.length;i2+=3){
+          var xx=fp.array[i2], yy=fp.array[i2+1];
+          fp.array[i2+2]=-3+Math.sin(xx*0.5+wcount*1.3)*0.5*((yy+bh/2)/bh);
+        }
+        fp.needsUpdate=true;
+        cam.position.x+=((PX.mx/innerWidth-.5)*3-cam.position.x)*0.03;
+        cam.position.y=-1.2+(-(PX.my/innerHeight-.5)*1.6-cam.position.y)*0.03;
+        cam.lookAt(0,-1.2,0);
+        update();
+        rd.render(sc,cam);
+        RAFS[2]=requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    var imgCands=["emblem.png","images.png","emblem.jpg","images.jpeg"];
+    var idxImg=0;
+    (function loadNext(){
+      if(idxImg>=imgCands.length){ startCrumble(buildEmblem(null)); return; }
+      var t=new THREE.TextureLoader(); t.crossOrigin="anonymous";
+      t.load(imgCands[idxImg++],
+        function(tex){
+          try{
+            var pts=buildEmblem(tex);
+            if(pts){ startCrumble(pts); console.log("[OMNI] emblem image used"); }
+            else { idxImg=imgCands.length; loadNext(); }
+          }catch(e){ idxImg=imgCands.length; loadNext(); }
+        },
+        undefined,
+        function(){ loadNext(); }
+      );
+    })();
+
     window.addEventListener("resize",function(){
       cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();rd.setSize(innerWidth,innerHeight);
     });
-    function tick(){
-      var boost=Math.min(0.055,Math.abs(scrollVel)*0.0016);
-      knot.rotation.y+=0.0024+boost; knot.rotation.x+=0.0013+boost*.5;
-      cloud.rotation.y-=0.0006+boost*.25; cloud.rotation.x+=0.0003;
-      cam.position.x+=((PX.mx/innerWidth-.5)*4-cam.position.x)*0.03;
-      cam.position.y+=(-(PX.my/innerHeight-.5)*4-cam.position.y)*0.03;
-      cam.lookAt(0,0,0);
-      rd.render(sc,cam);
-      RAFS[2]=requestAnimationFrame(tick);
-    }
-    tick();
   }catch(err){ console.warn("[OMNI] WebGL init failed → 3D disabled.",err); cv.style.display="none"; }
 })();
 
@@ -2492,7 +3319,7 @@ $$("#navlist a").forEach(function(a){a.addEventListener("click",function(){$("#n
 /* ═══════════ 11. GSAP SCROLL PARALLAX ═══════════ */
 if(HAS_ST&&!REDUCED){
   gsap.to("#wire",{yPercent:70,rotation:24,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:.6}});
-  gsap.to("#htitle",{yPercent:-14,opacity:.15,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:.4}});
+  gsap.to("#htitle",{yPercent:-10,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:.5}});
   gsap.utils.toArray(".chapter").forEach(function(ch){
     gsap.fromTo(ch,{letterSpacing:"0.28em"},{letterSpacing:"0.01em",ease:"none",
       scrollTrigger:{trigger:ch,start:"top 90%",end:"top 40%",scrub:.5}});

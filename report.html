@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23050505'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='16' fill='%23ff003c' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#050505">
 <title>LAICIF-IRA REPORT // 1320—1405</title>
 <meta name="description" content="LAICIF-IRA REPORT — آرشیو تعاملی داده، تحلیل تطبیقی ایران ۱۳۲۰ تا ۱۴۰۵">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,7 +94,7 @@ b .num,strong .num{color:var(--cyber);text-shadow:0 0 8px rgba(255,208,0,.6)}
 #radar .rlbl{position:absolute;bottom:-14px;width:100%;text-align:center;font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--dim)}
 
 /* CURSOR */
-#cursor{position:fixed;top:0;left:0;width:26px;height:26px;z-index:99999;pointer-events:none;
+#cursor{position:fixed;top:0;left:0;width:26px;height:26px;z-index:200000;pointer-events:none;
   transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .18s,height .18s}
 #cursor .ring{position:absolute;inset:0;border:1px solid rgba(204,255,0,.85);border-radius:50%}
 #cursor .h,#cursor .v{position:absolute;background:rgba(204,255,0,.85)}
@@ -100,7 +102,7 @@ b .num,strong .num{color:var(--cyber);text-shadow:0 0 8px rgba(255,208,0,.6)}
 #cursor .v{left:50%;top:-8px;bottom:-8px;width:1px}
 #cursor.hot{width:40px;height:40px}
 #cursor.hot .ring{border-color:var(--crim);box-shadow:0 0 12px rgba(255,0,60,.7)}
-#cdot{position:fixed;width:4px;height:4px;background:var(--crim);z-index:99999;pointer-events:none;transform:translate(-50%,-50%)}
+#cdot{position:fixed;width:4px;height:4px;background:var(--crim);z-index:200000;pointer-events:none;transform:translate(-50%,-50%)}
 @media(pointer:coarse){#cursor,#cdot{display:none}}
 
 /* ============ SHELL ============ */
@@ -3317,7 +3319,7 @@ $$("#navlist a").forEach(function(a){a.addEventListener("click",function(){$("#n
 /* ═══════════ 11. GSAP SCROLL PARALLAX ═══════════ */
 if(HAS_ST&&!REDUCED){
   gsap.to("#wire",{yPercent:70,rotation:24,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:.6}});
-  gsap.to("#htitle",{yPercent:-14,opacity:.15,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:.4}});
+  gsap.to("#htitle",{yPercent:-10,ease:"none",scrollTrigger:{trigger:"#hero",start:"top top",end:"bottom top",scrub:.5}});
   gsap.utils.toArray(".chapter").forEach(function(ch){
     gsap.fromTo(ch,{letterSpacing:"0.28em"},{letterSpacing:"0.01em",ease:"none",
       scrollTrigger:{trigger:ch,start:"top 90%",end:"top 40%",scrub:.5}});

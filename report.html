@@ -423,9 +423,70 @@ td b{color:#fff}
 b,strong{color:#fff}
 footer{color:#c9c9c9}
 
+
+/* ============ SPLASH / SEPARATE INTRO PAGE ============ */
+#splash{position:fixed;inset:0;z-index:100000;background:radial-gradient(120% 100% at 50% 0%,#0c0c0c,#050505 70%);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .9s ease, transform .9s ease}
+#splash.closed{opacity:0;pointer-events:none;transform:scale(1.06)}
+.splash-inner{max-width:1080px;width:94%;display:flex;flex-direction:column;gap:28px;align-items:center;text-align:center;padding:30px 8px}
+.splash-kick{font-family:var(--mono);font-size:10px;letter-spacing:.4em;color:var(--crim);text-transform:uppercase}
+#spTitle{font-family:'Special Elite',monospace;font-size:clamp(1.9rem,6.5vw,5rem);color:#fff;letter-spacing:.03em;line-height:1;white-space:nowrap;text-shadow:0 0 30px rgba(255,0,60,.5),2px 0 0 rgba(255,0,60,.5),-2px 0 0 rgba(0,229,255,.4)}
+.type-caret::after{content:"\258E";color:var(--crim);animation:blink .8s steps(2) infinite;margin-left:.05em}
+#spSub{font-family:'Vazirmatn',sans-serif;font-size:clamp(1.1rem,2.3vw,1.65rem);color:#fff;min-height:2.4em;line-height:1.7;text-shadow:0 1px 3px rgba(0,0,0,.95);max-width:46ch}
+#spSub::after{content:"\258E";color:var(--crim);animation:blink .8s steps(2) infinite;margin-left:.05em}
+.splash-sigrow{display:flex;align-items:center;justify-content:center;gap:36px;flex-wrap:wrap;margin-top:4px}
+#spSig{width:200px;height:auto;color:var(--crim);cursor:pointer;filter:drop-shadow(0 0 22px rgba(255,0,60,.6));transition:transform .25s, filter .25s;outline:none}
+#spSig:hover,#spSig:focus-visible{transform:scale(1.06);filter:drop-shadow(0 0 30px rgba(255,0,60,.85))}
+#spSig path{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
+#spVtitle{display:flex;flex-direction:column;align-items:center;justify-content:space-between;font-family:'Special Elite',monospace;font-size:clamp(1rem,1.5vw,1.35rem);color:#fff;letter-spacing:.14em;line-height:1;height:210px;white-space:nowrap;text-shadow:0 0 14px rgba(255,0,60,.6);cursor:pointer}
+#spVtitle .ch{display:block;line-height:1}
+#spVtitle .ch.dash{color:var(--crim)}
+.splash-qr{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.sqr-frame{border:2px solid var(--crim);padding:6px;filter:drop-shadow(0 0 12px rgba(255,0,60,.4))}
+.sqr-frame canvas{width:120px;height:120px;display:block;background:rgba(0,0,0,.4)}
+.sm{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:#ddd;display:flex;flex-direction:column;gap:5px;text-align:left}
+.sm b{color:var(--crim)}
+.sm .stamp{border:2px solid var(--crim);color:var(--crim);padding:3px 8px;transform:rotate(-4deg);font-family:'Special Elite',monospace;background:rgba(20,0,5,.7);display:inline-block;width:max-content}
+.splash-hint{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:#fff;background:rgba(255,0,60,.18);border:1px solid var(--crim);padding:9px 20px;animation:blink 1.7s steps(2) infinite}
+/* ============ READABILITY : 100% OPACITY, HIGH CONTRAST, FRAMED ============ */
+.reveal{opacity:1 !important}
+#navlist a.h3{opacity:1 !important}
+.spec .stamp{opacity:1 !important}
+.sig-seal{opacity:1 !important}
+.sig-base{opacity:1 !important}
+.corner{opacity:1 !important}
+.qr-frame{opacity:.95 !important}
+body::before{opacity:0 !important}
+body::after{display:none !important}
+.term-body,.alert .ab,.spec .tx,.tbl-top,td,th{color:#fff !important}
+.chip{color:#fff !important}
+footer{color:#ddd !important}
+
 </style>
 </head>
 <body>
+
+<div id="splash" role="dialog" aria-modal="true" aria-label="ورود به گزارش">
+  <div class="splash-inner">
+    <div class="splash-kick">/// ARCHIVE_LOAD :: LAICIF-IRA // REVERSED_STREAM ///</div>
+    <h1 id="spTitle" class="type-caret">LAICIF-IRA REPORT</h1>
+    <p id="spSub"></p>
+    <div class="splash-sigrow">
+      <svg id="spSig" viewBox="0 0 1250 1254" xmlns="http://www.w3.org/2000/svg" role="img" tabindex="0"
+           aria-label="امضای ARI — برای ورود به گزارش کلیک کنید"></svg>
+      <div class="vtitle" id="spVtitle" aria-hidden="true"></div>
+    </div>
+    <div class="splash-qr">
+      <div class="sqr-frame"><canvas id="spQr" width="256" height="256" aria-label="QR Code گزارش"></canvas></div>
+      <div class="sm">
+        <span>SCAN :: <b>DOC LAICIF-IRA</b></span>
+        <span>ENCODE <b id="qrUrl">--</b></span>
+        <span class="stamp" id="qrStamp">SEALED --</span>
+      </div>
+    </div>
+    <div class="splash-hint">برای ورود به گزارش، روی امضا کلیک کنید</div>
+  </div>
+</div>
+
 
 <canvas id="gl" aria-hidden="true"></canvas>
 <canvas id="px" aria-hidden="true"></canvas>
@@ -484,24 +545,7 @@ footer{color:#c9c9c9}
         <h1 id="htitle" class="glitch type-caret" aria-label="LAICIF-IRA REPORT">...</h1>
         <div id="hdoc"></div>
         <p id="hsub"></p>
-        <div class="intro-rows">
-          <div class="sig-col">
-            <svg id="introSig" viewBox="0 0 1250 1254" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="امضای ARI" preserveAspectRatio="xMidYMid meet"></svg>
-            <div class="vtitle" id="vtitle" aria-hidden="true"></div>
-          </div>
-          <div class="main-col">
-            <div class="hmeta" id="hmeta"></div>
-            <div class="qr-zone">
-              <div class="qr-box"><canvas id="qr" width="256" height="256" aria-label="QR Code گزارش"></canvas><span class="qr-frame"></span></div>
-              <div class="qr-meta">
-                <span>SCAN :: <b>DOC LAICIF-IRA</b></span>
-                <span>ENCODE <b id="qrUrl">--</b></span>
-                <span class="stamp" id="qrStamp">SEALED --</span>
-                <span class="qr-cap">◈ LIVE ARCHIVE · ۱۴۰۵ · VERIFIED</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="hmeta" id="hmeta"></div>
         <div id="kpis"></div>
       </div>
     </section>
@@ -2667,70 +2711,92 @@ $("#fstat").textContent="BLOCKS "+BLOCKS.length+" / TABLES "+STATS.tbl+" / ROWS 
   TIMERS.push(iv);
 })();
 
-/* ═══════════ INTRO STAGE : SIGNATURE + VERTICAL TITLE + QR ═══════════ */
-/* clone the ARI author-signature into the hero (left side) */
+
+/* ═══════════ INTRO SPLASH : ARI SIGNATURE + VERTICAL TITLE + QR ═══════════ */
+function drawSigPaths(root){
+  var paths=root.querySelectorAll("path");
+  Array.prototype.forEach.call(paths,function(p,i){
+    var len=0; try{ len=p.getTotalLength(); }catch(e){ len=1000; }
+    if(!len||!isFinite(len)) len=1000;
+    p.setAttribute("vector-effect","non-scaling-stroke");
+    p.style.stroke="currentColor";
+    p.style.strokeWidth="1.5";
+    p.style.fill="none";
+    p.style.strokeDasharray=len;
+    p.style.strokeDashoffset=len;
+    p.style.transition="stroke-dashoffset 2.4s ease-in-out";
+    setTimeout(function(){ p.style.strokeDashoffset="0"; }, i*30);
+  });
+}
+/* clone the ARI author-signature into the splash and draw it */
 (function(){
-  var sigSrc=$("#sigSvg"), sigDst=$("#introSig");
-  if(sigSrc&&sigDst){ sigDst.innerHTML=sigSrc.innerHTML; }
+  var src=$("#sigSvg"), dst=$("#spSig");
+  if(src&&dst){ dst.innerHTML=src.innerHTML; drawSigPaths(dst); }
 })();
-/* vertical LAICIF-IRA → ARI-FICIAL flip-letter title (beside signature) */
+/* splash vertical title LAICIF-IRA ⇄ ARI-FICIAL flip-letter */
 (function(){
-  var host=$("#vtitle"); if(!host) return;
+  var host=$("#spVtitle"); if(!host) return;
   var REV="LAICIF-IRA", FWD="ARI-FICIAL";
-  function build(word){
-    host.innerHTML=word.split("").map(function(c){
-      return '<span class="ch'+(c==="-"?" dash":"")+'" data-c="'+c+'">'+c+"</span>";
-    }).join("");
-  }
-  build(REV);
-  host.setAttribute("data-word",REV);
-  var going=false;
+  function build(w){ host.innerHTML=w.split("").map(function(c){return '<span class="ch'+(c==="-"? " dash":"")+'" data-c="'+c+'">'+c+"</span>";}).join(""); }
+  build(REV); host.setAttribute("data-word",REV);
+  var busy=false;
   function flip(){
-    if(going) return; going=true;
+    if(busy) return; busy=true;
     var target=(host.getAttribute("data-word")==="LAICIF-IRA"?"ARI-FICIAL":"LAICIF-IRA");
-    var tgt=target.split("");
-    $$(".vtitle .ch").forEach(function(sp,i){
+    var tgt=target.split(""); var chs=host.querySelectorAll(".ch");
+    Array.prototype.forEach.call(chs,function(sp,i){
       var nc=tgt[i]||"";
       var apply=function(){ sp.setAttribute("data-c",nc); sp.textContent=nc; sp.classList.toggle("dash",nc==="-"); };
       if(HAS_GSAP&&!REDUCED){
-        gsap.timeline({delay:i*0.05,onComplete:(i===$$(".vtitle .ch").length-1)?function(){going=false;host.setAttribute("data-word",target);}:null})
+        gsap.timeline({delay:i*0.05,onComplete:(i===chs.length-1)?function(){busy=false;host.setAttribute("data-word",target);}:null})
           .to(sp,{rotationX:90,duration:.18,ease:"power2.in",onComplete:apply})
           .to(sp,{rotationX:0,duration:.26,ease:"back.out(2.2)"});
-      } else { apply(); going=false; host.setAttribute("data-word",target); }
+      } else { apply(); busy=false; host.setAttribute("data-word",target); }
     });
   }
   host.addEventListener("click",flip);
-  var itv=setInterval(function(){
-    var p=(window.pageYOffset/Math.max(1,document.documentElement.scrollHeight-window.innerHeight));
-    if(p>0.02) flip();
-  },5000);
+  var itv=setInterval(function(){ var p=window.pageYOffset/Math.max(1,document.documentElement.scrollHeight-window.innerHeight); if(p>0.02) flip(); },5000);
   TIMERS.push(itv);
 })();
-/* REAL QR CODE (transparent, red, scannable) */
+/* QR code into splash + date stamp */
 (function(){
-  var cv=$("#qr"); if(!cv) return;
+  var cv=$("#spQr"); if(!cv) return;
   var url=(location.protocol==="file:")?"https://reARbitRA.github.io/Shah-VS-KhomKham/report.html":location.href;
   var ue=$("#qrUrl"); if(ue) ue.textContent=url.replace(/^https?:\/\//,"");
-  if(typeof qrcode==="undefined"){ cv.getContext("2d").clearRect(0,0,cv.width,cv.height); return; }
-  var qr=qrcode(0,"M");
-  qr.addData(url); qr.make();
-  var n=qr.getModuleCount(), cells=qr.isDark;
-  var px=Math.floor(cv.width/n), off=Math.floor((cv.width-n*px)/2);
-  var ctx=cv.getContext("2d");
-  ctx.clearRect(0,0,cv.width,cv.height);
-  // finder pattern quiet-zone guides
-  for(var r=0;r<n;r++)for(var c=0;c<n;c++){
-    if(qr.isDark(r,c)){
-      ctx.fillStyle="rgba(255,0,60,0.95)";
-      ctx.shadowColor="rgba(255,0,60,.55)"; ctx.shadowBlur=6;
-      ctx.fillRect(off+c*px,off+r*px,px,px);
-      ctx.shadowBlur=0;
-    }
+  if(typeof qrcode!=="undefined"){
+    try{
+      var qr=qrcode(0,"M"); qr.addData(url); qr.make();
+      var n=qr.getModuleCount(), px=Math.floor(cv.width/n), off=Math.floor((cv.width-n*px)/2);
+      var ctx=cv.getContext("2d"); ctx.clearRect(0,0,cv.width,cv.height);
+      for(var r=0;r<n;r++)for(var c=0;c<n;c++){ if(qr.isDark(r,c)){ ctx.fillStyle="rgba(255,0,60,.95)"; ctx.fillRect(off+c*px,off+r*px,px,px); } }
+    }catch(e){}
   }
-  var d=new Date();
-  var stamp=$("#qrStamp");
-  if(stamp) stamp.textContent="SEALED "+d.getUTCFullYear()+"."+("0"+(d.getUTCMonth()+1)).slice(-2)+"."+("0"+d.getUTCDate()).slice(-2)+" UTC";
+  var d=new Date(), st=$("#qrStamp");
+  if(st) st.textContent="SEALED "+d.getUTCFullYear()+"."+("0"+(d.getUTCMonth()+1)).slice(-2)+"."+("0"+d.getUTCDate()).slice(-2)+" UTC";
 })();
+/* typewriter: report title + short sentence in splash */
+(function(){
+  var el=$("#spTitle"); if(el){ el.classList.add("type-caret"); var full="LAICIF-IRA REPORT",i=0; var iv=setInterval(function(){ el.textContent=full.slice(0,i++); if(i>full.length) clearInterval(iv); },70); TIMERS.push(iv); }
+})();
+(function(){
+  var el=$("#spSub"); if(!el) return;
+  var full="این یک گزارش واقعی از یک فروپاشی است.";
+  var i=0; var iv=setInterval(function(){ el.textContent=full.slice(0,i++); if(i>full.length) clearInterval(iv); },60); TIMERS.push(iv);
+})();
+/* close splash when the ARI signature is clicked → enter the report */
+(function(){
+  var spl=$("#splash");
+  function enter(){
+    if(!spl||spl.classList.contains("closed")) return;
+    spl.classList.add("closed");
+    document.body.style.overflow="";
+    window.scrollTo(0,0);
+    AUD.init&&AUD.click();
+  }
+  var sig=$("#spSig"); if(sig){ sig.addEventListener("click",enter); sig.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); enter(); } }); }
+  document.body.style.overflow="hidden";
+})();
+
 /* MIRROR TOGGLE :: LAICIF-IRA ⇄ ARI-FICIAL */
 function setTitleWord(word){
   $$("#tl1 .ch").forEach(function(sp,i){

@@ -7,7 +7,7 @@
 <meta name="description" content="LAICIF-IRA REPORT — آرشیو تعاملی داده، تحلیل تطبیقی ایران ۱۳۲۰ تا ۱۴۰۵">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Inter:wght@300;500;800&family=Vazirmatn:wght@300;500;900&family=Special+Elite&family=Cutive+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Inter:wght@300;500;800&family=Vazirmatn:wght@300;500;900&family=Special+Elite&family=Cutive+Mono&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ============ CORE TOKENS ============ */
 :root{
@@ -461,6 +461,14 @@ body::after{display:none !important}
 .chip{color:#fff !important}
 footer{color:#ddd !important}
 
+
+/* ============ CRUMBLE TRANSITION (click intro -> black -> type -> fall) ============ */
+#crumbleIntro{position:fixed;inset:0;z-index:100001;background:#000;display:none;align-items:center;justify-content:center;overflow:hidden}
+.crumb-line{max-width:94%;text-align:center;font-family:'Amiri',serif;font-weight:700;font-size:clamp(2.1rem,7vw,5.6rem);line-height:1.5;color:#efe8d8;padding:0 20px;text-shadow:0 0 34px rgba(255,255,255,.14),0 6px 22px rgba(0,0,0,.85)}
+.crumb-char{display:inline-block;opacity:0;transition:opacity .16s linear;will-change:transform,opacity;white-space:pre}
+.crumb-char.in{opacity:1}
+.splash-inner #spSub{display:none}
+
 </style>
 </head>
 <body>
@@ -487,6 +495,8 @@ footer{color:#ddd !important}
   </div>
 </div>
 
+
+<div id="crumbleIntro" aria-hidden="true"><div class="crumb-line"></div></div>
 
 <canvas id="gl" aria-hidden="true"></canvas>
 <canvas id="px" aria-hidden="true"></canvas>
@@ -2774,26 +2784,77 @@ function drawSigPaths(root){
   var d=new Date(), st=$("#qrStamp");
   if(st) st.textContent="SEALED "+d.getUTCFullYear()+"."+("0"+(d.getUTCMonth()+1)).slice(-2)+"."+("0"+d.getUTCDate()).slice(-2)+" UTC";
 })();
-/* typewriter: report title + short sentence in splash */
+/* typewriter: report title in splash */
 (function(){
   var el=$("#spTitle"); if(el){ el.classList.add("type-caret"); var full="LAICIF-IRA REPORT",i=0; var iv=setInterval(function(){ el.textContent=full.slice(0,i++); if(i>full.length) clearInterval(iv); },70); TIMERS.push(iv); }
 })();
+/* click the ARI signature → black crumble screen → typed sentence → letters fall like bricks → enter report */
 (function(){
-  var el=$("#spSub"); if(!el) return;
-  var full="این یک گزارش واقعی از یک فروپاشی است.";
-  var i=0; var iv=setInterval(function(){ el.textContent=full.slice(0,i++); if(i>full.length) clearInterval(iv); },60); TIMERS.push(iv);
-})();
-/* close splash when the ARI signature is clicked → enter the report */
-(function(){
-  var spl=$("#splash");
-  function enter(){
-    if(!spl||spl.classList.contains("closed")) return;
-    spl.classList.add("closed");
+  var spl=$("#splash"), ov=$("#crumbleIntro");
+  var SENTENCE="این یک گزارش کاملا واقعی از یک فروپاشیست.";
+  var entered=false;
+
+  function finish(){
+    if(spl){ spl.classList.add("closed"); spl.style.display="none"; }
+    if(ov){ ov.style.display="none"; ov.querySelector(".crumb-line").innerHTML=""; }
     document.body.style.overflow="";
     window.scrollTo(0,0);
-    AUD.init&&AUD.click();
+    entered=false;
   }
-  var sig=$("#spSig"); if(sig){ sig.addEventListener("click",enter); sig.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); enter(); } }); }
+
+  function crumble(){
+    if(!ov) { finish(); return; }
+    ov.style.display="flex";
+    var box=ov.querySelector(".crumb-line");
+    box.innerHTML="";
+    var chars=[];
+    var i;
+    for(i=0;i<SENTENCE.length;i++){
+      var sp=document.createElement("span");
+      sp.className="crumb-char";
+      sp.textContent=SENTENCE[i];
+      box.appendChild(sp); chars.push(sp);
+    }
+    // type: reveal character by character (stone-print feel)
+    chars.forEach(function(sp,k){
+      setTimeout(function(){ sp.classList.add("in"); }, 60*k);
+    });
+    var typeDur=60*chars.length + 600;
+    // hold, then crumble like falling bricks
+    setTimeout(function(){
+      if(HAS_GSAP&&!REDUCED){
+        gsap.to(chars,{
+          y:function(){ return innerHeight*0.55 + Math.random()*innerHeight*0.5; },
+          x:function(){ return (Math.random()*120-60); },
+          rotation:function(){ return Math.random()*70-35; },
+          opacity:0, duration:1.4, ease:"power2.in", stagger:0.045, delay:0.2,
+          onComplete:finish
+        });
+      } else {
+        chars.forEach(function(sp,k){
+          sp.style.transition="transform 1.2s ease-in, opacity 1.2s ease-in";
+          sp.style.transitionDelay=(0.2+k*0.045)+"s";
+          sp.style.transform="translate("+(Math.random()*120-60)+"px,"+(innerHeight*0.6)+"px) rotate("+(Math.random()*70-35)+"deg)";
+          sp.style.opacity="0";
+        });
+        setTimeout(finish, 1400+chars.length*45);
+      }
+    }, typeDur + 900);
+  }
+
+  function enter(){
+    if(entered) return; entered=true;
+    AUD.init&&AUD.click();
+    // fade the splash out and show black crumble overlay on top
+    if(spl) spl.classList.add("closed");
+    crumble();
+  }
+
+  var sig=$("#spSig");
+  if(sig){
+    sig.addEventListener("click",enter);
+    sig.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); enter(); } });
+  }
   document.body.style.overflow="hidden";
 })();
 
